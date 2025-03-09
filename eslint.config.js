@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 
 export default tsEslint.config(
   {
-    ignores: ["**/dist/**/*", "**/.temp/**/*", "eslint.config.js"],
+    ignores: ["**/dist/**/*", "**/.temp/**/*", "eslint.config.js", "test/fixtures/**/*"],
   },
   eslint.configs.recommended,
   ...tsEslint.configs.recommended,

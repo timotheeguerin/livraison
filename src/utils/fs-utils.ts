@@ -1,9 +1,9 @@
+import { access } from "fs/promises";
 import { dirname } from "pathe";
-import type { ChronusHost } from "./host.js";
 
-export async function isPathAccessible(host: ChronusHost, path: string): Promise<boolean> {
+export async function isPathAccessible(path: string): Promise<boolean> {
   try {
-    await host.access(path);
+    await access(path);
     return true;
   } catch {
     return false;

@@ -1,5 +1,6 @@
 import type { SpawnOptions } from "child_process";
 import crosspawn from "cross-spawn";
+import { stdout } from "process";
 
 export interface ExecResult {
   readonly code: number | null;
@@ -36,4 +37,12 @@ export function execAsync(cmd: string, args: string[], opts: SpawnOptions = {}):
       resolve({ code, stdout, stderr, stdall });
     });
   });
+}
+
+export async function execSuccess(cmd: string, args: string[], opts: SpawnOptions = {}): Promise<ExecResult> {
+  const result = await execAsync(cmd, args, opts);
+  if (result.code !== 0) {
+    throw new Error(`Command ${cmd} ${args.join(" ")} failed with code ${result.code}\n${result.stdall.toString()}`);
+  }
+  return result;
 }

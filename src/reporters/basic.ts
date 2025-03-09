@@ -1,38 +1,58 @@
 import pc from "picocolors";
 import { isCI } from "std-env";
-import { F_CHECK, F_CROSS, F_DOT } from "../utils/figures.js";
+import { F_CHECK, F_CROSS, F_WARN } from "../utils/figures.js";
 import type { Reporter, Task, TaskStatus } from "./types.js";
+
+export const StatusIcons = {
+  success: pc.green(F_CHECK),
+  failure: pc.red(F_CROSS),
+  warn: pc.gray(F_WARN),
+  skipped: pc.gray("•"),
+};
 
 export class BasicReporter implements Reporter {
   isTTY = process.stdout?.isTTY && !isCI;
+  protected stream = process.stderr;
 
   log(message: string) {
-    // eslint-disable-next-line no-console
-    console.log(message);
+    this.stream.write(message + "\n");
+  }
+
+  startTask(message: string): Task {
+    this.log(`${pc.yellow("-")} ${message}`);
+
+    const task: Task = {
+      message,
+      succeed: (message) => {
+        task.stop("success", message);
+      },
+      fail: (message) => {
+        task.stop("failure", message);
+      },
+      warn: (message) => {
+        task.stop("warn", message);
+      },
+      skip: (message) => {
+        task.stop("skipped", message);
+      },
+      stop: (taskStatus, message) => {
+        if (message) {
+          task.message = message;
+        }
+        this.log(`${StatusIcons[taskStatus]} ${task.message}`);
+      },
+    };
+
+    return task;
   }
 
   async task(message: string, action: (task: Task) => Promise<TaskStatus | void>) {
-    let current = message;
-    const task = {
-      update: (newMessage: string) => {
-        current = newMessage;
-      },
-    };
-    this.log(`${pc.yellow("-")} ${current}`);
-    await action(task);
-    this.log(`${pc.green("✔")} ${current}`);
+    const task = this.startTask(message);
+    const status = await action(task);
+    task.stop(status ?? "success");
   }
 
-  getStatusChar(status: TaskStatus | void | undefined) {
-    switch (status) {
-      case "failure":
-        return pc.red(F_CROSS);
-
-      case "skipped":
-        return pc.gray(F_DOT);
-      case "success":
-      default:
-        return pc.green(F_CHECK);
-    }
+  getStatusChar(status: TaskStatus) {
+    return StatusIcons[status];
   }
 }

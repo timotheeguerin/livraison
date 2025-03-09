@@ -1,5 +1,6 @@
 import { resolve } from "pathe";
 import yargs from "yargs";
+import { DynamicReporter } from "../reporters/dynamic.js";
 import { createExecutable } from "../sea/create.js";
 import { withErrors } from "./utils.js";
 
@@ -44,7 +45,7 @@ async function main() {
             type: "string",
           }),
       withErrors(async (args) => {
-        const exePath = await createExecutable({
+        const exePath = await createExecutable(new DynamicReporter(), {
           entrypoint: resolve(process.cwd(), args.entrypoint),
           name: args.name,
           outDir: resolve(process.cwd(), args.outDir ?? "dist"),

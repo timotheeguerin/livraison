@@ -5,6 +5,7 @@ import { projectRoot } from "../utils/constants.js";
 import { execAsync } from "../utils/exec-async.js";
 import { isPathAccessible } from "../utils/fs-utils.js";
 import { createExecutable } from "./create.js";
+import { TestReporter } from "../../test/test-reporter.js";
 
 const tempDir = join(projectRoot, "temp/test");
 
@@ -21,7 +22,7 @@ beforeAll(async () => {
 
 it("create basic executable", { timeout: 60_000 }, async () => {
   const dir = await mkTestDir();
-  const exePath = await createExecutable({
+  const exePath = await createExecutable(new TestReporter(), {
     entrypoint: join(projectRoot, "test/fixtures/simple-app.js"),
     name: "test",
     outDir: dir,

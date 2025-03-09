@@ -5,6 +5,7 @@ import { basename, join, resolve } from "pathe";
 import { inject } from "postject";
 import { execSuccess } from "../utils/exec-async.js";
 import { writeSeaConfig } from "./sea-config.js";
+import type { Reporter } from "../reporters/types.js";
 
 export interface CreateExecutableOptions {
   readonly entrypoint: string;
@@ -15,24 +16,31 @@ export interface CreateExecutableOptions {
 
 const projectRoot = resolve(import.meta.dirname, "..", "..");
 
-export async function createExecutable(options: CreateExecutableOptions) {
+export async function createExecutable(reporter: Reporter, options: CreateExecutableOptions) {
+  const spinner = reporter.startTask("Creating executable");
   await mkdir(options.outDir, { recursive: true });
   const tempDir = await createTempDir();
 
   const seaConfigPath = join(tempDir, "sea-config.json");
   const blobPath = join(tempDir, "sea-prep.blob");
   await createSeaConfig(options, seaConfigPath, blobPath);
+  spinner.message = "Copying node executable";
   const tempNodeExe = await copyNodeExecutable(tempDir);
+  spinner.message = "Remove signature";
   await removeSignature(tempNodeExe);
+  spinner.message = "Create blob";
   await createBlob(seaConfigPath);
+  spinner.message = "Inject blob";
   await injectBlob(tempNodeExe, blobPath);
+  spinner.message = "Finalize";
   await postProcessing(tempNodeExe);
   await resign(tempNodeExe);
 
   const exeName = process.platform === "win32" ? `${options.name}.exe` : options.name;
   const exePath = join(options.outDir, exeName);
+  spinner.message = "Copy to output directory";
   await copyFile(tempNodeExe, exePath);
-
+  spinner.succeed("Executable created");
   return exePath;
 }
 

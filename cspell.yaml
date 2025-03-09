@@ -1,0 +1,13 @@
+version: "0.2"
+language: en
+allowCompoundWords: true
+dictionaries:
+  - node
+  - typescript
+ignorePaths:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - pnpm-lock.yaml
+words:
+  - Guerin
+  - Timothee

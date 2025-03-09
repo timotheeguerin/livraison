@@ -75,3 +75,16 @@ jobs:
 
       - run: pnpm run lint:sp
         name: Syncpack
+ 
+  # This allows us to have a branch protection rule for tests and deploys with matrix
+  ci-status:
+    runs-on: ubuntu-20.04
+    needs: [test, format, lint]
+    if: always()
+    steps:
+      - name: Successful CI
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: exit 0
+      - name: Failing CI
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1

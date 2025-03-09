@@ -1,33 +1,71 @@
 import pc from "picocolors";
-import { BasicReporter } from "./basic.js";
+import { BasicReporter, StatusIcons } from "./basic.js";
 import type { Reporter, Task, TaskStatus } from "./types.js";
 import { createSpinner } from "./utils.js";
 
-export class DynamicReporter extends BasicReporter implements Reporter {
-  async task(message: string, action: (task: Task) => Promise<TaskStatus | void>) {
-    if (!this.isTTY) {
-      return super.task(message, action);
-    }
+class DynamicTask implements Task {
+  #stream: NodeJS.WriteStream;
+  #message: string;
+  #spinner: () => string;
+  #interval: NodeJS.Timeout | undefined;
 
-    let current = message;
-    const task = {
-      update: (newMessage: string) => {
-        current = newMessage;
-      },
-    };
-
-    const spinner = createSpinner();
-    const interval = setInterval(() => {
-      this.#printProgress(`\r${pc.yellow(spinner())} ${current}`);
-    }, 300);
-    const status = await action(task);
-    clearInterval(interval);
-    this.#printProgress(`\r${this.getStatusChar(status)} ${current}\n`);
+  constructor(message: string, stream: NodeJS.WriteStream) {
+    this.#message = message;
+    this.#stream = stream;
+    this.#spinner = createSpinner();
   }
 
-  #printProgress(content: string) {
-    process.stdout.clearLine(0);
-    process.stdout.cursorTo(0);
-    process.stdout.write(content);
+  get message() {
+    return this.#message;
+  }
+
+  set message(newMessage: string) {
+    this.#message = newMessage;
+    this.#printProgress();
+  }
+
+  start() {
+    this.#interval = setInterval(() => {
+      this.#printProgress();
+    }, 300);
+  }
+
+  succeed(message?: string) {
+    this.stop("success", message);
+  }
+  fail(message?: string) {
+    this.stop("failure", message);
+  }
+  warn(message?: string) {
+    this.stop("warn", message);
+  }
+  skip(message?: string) {
+    this.stop("skipped", message);
+  }
+
+  stop(status: TaskStatus, message?: string) {
+    if (message) {
+      this.#message = message;
+    }
+    if (this.#interval) {
+      clearInterval(this.#interval);
+      this.#interval = undefined;
+    }
+    this.#stream.write(`\r${StatusIcons[status]} ${this.#message}\n`);
+  }
+
+  #printProgress() {
+    this.#stream.clearLine(0);
+    this.#stream.cursorTo(0);
+    this.#stream.write(`\r${pc.yellow(this.#spinner())} ${this.#message}`);
+  }
+}
+export class DynamicReporter extends BasicReporter implements Reporter {
+  startTask(message: string): Task {
+    if (!this.isTTY) {
+      return super.startTask(message);
+    }
+
+    return new DynamicTask(message, this.stream);
   }
 }

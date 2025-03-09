@@ -10,4 +10,5 @@ ignorePaths:
   - pnpm-lock.yaml
 words:
   - Guerin
+  - postject
   - Timothee

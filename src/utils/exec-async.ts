@@ -37,3 +37,11 @@ export function execAsync(cmd: string, args: string[], opts: SpawnOptions = {}):
     });
   });
 }
+
+export async function execSuccess(cmd: string, args: string[], opts: SpawnOptions = {}): Promise<ExecResult> {
+  const result = await execAsync(cmd, args, opts);
+  if (result.code !== 0) {
+    throw new Error(`Command ${cmd} ${args.join(" ")} failed with code ${result.code}\n${result.stdall.toString()}`);
+  }
+  return result;
+}

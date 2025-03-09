@@ -1,13 +1,13 @@
 // @ts-check
 import eslint from "@eslint/js";
-import vitest from "eslint-plugin-vitest";
+import vitest from "@vitest/eslint-plugin";
 import { dirname } from "path";
 import tsEslint from "typescript-eslint";
 import { fileURLToPath } from "url";
 
 export default tsEslint.config(
   {
-    ignores: ["**/dist/**/*", "**/.temp/**/*", "eslint.config.js"],
+    ignores: ["**/dist/**/*", "**/.temp/**/*", "eslint.config.js", "test/fixtures/**/*", "cmd/**/*"],
   },
   eslint.configs.recommended,
   ...tsEslint.configs.recommended,

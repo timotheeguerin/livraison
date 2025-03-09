@@ -22,6 +22,14 @@
     "format": "prettier . --write && syncpack format",
     "format:check": "prettier . --check"
   },
+  "dependencies": {
+    "cross-spawn": "^7.0.6",
+    "is-unicode-supported": "^2.1.0",
+    "pathe": "^2.0.3",
+    "picocolors": "^1.1.1",
+    "std-env": "^3.8.1",
+    "yargs": "^17.7.2"
+  },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/cross-spawn": "^6.0.6",
@@ -41,13 +49,5 @@
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0",
     "vitest": "^3.0.8"
-  },
-  "dependencies": {
-    "cross-spawn": "^7.0.6",
-    "is-unicode-supported": "^2.1.0",
-    "pathe": "^2.0.3",
-    "picocolors": "^1.1.1",
-    "std-env": "^3.8.1",
-    "yargs": "^17.7.2"
   }
 }

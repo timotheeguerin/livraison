@@ -1,5 +1,5 @@
-import type { ChronusHost } from "./host.js";
 import { dirname } from "pathe";
+import type { ChronusHost } from "./host.js";
 
 export async function isPathAccessible(host: ChronusHost, path: string): Promise<boolean> {
   try {

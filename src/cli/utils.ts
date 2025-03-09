@@ -1,3 +1,4 @@
+import { normalize } from "pathe";
 import pc from "picocolors";
 import type { Formatter } from "picocolors/types.js";
 import type { TextFile } from "../file/types.js";
@@ -10,7 +11,6 @@ import {
   type DiagnosticSeverity,
   type FileLocation,
 } from "../utils/errors.js";
-import { normalize } from "pathe";
 
 function withReporter<T>(fn: (reporter: T & { reporter: Reporter }) => Promise<void>): (args: T) => Promise<void> {
   return (args: T) => {

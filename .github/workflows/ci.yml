@@ -75,7 +75,7 @@ jobs:
 
       - run: pnpm run lint:sp
         name: Syncpack
- 
+
   # This allows us to have a branch protection rule for tests and deploys with matrix
   ci-status:
     runs-on: ubuntu-20.04

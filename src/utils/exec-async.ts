@@ -1,6 +1,5 @@
 import type { SpawnOptions } from "child_process";
 import crosspawn from "cross-spawn";
-import { stdout } from "process";
 
 export interface ExecResult {
   readonly code: number | null;

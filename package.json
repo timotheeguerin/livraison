@@ -8,6 +8,9 @@
   "author": "Timothee Guerin",
   "keywords": [],
   "main": "dist/index.js",
+  "bin": {
+    "livraison": "cmd/cli.js"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -21,9 +24,6 @@
     "lint:sp": "syncpack lint",
     "format": "prettier . --write && syncpack format",
     "format:check": "prettier . --check"
-  },
-  "bin": {
-    "livraison": "cmd/cli.js"
   },
   "dependencies": {
     "cross-spawn": "^7.0.6",

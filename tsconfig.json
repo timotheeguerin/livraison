@@ -20,5 +20,5 @@
     "lib": ["ES2024"],
     "skipLibCheck": true, // Issue with Node16 module resolution for now.
     "newLine": "LF"
-  },
+  }
 }

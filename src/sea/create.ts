@@ -3,9 +3,9 @@ import { readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "pathe";
 import { inject } from "postject";
+import type { Reporter } from "../reporters/types.js";
 import { execSuccess } from "../utils/exec-async.js";
 import { writeSeaConfig } from "./sea-config.js";
-import type { Reporter } from "../reporters/types.js";
 
 export interface CreateExecutableOptions {
   readonly entrypoint: string;

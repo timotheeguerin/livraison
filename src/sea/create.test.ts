@@ -1,11 +1,11 @@
 import { mkdir, rm } from "fs/promises";
 import { join } from "pathe";
 import { beforeAll, expect, it } from "vitest";
+import { TestReporter } from "../../test/test-reporter.js";
 import { projectRoot } from "../utils/constants.js";
 import { execAsync } from "../utils/exec-async.js";
 import { isPathAccessible } from "../utils/fs-utils.js";
 import { createExecutable } from "./create.js";
-import { TestReporter } from "../../test/test-reporter.js";
 
 const tempDir = join(projectRoot, "temp/test");
 

@@ -31,3 +31,8 @@ updates:
           - "typescript-eslint"
           - "@typescript-eslint/*"
           - "@eslint/*"
+
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly

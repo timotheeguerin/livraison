@@ -27,7 +27,7 @@ class DynamicTask implements Task {
   start() {
     this.#interval = setInterval(() => {
       this.#printProgress();
-    }, 300);
+    }, 100);
   }
 
   succeed(message?: string) {
@@ -51,15 +51,21 @@ class DynamicTask implements Task {
       clearInterval(this.#interval);
       this.#interval = undefined;
     }
-    this.#stream.write(`\r${StatusIcons[status]} ${this.#message}\n`);
+    this.#clear();
+    this.#stream.write(`${StatusIcons[status]} ${this.#message}\n`);
   }
 
   #printProgress() {
-    this.#stream.clearLine(0);
+    this.#clear();
+    this.#stream.write(`${pc.yellow(this.#spinner())} ${this.#message}`);
+  }
+
+  #clear() {
     this.#stream.cursorTo(0);
-    this.#stream.write(`\r${pc.yellow(this.#spinner())} ${this.#message}`);
+    this.#stream.clearLine(0);
   }
 }
+
 export class DynamicReporter extends BasicReporter implements Reporter {
   startTask(message: string): Task {
     if (!this.isTTY) {

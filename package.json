@@ -26,6 +26,7 @@
     "format:check": "prettier . --check"
   },
   "dependencies": {
+    "app-builder-bin": "^4.2.0",
     "cross-spawn": "^7.0.6",
     "is-unicode-supported": "^2.1.0",
     "pathe": "^2.0.3",

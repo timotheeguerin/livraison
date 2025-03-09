@@ -1,5 +1,6 @@
 import { resolve } from "pathe";
 import yargs from "yargs";
+import { execFpm } from "../pack/fpm.js";
 import { DynamicReporter } from "../reporters/dynamic.js";
 import { createExecutable } from "../sea/create.js";
 import { withErrors } from "./utils.js";
@@ -51,6 +52,18 @@ async function main() {
           outDir: resolve(process.cwd(), args.outDir ?? "dist"),
         });
         log(`Executable created at ${exePath}`);
+        return [] as any;
+      }),
+    )
+    .command(
+      "pack",
+      "Compile a js script to a node standalone executable",
+      (cmd) =>
+        cmd.option("out-dir", {
+          type: "string",
+        }),
+      withErrors(async (args) => {
+        await execFpm();
         return [] as any;
       }),
     )

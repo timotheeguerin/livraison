@@ -6,7 +6,7 @@ export interface WriteArOptions {
   uid?: number;
   /** Default group id for all files @default 0 */
   gid?: number;
-  /** Default model for all files @default 644 */
+  /** Default mode for all files @default 420 */
   mode?: number;
 }
 
@@ -22,7 +22,8 @@ export interface ArEntryOptions {
 }
 
 /**
- * Write an ar archive.
+ * Write an basic ar archive.
+ * Does not support extended file names.
  */
 export class ArArchiveWriter extends Readable {
   #uid: number;
@@ -36,7 +37,7 @@ export class ArArchiveWriter extends Readable {
     const resolved = {
       uid: 0,
       gid: 0,
-      mode: 644,
+      mode: 420, // 644 in octal
       ...options,
     };
 
@@ -63,7 +64,7 @@ export class ArArchiveWriter extends Readable {
       fileBuffer = Buffer.concat([fileBuffer, Buffer.from(padLF(paddedSize), "ascii")], size + paddedSize);
     }
 
-    const header = buildHeader(name, "0", stats.uid + "", stats.gid + "", stats.mode!.toString(8), size + "");
+    const header = buildHeader(name, "0", stats.uid + "", stats.gid + "", stats.mode.toString(8), size + "");
     this.#queue.push(Buffer.concat([header, fileBuffer]));
 
     return this;

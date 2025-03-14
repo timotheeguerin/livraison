@@ -1,5 +1,7 @@
 import { mkdir, rm } from "fs/promises";
 import { join } from "pathe";
+import { isCI } from "std-env";
+import which from "which";
 import { projectRoot } from "../src/utils/constants.js";
 
 const tempDir = join(projectRoot, "temp/test");
@@ -23,4 +25,12 @@ export function createTestDir(name: string): TestDir {
       return dir;
     },
   };
+}
+
+export function hasTool(name: string, platform: typeof process.platform): boolean {
+  const exists = !!which.sync(name, { nothrow: true });
+  if (!exists && isCI) {
+    throw new Error(`Tool ${name} is required for tests on ${platform} in CI`);
+  }
+  return exists;
 }

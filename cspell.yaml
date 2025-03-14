@@ -12,6 +12,7 @@ words:
   - Guerin
   - libc
   - libstdc
+  - nothrow
   - postject
   - postrm
   - prerm

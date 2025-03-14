@@ -1,7 +1,6 @@
 import { join } from "pathe";
 import { beforeAll, describe, expect, it } from "vitest";
-import which from "which";
-import { createTestDir } from "../../../test/test-utils.js";
+import { createTestDir, hasTool } from "../../../test/test-utils.js";
 import { execSuccess } from "../../utils/exec-async.js";
 import { packDebArchive } from "./pack.js";
 import type { DebOptions } from "./types.js";
@@ -56,8 +55,8 @@ esac
   ],
 };
 
-const hasDebDpkg = which.sync("dpkg-deb");
-const hasLintian = which.sync("lintian");
+const hasDebDpkg = hasTool("dpkg-deb", "linux");
+const hasLintian = hasTool("lintian", "linux");
 
 beforeAll(async () => {
   await tempDir.delete();

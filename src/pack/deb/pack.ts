@@ -1,58 +1,32 @@
 import { createWriteStream } from "node:fs";
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { finished } from "node:stream/promises";
 import tar from "tar-stream";
 import { createGzip } from "zlib";
 import { ArArchiveReader } from "../../archive/ar/read-ar.js";
 import { ArArchiveWriter } from "../../archive/ar/write-ar.js";
-import { streamTobuffer as streamToBuffer } from "../../utils/stream.js";
+import { streamToBuffer } from "../../utils/stream.js";
 import type { DebOptions } from "./types.js";
 
-export async function pack() {
-  return packDeb({
-    name: "example",
-    description: "An example package",
-    version: "1.0.0",
-    maintainer: {
-      name: "Foo bar",
-      email: `foo@example.com`,
-    },
-  });
-}
-
-export async function packDeb(options: DebOptions) {
+export async function packDebArchive(destination: string, options: DebOptions) {
   const deb = new ArArchiveWriter();
-  const out = createWriteStream("dist/foo.deb");
+  const out = createWriteStream(destination);
   const controlBuffer = await generateControl(options);
   const dataBuffer = await createDataArchive();
+
   deb.add(generateDebianBinary(), {
     name: "debian-binary",
   });
   deb.add(controlBuffer, {
     name: "control.tar.gz",
   });
-
-  deb.pipe(out);
-
   deb.add(dataBuffer, {
     name: "data.tar.gz",
   });
 
   deb.finalize();
 
-  const p = new Promise<void>((resolve, reject) => {
-    out.on("end", () => {
-      resolve();
-    });
-
-    out.on("error", (er) => {
-      reject(er);
-    });
-
-    deb.on("error", (er) => reject(er));
-  });
-
-  await p;
-  await extractDeb("dist/foo.deb");
+  await finished(deb.pipe(out));
 }
 
 async function extractDeb(file: string) {
@@ -66,20 +40,20 @@ async function extractDeb(file: string) {
 async function createDataArchive(): Promise<Buffer> {
   const archive = tar.pack();
 
-  const fileStat = await stat("dist/foo");
-  const file = await readFile("dist/foo");
-  archive.entry(
-    {
-      name: "usr/bin/foo",
-      mode: fileStat.mode,
-      size: fileStat.size,
-      uid: 0,
-      gid: 0,
-      type: "file",
-      mtime: fileStat.mtime,
-    },
-    file,
-  );
+  // const fileStat = await stat("dist/foo");
+  // const file = await readFile("dist/foo");
+  // archive.entry(
+  //   {
+  //     name: "usr/bin/foo",
+  //     mode: fileStat.mode,
+  //     size: fileStat.size,
+  //     uid: 0,
+  //     gid: 0,
+  //     type: "file",
+  //     mtime: fileStat.mtime,
+  //   },
+  //   file,
+  // );
   const bufferPromise = streamToBuffer(archive.pipe(createGzip()));
   archive.finalize();
 
@@ -113,7 +87,7 @@ function createControlFile(options: DebOptions): string {
     `Package: ${options.name}`,
     `Version: ${options.version}`,
     `Maintainer: ${options.maintainer.name} <${options.maintainer.email}>`,
-    `Architecture: arm64`,
+    `Architecture: ${options.architecture}`,
     `Description: ${options.description}`,
   ];
 

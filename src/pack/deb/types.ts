@@ -22,6 +22,8 @@ export interface DebOptions {
    */
   version: string;
 
+  architecture?: string;
+
   /**
    * Name of the application (e.g. Atom), used in the Name field of the desktop specification.
    */

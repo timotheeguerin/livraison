@@ -1,6 +1,5 @@
 import { resolve } from "pathe";
 import yargs from "yargs";
-import { pack } from "../pack/deb/pack.js";
 import { DynamicReporter } from "../reporters/dynamic.js";
 import { createExecutable } from "../sea/create.js";
 import { withErrors } from "./utils.js";
@@ -63,7 +62,7 @@ async function main() {
           type: "string",
         }),
       withErrors(async (args) => {
-        await pack();
+        // await pack();
         return [] as any;
       }),
     )

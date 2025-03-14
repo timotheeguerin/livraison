@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
 import { join, resolve } from "pathe";
 import { expect, it } from "vitest";
-import { streamTobuffer } from "../../utils/stream.js";
+import { streamToBuffer } from "../../utils/stream.js";
 import { ArArchiveReader } from "./read-ar.js";
 import { ArArchiveWriter } from "./write-ar.js";
 
@@ -10,7 +10,7 @@ it("round trip", async () => {
   writer.add(Buffer.from("hello"), { name: "hello.txt" });
   writer.add(Buffer.from("world"), { name: "world.txt" });
   writer.finalize();
-  const buffer = await streamTobuffer(writer);
+  const buffer = await streamToBuffer(writer);
   const reader = new ArArchiveReader(buffer);
   const files = reader.files;
   expect(files.length).toBe(2);
@@ -30,7 +30,7 @@ it("match archive produced by ar", async () => {
   writer.add(await readFile(join(contentDir, "a.txt")), { name: "a.txt" });
   writer.add(await readFile(join(contentDir, "b.txt")), { name: "b.txt" });
   writer.finalize();
-  const buffer = await streamTobuffer(writer);
+  const buffer = await streamToBuffer(writer);
 
   expect(buffer.toString()).toEqual((await readFile(join(simpleDir, "archive.a"))).toString());
 });

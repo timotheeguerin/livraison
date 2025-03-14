@@ -1,4 +1,4 @@
-export function streamTobuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
+export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     const _buf: Buffer[] = [];
 

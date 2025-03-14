@@ -4,7 +4,7 @@ import tar from "tar-stream";
 import { createGzip } from "zlib";
 import { ArArchiveReader } from "../../archive/ar/read-ar.js";
 import { ArArchiveWriter } from "../../archive/ar/write-ar.js";
-import { streamTobuffer } from "../../utils/stream.js";
+import { streamTobuffer as streamToBuffer } from "../../utils/stream.js";
 import type { DebOptions } from "./types.js";
 
 export async function pack() {
@@ -80,7 +80,7 @@ async function createDataArchive(): Promise<Buffer> {
     },
     file,
   );
-  const bufferPromise = streamTobuffer(archive.pipe(createGzip()));
+  const bufferPromise = streamToBuffer(archive.pipe(createGzip()));
   archive.finalize();
 
   return bufferPromise;
@@ -98,7 +98,7 @@ function generateControl(options: DebOptions): Promise<Buffer> {
     }
   }
 
-  const bufferPromise = streamTobuffer(archive.pipe(createGzip()));
+  const bufferPromise = streamToBuffer(archive.pipe(createGzip()));
   archive.finalize();
 
   return bufferPromise;

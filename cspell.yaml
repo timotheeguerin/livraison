@@ -11,4 +11,6 @@ ignorePaths:
 words:
   - Guerin
   - postject
+  - postrm
+  - prerm
   - Timothee

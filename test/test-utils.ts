@@ -29,7 +29,7 @@ export function createTestDir(name: string): TestDir {
 
 export function hasTool(name: string, platform: typeof process.platform): boolean {
   const exists = !!which.sync(name, { nothrow: true });
-  if (!exists && isCI) {
+  if (!exists && isCI && platform === process.platform) {
     throw new Error(`Tool ${name} is required for tests on ${platform} in CI`);
   }
   return exists;

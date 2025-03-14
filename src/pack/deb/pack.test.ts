@@ -1,6 +1,6 @@
 import { join } from "pathe";
 import { beforeAll, describe, expect, it } from "vitest";
-import { createTestDir, hasTool } from "../../../test/test-utils.js";
+import { createTestDir, getFixturePath, hasTool } from "../../../test/test-utils.js";
 import { execSuccess } from "../../utils/exec-async.js";
 import { packDebArchive } from "./pack.js";
 import type { DebOptions } from "./types.js";
@@ -9,7 +9,7 @@ const tempDir = createTestDir("deb/pack");
 
 let target: string;
 
-const options: DebOptions = {
+const baseOptions: DebOptions = {
   name: "test",
   version: "1.0.0",
   revision: "12",
@@ -21,6 +21,10 @@ const options: DebOptions = {
     name: "John Smith",
     email: "john.smith@example.com",
   },
+};
+
+const options: DebOptions = {
+  ...baseOptions,
   depends: ["libc6", "libstdc++6"],
   conffiles: [
     {
@@ -63,6 +67,15 @@ beforeAll(async () => {
   const dir = await tempDir.mkdir();
   target = join(dir, "test.deb");
   await packDebArchive(target, options);
+});
+
+it("create deb package with local file", async () => {
+  const dir = await tempDir.mkdir();
+  const debFile = join(dir, "test.deb");
+  await packDebArchive(debFile, {
+    ...baseOptions,
+    files: [{ archivePath: "/usr/bin/foo", localPath: getFixturePath("deb/test-exe") }],
+  });
 });
 
 describe.runIf(hasDebDpkg)("dpkg-deb verification", () => {

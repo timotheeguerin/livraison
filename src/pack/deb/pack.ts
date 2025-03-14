@@ -1,5 +1,5 @@
-import { createWriteStream } from "node:fs";
-import { readFile, stat } from "node:fs/promises";
+import { createReadStream, createWriteStream } from "node:fs";
+import { stat } from "node:fs/promises";
 import { finished } from "node:stream/promises";
 import tar from "tar-stream";
 import { createGzip } from "zlib";
@@ -67,33 +67,19 @@ async function createDataArchive(options: DebOptions): Promise<Buffer> {
       );
     } else {
       const fileStat = await stat(file.localPath);
-      const content = await readFile(file.localPath);
-      archive.entry(
-        {
+      const content = createReadStream(file.localPath);
+      content.pipe(
+        archive.entry({
           type: "file",
           name: archivePath,
           mode: fileStat.mode,
           size: fileStat.size,
           mtime: fileStat.mtime,
-        },
-        content,
+        }),
       );
+      await finished(content);
     }
   }
-  // const fileStat = await stat("dist/foo");
-  // const file = await readFile("dist/foo");
-  // archive.entry(
-  //   {
-  //     name: "usr/bin/foo",
-  //     mode: fileStat.mode,
-  //     size: fileStat.size,
-  //     uid: 0,
-  //     gid: 0,
-  //     type: "file",
-  //     mtime: fileStat.mtime,
-  //   },
-  //   file,
-  // );
 
   const bufferPromise = streamToBuffer(archive.pipe(createGzip()));
   archive.finalize();

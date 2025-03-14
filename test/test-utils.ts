@@ -1,5 +1,5 @@
 import { mkdir, rm } from "fs/promises";
-import { join } from "pathe";
+import { join, resolve } from "pathe";
 import { isCI } from "std-env";
 import which from "which";
 import { projectRoot } from "../src/utils/constants.js";
@@ -33,4 +33,9 @@ export function hasTool(name: string, platform: typeof process.platform): boolea
     throw new Error(`Tool ${name} is required for tests on ${platform} in CI`);
   }
   return exists;
+}
+
+const fixtureDir = resolve(import.meta.dirname, "fixtures");
+export function getFixturePath(name: string) {
+  return join(fixtureDir, name);
 }

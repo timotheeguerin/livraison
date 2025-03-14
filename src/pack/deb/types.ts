@@ -17,31 +17,32 @@ export interface DebOptions {
   description: string;
 
   /**
+   * Maintainer of the package, used in the Maintainer field of the control specification.
+   */
+  maintainer: {
+    name: string;
+    email: string;
+  };
+
+  /**
+   * https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-architecture
+   */
+  architecture?: string;
+
+  /**
    * Version number of the package, used in the Version field of the control specification.
+   * Only the upstream version part of the whole debian package version.
    * https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-version
    */
   version: string;
 
-  architecture?: string;
+  /**
+   * This is a single (generally small) unsigned integer. It may be omitted, in which case zero is assumed.
+   */
+  epoch?: number;
 
   /**
-   * Name of the application (e.g. Atom), used in the Name field of the desktop specification.
-   */
-  productName?: string;
-  /**
-   * Generic name of the application (e.g. Text Editor), used in the GenericName field of the
-   * desktop specification.
-   */
-  genericName?: string;
-
-  /**
-   * Long description of the application, used in the Description field of the control
-   * specification.
-   */
-  productDescription?: string;
-
-  /**
-   * Revision number of the package, used in the Version field of the control specification.
+   * This part of the version number specifies the version of the Debian package based on the upstream version.
    */
   revision?: string;
   /**
@@ -119,7 +120,7 @@ export interface DebOptions {
   /**
    * How important is it to have the package installed.
    *
-   * You can read more: https://www.debian.org/doc/debian-policy/#priorities
+   * You can read more: https://www.debian.org/doc/debian-policy/ch-archive.html#priorities
    */
   priority?: "required" | "important" | "standard" | "optional";
   /**
@@ -147,28 +148,17 @@ export interface DebOptions {
    * Relationships to other packages, used in the Pre-Depends field of the control specification.
    */
   preDepends?: string[];
-  /**
-   * Maintainer of the package, used in the Maintainer field of the control specification.
-   */
-  maintainer: {
-    name: string;
-    email: string;
-  };
+
   /**
    * URL of the homepage for the package, used in the Homepage field of the control specification.
    */
   homepage?: string;
-  /**
-   * Relative path to the executable that will act as binary for the application, used in the Exec
-   * field of the desktop specification.
-   *
-   * Defaults to options.name
-   */
-  bin?: string;
+
   /**
    * Path to a single image that will act as icon for the application:
    */
   icon?: string;
+
   /**
    * Categories in which the application should be shown in a menu, used in the Categories field
    * of the desktop specification.
@@ -192,15 +182,7 @@ export interface DebOptions {
     | "System"
     | "Utility"
   )[];
-  /**
-   * MIME types the application is able to open, used in the MimeType field of the desktop
-   * specification.
-   */
-  mimeType?: string[];
-  /**
-   * You can use these to quieten lintian.
-   */
-  lintianOverrides?: string[];
+
   /**
    * Path to package maintainer scripts with their corresponding name, used in the installation
    * procedure.
@@ -208,14 +190,36 @@ export interface DebOptions {
    * Read More:
    * https://www.debian.org/doc/debian-policy/#package-maintainer-scripts-and-installation-procedure
    */
-  scripts?: {
-    preinst?: string;
-    postinst?: string;
-    prerm?: string;
-    postrm?: string;
+  readonly scripts?: {
+    readonly preinst?: string;
+    readonly postinst?: string;
+    readonly prerm?: string;
+    readonly postrm?: string;
   };
-  /**
-   * The absolute path to a custom template for the generated FreeDesktop.org desktop entry file.
-   */
-  desktopTemplate?: string;
+
+  conffiles?: DataFile[];
+  files?: DataFile[];
+}
+
+export type DataFile = LocalFile | InMemoryFile;
+
+/** archivePath=localPath */
+export interface LocalFile {
+  /** Target path in the archive */
+  readonly archivePath: string;
+  /** Path in the file system */
+  readonly localPath: string;
+}
+
+/** archivePath=localPath */
+export interface InMemoryFile {
+  /** Target path in the archive */
+  readonly archivePath: string;
+  /** Content of the file */
+  readonly content: string | Buffer;
+
+  readonly stats?: {
+    /** File mode */
+    readonly mode: number;
+  };
 }

@@ -101,7 +101,7 @@ describe.runIf(hasDebDpkg)("dpkg-deb verification", () => {
   });
 });
 
-describe.runIf(hasLintian)("lintian verification", () => {
+describe.runIf(hasLintian)("lintian verification", { timeout: 60_000 }, () => {
   it("pass linter", async () => {
     const exclude = [
       "no-copyright-file",

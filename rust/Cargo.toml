@@ -15,6 +15,10 @@ doc = false
 
 [dependencies]
 ar = "0.9.0"
+quick-error = "2.0.1"
+rand = "0.9.0"
+tar = "0.4.44"
+zopfli = "0.8.1"
 
 [dev-dependencies]
 assertables = "9.5.1"

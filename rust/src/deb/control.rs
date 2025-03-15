@@ -1,6 +1,5 @@
-#[non_exhaustive]
 /// Cargo deb configuration read from the manifest and cargo metadata
-#[derive(Default, Debug)]
+#[derive(Default, Clone, Debug)]
 pub struct Control {
     /// The package name
     pub package: String,
@@ -29,7 +28,7 @@ pub struct Control {
     pub depends: Option<Vec<String>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Priority {
     Required,
     Important,
@@ -38,7 +37,7 @@ pub enum Priority {
 }
 
 impl Priority {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             Priority::Required => "required",
             Priority::Important => "important",
@@ -48,7 +47,7 @@ impl Priority {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct User {
     pub name: String,
     pub email: String,

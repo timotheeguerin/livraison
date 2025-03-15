@@ -10,5 +10,10 @@ ignorePaths:
   - pnpm-lock.yaml
 words:
   - Guerin
+  - libc
+  - libstdc
+  - nothrow
   - postject
+  - postrm
+  - prerm
   - Timothee

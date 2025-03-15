@@ -1,27 +1,20 @@
-import { mkdir, rm } from "fs/promises";
 import { join } from "pathe";
 import { beforeAll, expect, it } from "vitest";
 import { TestReporter } from "../../test/test-reporter.js";
+import { createTestDir } from "../../test/test-utils.js";
 import { projectRoot } from "../utils/constants.js";
 import { execAsync } from "../utils/exec-async.js";
 import { isPathAccessible } from "../utils/fs-utils.js";
 import { createExecutable } from "./create.js";
 
-const tempDir = join(projectRoot, "temp/test");
-
-async function mkTestDir() {
-  const r = (Math.random() + 1).toString(36).substring(7);
-  const testTempDir = join(tempDir, r);
-  await mkdir(testTempDir, { recursive: true });
-  return testTempDir;
-}
+const tempDir = createTestDir("ar/create");
 
 beforeAll(async () => {
-  await rm(tempDir, { force: true, recursive: true });
+  await tempDir.delete();
 });
 
 it("create basic executable", { timeout: 60_000 }, async () => {
-  const dir = await mkTestDir();
+  const dir = await tempDir.mkdir();
   const exePath = await createExecutable(new TestReporter(), {
     entrypoint: join(projectRoot, "test/fixtures/simple-app.js"),
     name: "test",

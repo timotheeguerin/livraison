@@ -54,6 +54,18 @@ async function main() {
         return [] as any;
       }),
     )
+    .command(
+      "pack",
+      "Compile a js script to a node standalone executable",
+      (cmd) =>
+        cmd.option("out-dir", {
+          type: "string",
+        }),
+      withErrors(async (args) => {
+        // await pack();
+        return [] as any;
+      }),
+    )
     .demandCommand(1, "You need at least one command before moving on")
     .parse();
 }

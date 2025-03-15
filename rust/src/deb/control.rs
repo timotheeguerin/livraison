@@ -188,6 +188,6 @@ mod tests {
         };
 
         let result = control.write();
-        assert_contains!(result, "Depends: libfoo > 1,libbar\n");
+        assert_contains!(result, "Depends: libfoo > 1, libbar\n");
     }
 }

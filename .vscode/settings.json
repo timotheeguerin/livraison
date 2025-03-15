@@ -10,4 +10,9 @@
   },
   "files.eol": "\n",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+  "rust-analyzer.inlayHints.typeHints.enable": false,
+  "rust-analyzer.inlayHints.parameterHints.enable": false
 }

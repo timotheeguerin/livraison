@@ -10,6 +10,7 @@ ignorePaths:
   - pnpm-lock.yaml
 words:
   - Guerin
+  - indoc
   - libc
   - libstdc
   - nothrow

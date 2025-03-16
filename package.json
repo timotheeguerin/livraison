@@ -22,7 +22,7 @@
     "test:watch": "vitest -w",
     "lint": "eslint .",
     "lint:sp": "syncpack lint",
-    "format": "prettier . --write && syncpack format",
+    "format": "prettier . --write && syncpack format && cargo fmt",
     "format:check": "prettier . --check"
   },
   "dependencies": {

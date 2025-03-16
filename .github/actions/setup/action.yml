@@ -11,14 +11,14 @@ runs:
 
   steps:
     # Node
+    - name: Install pnpm
+      uses: pnpm/action-setup@v3
+
     - name: Set node version to ${{ inputs.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: pnpm
-
-    - name: Install pnpm
-      uses: pnpm/action-setup@v3
 
     # Rust
     - name: Install rust toolchain

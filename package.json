@@ -20,7 +20,7 @@
     "clean": "rimraf dist/ .temp/",
     "test": "vitest run",
     "test:watch": "vitest -w",
-    "lint": "eslint .",
+    "lint": "eslint . && cargo clippy",
     "lint:sp": "syncpack lint",
     "format": "prettier . --write && syncpack format && cargo fmt",
     "format:check": "prettier . --check"

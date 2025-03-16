@@ -15,6 +15,7 @@ doc = false
 
 [dependencies]
 ar = "0.9.0"
+clap = { version = "4.5.32", features = ["derive"] }
 quick-error = "2.0.1"
 rand = "0.9.0"
 tar = "0.4.44"

@@ -24,4 +24,4 @@ zopfli = "0.8.1"
 assertables = "9.5.1"
 indoc = "2.0.6"
 pretty_assertions = "1.4.1"
-
+test_macros  = { version = "0.1.0", path = "../test_macros", default-features = false }

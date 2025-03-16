@@ -1,5 +1,6 @@
 use indoc::indoc;
 use std::{fs, path::PathBuf, process::Command, sync::LazyLock};
+use test_macros::require_command;
 
 use livraison::deb::{
     control::{Control, Priority, User},
@@ -49,6 +50,7 @@ fn ask_dpkg_deb_for_field(target: &str, field: &str) -> String {
     String::from_utf8(output.stdout).unwrap().trim().to_string()
 }
 
+#[require_command("dpkg-deb2")]
 #[test]
 fn check_dpkg_retrieve_information() {
     let control = Control {
@@ -106,6 +108,7 @@ fn check_dpkg_retrieve_information() {
     );
 }
 
+#[require_command("lintian")]
 #[test]
 fn check_pass_lintian() {
     let control = Control {

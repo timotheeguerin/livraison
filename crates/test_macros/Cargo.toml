@@ -1,0 +1,16 @@
+[package]
+name = "test_macros"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "test_macros"
+proc-macro = true
+path = "src/lib.rs"
+doc = true
+
+[dependencies]
+proc-macro2 = "1.0.94"
+syn = {version = "2.0.100", features = ["full"]}
+quote = "1.0.40"
+which = "7.0.2"

@@ -26,14 +26,14 @@ pub fn require_command(args: TokenStream, input: TokenStream) -> TokenStream {
     let fn_name = &input_fn.sig.ident;
     let fn_body = &input_fn.block;
 
-    let command_exists = !which::which(&command_str).is_err();
+    let command_exists = which::which(&command_str).is_ok();
     eprintln!(
         "Skipping test '{}', required command '{}' found: {}",
         fn_name, command_str, command_exists
     );
 
     if command_exists {
-        return input;
+        input
     } else {
         let output = quote! {
             #[test]

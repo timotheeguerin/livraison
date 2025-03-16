@@ -75,7 +75,7 @@ impl Control {
             out.push(format!("Depends: {}", self.format_depends(depends)));
         }
 
-        return out.join("\n") + "\n";
+        out.join("\n") + "\n"
     }
 
     fn write_version(&self) -> String {
@@ -104,11 +104,11 @@ impl Control {
     }
 
     fn format_user(&self, user: &User) -> String {
-        return format!("{} <{}>", user.name, user.email);
+        format!("{} <{}>", user.name, user.email)
     }
 
-    fn format_depends(&self, items: &Vec<String>) -> String {
-        return items.join(", ");
+    fn format_depends(&self, items: &[String]) -> String {
+        items.join(", ")
     }
 }
 

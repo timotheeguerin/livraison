@@ -12,7 +12,7 @@ impl<W: Write> ArchiveBuilder<W> {
         let ar_builder = Builder::new(writer);
 
         let mut ar = ArchiveBuilder { ar_builder };
-        ar.add_file("debian-binary".into(), b"2.0\n")?;
+        ar.add_file("debian-binary2", b"2.0\n")?;
         Ok(ar)
     }
 

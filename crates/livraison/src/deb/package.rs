@@ -46,14 +46,14 @@ impl DebPackage {
 
         tar_ar.add_file_from_bytes("control", self.control.write().as_bytes())?;
         if let Some(conf_files) = &self.conf_files {
-            let content = self.create_conf_files_content(&conf_files);
+            let content = self.create_conf_files_content(conf_files);
             tar_ar.add_file_from_bytes("conffiles", content.as_bytes())?;
         }
         tar_ar.finish()?;
         Ok(tar_ar.into_inner().unwrap())
     }
 
-    fn create_conf_files_content(&self, conf_files: &Vec<DataFile>) -> String {
+    fn create_conf_files_content(&self, conf_files: &[DataFile]) -> String {
         conf_files
             .iter()
             .map(|file| match file {

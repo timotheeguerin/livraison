@@ -53,7 +53,7 @@ impl<W: Write> EnhancedTarBuilder<W> {
         stats: &FileStats,
     ) -> LivraisonResult<()> {
         let dest_path = Path::new(dest_path.trim_start_matches('/'));
-        self.add_parent_dirs(&dest_path)?;
+        self.add_parent_dirs(dest_path)?;
 
         let mut header = tar::Header::new_gnu();
         header.set_mtime(self.mtime);
@@ -66,7 +66,7 @@ impl<W: Write> EnhancedTarBuilder<W> {
 
     pub fn add_local_file(&mut self, dest_path: &str, local_path: &str) -> LivraisonResult<()> {
         let dest_path = Path::new(dest_path.trim_start_matches('/'));
-        self.add_parent_dirs(&dest_path)?;
+        self.add_parent_dirs(dest_path)?;
 
         let mut file = File::create("foo.tar")?;
         self.builder.append_file(local_path, &mut file)?;

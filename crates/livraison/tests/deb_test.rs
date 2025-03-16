@@ -50,7 +50,7 @@ fn ask_dpkg_deb_for_field(target: &str, field: &str) -> String {
     String::from_utf8(output.stdout).unwrap().trim().to_string()
 }
 
-#[require_command("dpkg-deb2")]
+#[require_command("dpkg-deb")]
 #[test]
 fn check_dpkg_retrieve_information() {
     let control = Control {

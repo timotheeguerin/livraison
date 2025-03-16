@@ -9,6 +9,8 @@ ignorePaths:
   - "**/dist/**"
   - pnpm-lock.yaml
 words:
+  - cksum
+  - esac
   - Guerin
   - indoc
   - libc

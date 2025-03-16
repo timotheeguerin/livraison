@@ -1,8 +1,9 @@
+use indoc::indoc;
 use std::{fs, path::PathBuf, process::Command, sync::LazyLock};
 
 use livraison::deb::{
     control::{Control, Priority, User},
-    deb_package::DebPackage,
+    package::{DataFile, DebPackage, FileStats, InMemoryFile},
 };
 
 struct TestTempDir {
@@ -23,11 +24,8 @@ impl TestTempDir {
         Ok(())
     }
 
-    pub fn mkdir(&self) -> std::io::Result<PathBuf> {
-        let r: String = (0..7)
-            .map(|_| (0x61u8 + (rand::random::<u8>() % 26)) as char)
-            .collect();
-        let dir = self.base_dir.join(r);
+    pub fn mkdir(&self, name: &str) -> std::io::Result<PathBuf> {
+        let dir = self.base_dir.join(name);
         fs::create_dir_all(&dir)?;
         Ok(dir)
     }
@@ -69,11 +67,13 @@ fn check_dpkg_retrieve_information() {
         ..Default::default()
     };
 
-    let dir = TESTDIR.mkdir().expect("Worked");
+    let dir = TESTDIR.mkdir("dpkg-deb").expect("Worked");
     let target_path_buf = dir.join("test.deb");
 
     let pkg = DebPackage {
         control: control.clone(),
+        files: None,
+        conf_files: None,
     };
     let file = fs::File::create(&target_path_buf).unwrap();
     pkg.write(file).unwrap();
@@ -104,4 +104,81 @@ fn check_dpkg_retrieve_information() {
         ask_dpkg_deb_for_field(&target, "Section"),
         control.section.unwrap(),
     );
+}
+
+#[test]
+fn check_pass_lintian() {
+    let control = Control {
+        package: "test".to_string(),
+        version: "1.0.0".to_string(),
+        revision: Some("12".to_string()),
+        description: "Great test package\nWith nice description".to_string(),
+        architecture: "all".to_string(),
+        priority: Some(Priority::Optional),
+        section: Some("misc".to_string()),
+        maintainer: User {
+            name: "John Smith".to_string(),
+            email: "john.smith@example.com".to_string(),
+        },
+        depends: Some(vec!["libc6".to_string(), "libstdc++6".to_string()]),
+        ..Default::default()
+    };
+
+    let dir = TESTDIR.mkdir("lintian").expect("Worked");
+    let target_path_buf = dir.join("test.deb");
+
+    let file = InMemoryFile {
+        dest: "/etc/init.d/test".to_string(),
+        stats: FileStats { mode: 0o755 },
+        content: indoc! {"
+                #! /bin/sh
+                do_start() {
+                :
+                }
+                
+                do_stop() {
+                :
+                }
+                
+                do_restart() {
+                :
+                }
+                
+                do_reload() {
+                :
+                }
+                
+                case $1 in
+                start) do_start ;;
+                stop) do_stop ;;
+                force-reload) do_reload ;;
+                esac    
+                "}
+        .to_string(),
+    };
+    let pkg = DebPackage {
+        control: control.clone(),
+        files: None,
+        conf_files: Some(vec![DataFile::InMemoryFile(file)]),
+    };
+    let file = fs::File::create(&target_path_buf).unwrap();
+    pkg.write(file).expect("Works");
+
+    let target = target_path_buf.to_str().unwrap();
+
+    let exclude = vec![
+        "no-copyright-file",
+        "no-changelog",
+        "script-in-etc-init.d-not-registered-via-update-rc.d",
+        "missing-systemd-service-for-init.d-script",
+    ];
+    let output = exec(
+        "lintian",
+        &["-i", target, "--suppress-tags", &exclude.join(",")],
+    );
+    if output.status.code().unwrap() != 0 {
+        println!("{}", String::from_utf8(output.stdout).unwrap());
+        println!("{}", String::from_utf8(output.stderr).unwrap());
+        assert!(false, "Lintian failed");
+    }
 }

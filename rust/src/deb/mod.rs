@@ -1,3 +1,4 @@
 pub mod builder;
 pub mod control;
-pub mod deb_package;
+pub mod package;
+pub mod tar;

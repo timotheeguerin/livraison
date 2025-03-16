@@ -79,11 +79,11 @@ it("create deb package with local file", async () => {
 });
 
 describe.runIf(hasDebDpkg)("dpkg-deb verification", () => {
-  // beforeAll(async () => {
-  //   const { stdout } = await execSuccess("dpkg-deb", ["-f", target]);
-  //   console.log("Created deb package at", target);
-  //   console.log(stdout.toString().trim());
-  // });
+  beforeAll(async () => {
+    const { stdout } = await execSuccess("dpkg-deb", ["-f", target]);
+    console.log("Created deb package at", target);
+    console.log(stdout.toString().trim());
+  });
   async function askDpkgDebForField(field: string) {
     const { stdout } = await execSuccess("dpkg-deb", ["-f", target, field]);
     return stdout.toString().trim();

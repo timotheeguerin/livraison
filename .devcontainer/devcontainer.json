@@ -25,10 +25,12 @@
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
-        "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
         "streetsidesoftware.code-spell-checker",
-        "vitest.explorer"
+        "tamasfe.even-better-toml",
+        "rust-lang.rust-analyzer"
       ]
     }
   }

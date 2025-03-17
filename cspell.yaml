@@ -9,7 +9,11 @@ ignorePaths:
   - "**/dist/**"
   - pnpm-lock.yaml
 words:
+  - cksum
+  - clippy
+  - esac
   - Guerin
+  - indoc
   - libc
   - libstdc
   - nothrow
@@ -17,3 +21,4 @@ words:
   - postrm
   - prerm
   - Timothee
+  - zopfli

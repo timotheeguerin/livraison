@@ -10,6 +10,7 @@ runs:
   using: composite
 
   steps:
+    # Node
     - name: Install pnpm
       uses: pnpm/action-setup@v3
 
@@ -18,3 +19,11 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: pnpm
+
+    # Rust
+    - name: Install rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true

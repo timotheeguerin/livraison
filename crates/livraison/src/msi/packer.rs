@@ -207,7 +207,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         if let Some(binaries) = &self.options.binaries {
             for binary in binaries {
                 resources.push(ResourceInfo {
-                    source_path: PathBuf::from(&binary.name),
+                    source_path: PathBuf::from(&binary.path),
                     dest_path: PathBuf::from(&binary.name),
                     filename: binary.name.clone(),
                     size: 0,

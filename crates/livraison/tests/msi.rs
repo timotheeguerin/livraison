@@ -6,7 +6,7 @@ use std::{
 mod test_utils;
 use test_utils::TestTempDir;
 
-use livraison::msi::packer::{MsiInstallerOptions, pack};
+use livraison::msi::packer::{BinaryFile, MsiInstallerOptions, pack};
 
 pub static TESTDIR: LazyLock<TestTempDir> = LazyLock::new(|| {
     let dir = TestTempDir::new("msi");
@@ -15,7 +15,8 @@ pub static TESTDIR: LazyLock<TestTempDir> = LazyLock::new(|| {
 });
 
 #[test]
-fn check_dpkg_retrieve_information() {
+fn basic_msi() {
+    dbg!("FIX", fixture_path("msi/test-bin.txt"));
     let options = MsiInstallerOptions {
         name: "test".to_string(),
         version: "1.0.0".to_string(),
@@ -28,6 +29,10 @@ fn check_dpkg_retrieve_information() {
                 .into_string()
                 .unwrap(),
         ),
+        binaries: Some(vec![BinaryFile {
+            name: "test_bin.txt".to_string(),
+            path: fixture_path("msi/test-bin.txt"),
+        }]),
         ..Default::default()
     };
 
@@ -35,4 +40,10 @@ fn check_dpkg_retrieve_information() {
     let msi_path = dir.join("basic.msi");
 
     pack(options.clone(), &msi_path).unwrap();
+}
+
+fn fixture_path(path: &str) -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures")
+        .join(path)
 }

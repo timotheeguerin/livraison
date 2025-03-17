@@ -1,6 +1,7 @@
 use std::{
+    ffi::OsStr,
     fs,
-    io::{Read, Seek, Write},
+    io::{self, Read, Seek, Write},
     path::Path,
 };
 
@@ -26,6 +27,9 @@ pub struct MsiInstallerOptions {
 
     /// Author name
     pub author: String,
+
+    /// Icon path
+    pub icon: Option<String>,
 }
 
 pub struct MsiInstallerPacker<W: Read + Write + Seek> {
@@ -63,6 +67,25 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     pub fn write(&mut self) -> LivraisonResult<()> {
         self.set_summary_info();
         self.create_property_table()?;
+
+        if let Some(icon) = &self.options.icon {
+            // Create app icon:
+            self.package.create_table(
+                "Icon",
+                vec![
+                    msi::Column::build("Name").primary_key().id_string(72),
+                    msi::Column::build("Data").binary(),
+                ],
+            )?;
+            let icon_name = format!("{}.ico", self.options.name);
+            let stream_name = format!("Icon.{icon_name}");
+            let mut stream = self.package.write_stream(&stream_name)?;
+            create_app_icon(&mut stream, Path::new(&icon))?;
+            self.package.insert_rows(
+                msi::Insert::into("Icon")
+                    .row(vec![msi::Value::Str(icon_name), msi::Value::from("Name")]),
+            )?;
+        }
 
         self.package.flush()?;
         Ok(())
@@ -138,4 +161,13 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
 
 fn compute_bundle_id(bundle_name: &str) -> uuid::Uuid {
     Uuid::new_v5(&UUID_NAMESPACE, bundle_name.as_bytes())
+}
+
+fn create_app_icon<W: Write>(writer: &mut W, icon_path: &Path) -> LivraisonResult<()> {
+    if icon_path.extension() == Some(OsStr::new("ico")) {
+        io::copy(&mut fs::File::open(icon_path)?, writer)?;
+        return Ok(());
+    }
+
+    Ok(())
 }

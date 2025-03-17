@@ -16,9 +16,13 @@ doc = false
 [dependencies]
 ar = "0.9.0"
 clap = { version = "4.5.32", features = ["derive"] }
+msi = "0.8.0"
 quick-error = "2.0.1"
 rand = "0.9.0"
 tar = "0.4.44"
+uuid = { version= "1.16.0", features = [
+    "v4", "v5"
+]}
 zopfli = "0.8.1"
 
 [dev-dependencies]

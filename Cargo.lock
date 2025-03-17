@@ -320,6 +320,7 @@ dependencies = [
  "rand",
  "tar",
  "test_macros",
+ "time",
  "uuid",
  "zopfli",
 ]

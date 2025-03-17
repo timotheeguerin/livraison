@@ -71,6 +71,8 @@ pub fn pack(options: MsiInstallerOptions, dest: &Path) -> LivraisonResult<()> {
     let mut packer = MsiInstallerPacker::new(file, options)?;
 
     packer.write()?;
+    let mut package = msi::open(dest).expect("open package");
+    super::debug::print_all(&mut package);
     Ok(())
 }
 
@@ -175,27 +177,28 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
                 .row(vec![
                     msi::Value::from("ProductVersion"),
                     msi::Value::from(self.options.version.clone()),
-                ]), // .row(vec![
-                    //     msi::Value::from("DefaultUIFont"),
-                    //     msi::Value::from("DefaultFont"),
-                    // ])
-                    // .row(vec![msi::Value::from("Mode"), msi::Value::from("Install")])
-                    // .row(vec![
-                    //     msi::Value::from("Text_action"),
-                    //     msi::Value::from("installation"),
-                    // ])
-                    // .row(vec![
-                    //     msi::Value::from("Text_agent"),
-                    //     msi::Value::from("installer"),
-                    // ])
-                    // .row(vec![
-                    //     msi::Value::from("Text_Doing"),
-                    //     msi::Value::from("installing"),
-                    // ])
-                    // .row(vec![
-                    //     msi::Value::from("Text_done"),
-                    //     msi::Value::from("installed"),
-                    // ]),
+                ])
+                .row(vec![
+                    msi::Value::from("DefaultUIFont"),
+                    msi::Value::from("DefaultFont"),
+                ])
+                .row(vec![msi::Value::from("Mode"), msi::Value::from("Install")])
+                .row(vec![
+                    msi::Value::from("Text_action"),
+                    msi::Value::from("installation"),
+                ])
+                .row(vec![
+                    msi::Value::from("Text_agent"),
+                    msi::Value::from("installer"),
+                ])
+                .row(vec![
+                    msi::Value::from("Text_Doing"),
+                    msi::Value::from("installing"),
+                ])
+                .row(vec![
+                    msi::Value::from("Text_done"),
+                    msi::Value::from("installed"),
+                ]),
         )?;
         Ok(())
     }

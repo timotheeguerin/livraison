@@ -11,17 +11,31 @@ pub fn print_all<F: Read + Seek>(package: &mut msi::Package<F>) {
     println!("--------------------------------------------------------------------------");
     print_summary_info(package);
 
-    println!("--------------------------------------------------------------------------");
-    println!("           FeatureComponents ");
-    println!("--------------------------------------------------------------------------");
-    print_table_description(package.get_table("FeatureComponents").unwrap());
-    print_table_contents(package, "FeatureComponents");
+    print_table(package, "Property");
+    print_table(package, "Directory");
+    print_table(package, "Feature");
+    print_table(package, "FeatureComponents");
+    print_table(package, "Component");
+    print_table(package, "Media");
+    print_table(package, "File");
+    print_table(package, "InstallExecuteSequence");
+    print_table(package, "InstallUISequence");
+    print_table(package, "Dialog");
+    print_table(package, "Control");
+    print_table(package, "ControlEvent");
+    print_table(package, "EventMapping");
+    print_table(package, "TextStyle");
+    print_table(package, "Icon");
+}
 
+pub fn print_table<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
+    println!();
     println!("--------------------------------------------------------------------------");
-    println!("           Property ");
+    println!("        Table:   {table_name} ");
     println!("--------------------------------------------------------------------------");
-    print_table_description(package.get_table("Property").unwrap());
-    print_table_contents(package, "Property");
+    print_table_description(package.get_table(table_name).expect("Table not found"));
+    println!();
+    print_table_contents(package, table_name);
 }
 
 pub fn print_summary_info<F>(package: &msi::Package<F>) {

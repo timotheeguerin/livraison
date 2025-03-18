@@ -89,7 +89,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     pub fn write(&mut self) -> LivraisonResult<()> {
+        dbg!(self.package.database_codepage());
+        dbg!(self.package.database_codepage().id());
+
         self.set_summary_info();
+        self.package.flush()?;
         self.create_property_table()?;
 
         if let Some(icon) = &self.options.icon {
@@ -138,13 +142,16 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     // Populates the summary metadata for the package from the bundle settings.
     fn set_summary_info(&mut self) {
         let summary_info = self.package.summary_info_mut();
+        summary_info.set_codepage(msi::CodePage::Iso88591);
         summary_info.set_creation_time_to_now();
+        summary_info.set_arch("x64");
+        summary_info.set_languages(&[msi::Language::from_tag("en-US")]);
         summary_info.set_subject(&self.options.name);
         summary_info.set_uuid(self.upgrade_code);
         summary_info.set_comments(&self.options.description);
         summary_info.set_author(&self.options.author);
         summary_info.set_creating_application("livraison".to_string());
-        summary_info.set_word_count(2);
+        summary_info.set_word_count(10);
     }
 
     // Creates and populates the `Property` database table for the package.
@@ -153,7 +160,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             "Property",
             vec![
                 msi::Column::build("Property").primary_key().id_string(72),
-                msi::Column::build("Value").text_string(0),
+                msi::Column::build("Value").localizable().text_string(0),
             ],
         )?;
         self.package.insert_rows(

@@ -4,6 +4,7 @@ use std::{
     sync::LazyLock,
 };
 mod test_utils;
+use msi::{Column, ColumnType, Package, PackageType};
 use test_utils::TestTempDir;
 
 use livraison::msi::packer::{BinaryFile, MsiInstallerOptions, pack};

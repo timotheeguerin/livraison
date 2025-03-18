@@ -1,49 +1,47 @@
-use std::{
-    cmp,
-    io::{Read, Seek},
-};
-
+use std::cmp;
+use std::io::{Read, Seek};
 use time::OffsetDateTime;
 
-pub fn print_all<F: Read + Seek>(package: &mut msi::Package<F>) {
-    println!("--------------------------------------------------------------------------");
-    println!("           Print summary info ");
-    println!("--------------------------------------------------------------------------");
-    print_summary_info(package);
-
-    print_table(package, "Property");
-    // print_table(package, "Directory");
-    // print_table(package, "Feature");
-    // print_table(package, "FeatureComponents");
-    // print_table(package, "Component");
-    // print_table(package, "Media");
-    // print_table(package, "File");
-    // print_table(package, "InstallExecuteSequence");
-    // print_table(package, "InstallUISequence");
-    // print_table(package, "Dialog");
-    // print_table(package, "Control");
-    // print_table(package, "ControlEvent");
-    // print_table(package, "EventMapping");
-    // print_table(package, "TextStyle");
-    // print_table(package, "Icon");
-}
-
-pub fn print_table<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
-    println!();
-    println!("--------------------------------------------------------------------------");
-    println!("        Table:   {table_name} ");
-    println!("--------------------------------------------------------------------------");
-
-    if let Some(table) = package.get_table(table_name) {
-        print_table_description(table);
-        println!();
-        print_table_contents(package, table_name);
-    } else {
-        println!("  Missing table")
+fn pad(mut string: String, fill: char, width: usize) -> String {
+    while string.len() < width {
+        string.push(fill);
     }
+    string
 }
 
-pub fn print_summary_info<F>(package: &msi::Package<F>) {
+use clap::{Args, Parser, Subcommand, arg, command};
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct AppArgs {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+#[derive(Debug, Subcommand)]
+enum Command {
+    #[command(visible_alias = "suminfo")]
+    Summary {
+        path: String,
+    },
+    Tables {
+        path: String,
+    },
+    Describe {
+        path: String,
+        table: String,
+    },
+    Export {
+        path: String,
+        table: String,
+    },
+    Streams {
+        path: String,
+    },
+}
+
+fn print_summary_info<F>(package: &msi::Package<F>) {
     println!("Package type: {:?}", package.package_type());
     let is_signed = package.has_digital_signature();
     let summary_info = package.summary_info();
@@ -84,26 +82,20 @@ pub fn print_summary_info<F>(package: &msi::Package<F>) {
     }
 }
 
-fn print_table_description(table: &msi::Table) {
-    println!("{}", table.name());
-    for column in table.columns() {
-        println!(
-            "  {:<16} {}{}{}{} {}",
-            column.name(),
-            if column.is_primary_key() { '*' } else { ' ' },
-            column.coltype(),
-            if column.is_nullable() { "?" } else { "" },
-            if column.is_localizable() {
-                " (loc)"
-            } else {
-                ""
-            },
-            if let Some(cat) = column.category() {
-                cat.to_string()
-            } else {
-                "".to_string()
-            },
-        );
+fn print_table_description<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
+    if let Some(table) = package.get_table(table_name) {
+        println!("{}", table.name());
+        for column in table.columns() {
+            println!(
+                "  {:<16} {}{}{}",
+                column.name(),
+                if column.is_primary_key() { '*' } else { ' ' },
+                column.coltype(),
+                if column.is_nullable() { "?" } else { "" }
+            );
+        }
+    } else {
+        println!("No table {table_name:?} exists in the database.");
     }
 }
 
@@ -163,9 +155,33 @@ fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table_nam
     }
 }
 
-fn pad(mut string: String, fill: char, width: usize) -> String {
-    while string.len() < width {
-        string.push(fill);
+fn main() {
+    let args = AppArgs::parse();
+
+    match args.command {
+        Command::Summary { path } => {
+            let package = msi::open(path).expect("open package");
+            print_summary_info(&package);
+        }
+        Command::Tables { path } => {
+            let package = msi::open(path).expect("open package");
+            for table in package.tables() {
+                println!("{}", table.name());
+            }
+        }
+        Command::Describe { path, table } => {
+            let mut package = msi::open(path).expect("open package");
+            print_table_description(&mut package, &table);
+        }
+        Command::Export { path, table } => {
+            let mut package = msi::open(path).expect("open package");
+            print_table_contents(&mut package, &table)
+        }
+        Command::Streams { path } => {
+            let package = msi::open(path).expect("open package");
+            for stream_name in package.streams() {
+                println!("{stream_name}");
+            }
+        }
     }
-    string
 }

@@ -3,33 +3,34 @@ use std::io::{Read, Seek};
 use super::error::MsiDataBaseError;
 
 pub trait TableRow {
+    fn table_name() -> &'static str;
     fn from_row(row: &RowView) -> Result<Self, MsiDataBaseError>
     where
         Self: std::marker::Sized;
 }
 
-pub trait Table<Row: TableRow> {
-    fn new(rows: Vec<Row>) -> Self;
+pub struct Table<Row: TableRow> {
+    pub rows: Vec<Row>,
+}
 
-    fn from_package<F: Read + Seek>(package: &mut msi::Package<F>) -> Result<Self, MsiDataBaseError>
-    where
-        Self: std::marker::Sized,
-    {
-        match package.select_rows(msi::Select::table(Self::name())) {
+impl<Row: TableRow> Table<Row> {
+    pub fn from_package<F: Read + Seek>(
+        package: &mut msi::Package<F>,
+    ) -> Result<Self, MsiDataBaseError> {
+        let table_name = Row::table_name();
+        match package.select_rows(msi::Select::table(table_name)) {
             Ok(n) => {
                 let rows: Result<Vec<Row>, MsiDataBaseError> = n
                     .enumerate()
-                    .map(|(i, row)| Row::from_row(&RowView::new(Self::name(), &row, i)))
+                    .map(|(i, row)| Row::from_row(&RowView::new(table_name, &row, i)))
                     .collect();
-                Ok(Self::new(rows?))
+                Ok(Self { rows: rows? })
             }
             Err(_) => Err(MsiDataBaseError::TableMissingError {
-                table: Self::name().to_string(),
+                table: table_name.to_string(),
             }),
         }
     }
-
-    fn name() -> &'static str;
 }
 
 pub struct RowView<'a> {

@@ -11,7 +11,7 @@ const MAX_STRING_REF: i32 = 0xff_ffff;
 // ========================================================================= //
 
 /// A reference to a string in the string pool.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, Ord, PartialOrd, Eq, PartialEq)]
 pub struct StringRef(i32);
 
 impl StringRef {
@@ -99,11 +99,9 @@ impl StringPoolBuilder {
         let mut lengths_and_refcounts = Vec::<(u32, u16)>::new();
         while let Ok(length) = reader.read_u16::<LittleEndian>() {
             let mut length = length as u32;
-            let mut refcount = reader.read_u16::<LittleEndian>()?;
+            let refcount = reader.read_u16::<LittleEndian>()?;
             if length == 0 && refcount > 0 {
-                length = ((refcount as u32) << 16)
-                    | (reader.read_u16::<LittleEndian>()? as u32);
-                refcount = reader.read_u16::<LittleEndian>()?;
+                length = reader.read_u32::<LittleEndian>()?;
             }
             lengths_and_refcounts.push((length, refcount));
         }

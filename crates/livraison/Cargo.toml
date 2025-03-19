@@ -17,7 +17,8 @@ doc = false
 ar = "0.9.0"
 cab = "0.6.0"
 clap = { version = "4.5.32", features = ["derive"] }
-msi = "0.8.0"
+msi  = { version = "0.8.0", path = "../msi", default-features = false }
+
 quick-error = "2.0.1"
 rand = "0.9.0"
 tar = "0.4.44"

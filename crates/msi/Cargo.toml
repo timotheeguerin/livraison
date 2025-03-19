@@ -1,8 +1,5 @@
-[workspace]
-members = [".", "ffi"]
-default-members = [".", "ffi"]
-
-[workspace.package]
+[package]
+name = "msi"
 version = "0.8.0"
 authors = ["Matthew D. Steele <mdsteele@alum.mit.edu>"]
 repository = "https://github.com/mdsteele/rust-msi"
@@ -10,17 +7,7 @@ keywords = ["msi", "windows", "installer", "package"]
 license = "MIT"
 readme = "README.md"
 edition = "2021"
-
-[package]
-name = "msi"
-version.workspace = true
-authors.workspace = true
 description = "Read/write Windows Installer (MSI) files"
-repository.workspace = true
-keywords.workspace = true
-license.workspace = true
-readme.workspace = true
-edition.workspace = true
 
 [dependencies]
 byteorder = "1"

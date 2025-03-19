@@ -148,7 +148,7 @@ impl From<Uuid> for Value {
 // ========================================================================= //
 
 /// An indirect value from one cell in a database table row.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Ord, PartialOrd, Hash, Eq, PartialEq)]
 pub enum ValueRef {
     /// A null value.
     Null,

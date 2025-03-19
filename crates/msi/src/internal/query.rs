@@ -174,14 +174,13 @@ impl Insert {
         // Read in the rows from the table.
         let stream_name = table.stream_name();
         let key_indices = table.primary_key_indices();
-        let mut rows_map = BTreeMap::<Vec<Value>, Vec<ValueRef>>::new();
+        let mut rows_map = BTreeMap::<Vec<ValueRef>, Vec<ValueRef>>::new();
+        let mut rows: Vec<Vec<ValueRef>> = vec![];
         if comp.exists(&stream_name) {
             let stream = comp.open_stream(&stream_name)?;
             for row in table.read_rows(stream)?.into_iter() {
-                let keys: Vec<Value> = key_indices
-                    .iter()
-                    .map(|&index| row[index].to_value(string_pool))
-                    .collect();
+                let keys: Vec<ValueRef> =
+                    key_indices.iter().map(|&index| row[index]).collect();
                 if rows_map.contains_key(&keys) {
                     invalid_data!(
                         "Malformed table {:?} contains multiple rows with \
@@ -190,16 +189,19 @@ impl Insert {
                         keys
                     );
                 }
+                rows.push(row.clone());
                 rows_map.insert(keys, row);
             }
         }
         // Check if any of the new rows already exist in the table (or conflict
         // with each other).
-        let mut new_keys_set = HashSet::<Vec<Value>>::new();
+        let mut new_keys_set = HashSet::<Vec<ValueRef>>::new();
         for values in self.new_rows.iter() {
-            let keys: Vec<Value> = key_indices
+            let keys: Vec<ValueRef> = key_indices
                 .iter()
-                .map(|&index| values[index].clone())
+                .map(|&index| {
+                    ValueRef::create(values[index].clone(), string_pool)
+                })
                 .collect();
             if rows_map.contains_key(&keys) {
                 already_exists!(
@@ -218,20 +220,25 @@ impl Insert {
         }
         // Insert the new rows into the table.
         for values in self.new_rows.into_iter() {
-            let keys: Vec<Value> = key_indices
+            let keys: Vec<ValueRef> = key_indices
                 .iter()
-                .map(|&index| values[index].clone())
+                .map(|&index| {
+                    ValueRef::create(values[index].clone(), string_pool)
+                })
                 .collect();
             let row: Vec<ValueRef> = values
                 .into_iter()
                 .map(|value| ValueRef::create(value, string_pool))
                 .collect();
+            rows.push(row.clone());
             rows_map.insert(keys, row);
         }
+
         // Write the table back out to the file.
-        let rows: Vec<Vec<ValueRef>> = rows_map.into_values().collect();
         let stream = comp.create_stream(&stream_name)?;
-        table.write_rows(stream, rows)?;
+
+        let rows2: Vec<Vec<ValueRef>> = rows_map.into_values().collect();
+        table.write_rows(stream, rows2)?;
         Ok(())
     }
 }

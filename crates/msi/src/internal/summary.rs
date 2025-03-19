@@ -26,6 +26,7 @@ const PROPERTY_COMMENTS: u32 = 6;
 const PROPERTY_TEMPLATE: u32 = 7;
 const PROPERTY_UUID: u32 = 9;
 const PROPERTY_CREATION_TIME: u32 = 12;
+const PROPERTY_PAGE_COUNT: u32 = 14;
 const PROPERTY_WORD_COUNT: u32 = 15;
 const PROPERTY_CREATING_APP: u32 = 18;
 
@@ -42,6 +43,7 @@ impl SummaryInfo {
         let properties = PropertySet::new(OperatingSystem::Win32, 10, FMTID);
         let mut summary = SummaryInfo { properties };
         summary.set_codepage(CodePage::Utf8);
+        summary.set_page_count(500);
         summary
     }
 
@@ -308,6 +310,20 @@ impl SummaryInfo {
     /// Clears the "UUID" property.
     pub fn clear_uuid(&mut self) {
         self.properties.remove(PROPERTY_UUID);
+    }
+
+    /// Gets the "Page Count" property, if one is set.
+    pub fn page_count(&self) -> Option<i32> {
+        match self.properties.get(PROPERTY_PAGE_COUNT) {
+            Some(PropertyValue::I4(word_count)) => Some(*word_count),
+            _ => None,
+        }
+    }
+
+    /// Sets the "Page Count" property.
+    pub fn set_page_count(&mut self, word_count: i32) {
+        self.properties
+            .set(PROPERTY_PAGE_COUNT, PropertyValue::I4(word_count));
     }
 
     /// Gets the "Word Count" property, if one is set.

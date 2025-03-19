@@ -1,0 +1,9 @@
+[package]
+name = "msiinfo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.32", features = ["derive"] }
+msi  = { version = "0.8.0", path = "../msi", default-features = false }
+time = "0.3.39"

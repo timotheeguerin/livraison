@@ -16,6 +16,7 @@ words:
   - indoc
   - libc
   - libstdc
+  - msiinfo
   - nothrow
   - postject
   - postrm

@@ -1,6 +1,4 @@
-use std::io::{Read, Seek};
-
-use super::{Table, TableMissingError, TableRow};
+use super::{RowView, Table, TableRow, error::MsiDataBaseError};
 
 const TABLE_NAME: &str = "InstallUISequence";
 
@@ -10,7 +8,7 @@ pub struct InstallUISequenceTable {
 
 pub struct InstallUISequenceRow {
     pub dialog: String,
-    pub condition: String,
+    pub condition: Option<String>,
     pub order: i32,
 }
 
@@ -25,11 +23,11 @@ impl Table<InstallUISequenceRow> for InstallUISequenceTable {
 }
 
 impl TableRow for InstallUISequenceRow {
-    fn from_row(row: &msi::Row) -> InstallUISequenceRow {
-        InstallUISequenceRow {
-            dialog: row[0].to_string(),
-            condition: row[1].to_string(),
-            order: row[2].to_string().parse().unwrap(),
-        }
+    fn from_row(row: &RowView) -> Result<InstallUISequenceRow, MsiDataBaseError> {
+        Ok(InstallUISequenceRow {
+            dialog: row.string(0)?,
+            condition: row.opt_string(1)?,
+            order: row.int(2)?,
+        })
     }
 }

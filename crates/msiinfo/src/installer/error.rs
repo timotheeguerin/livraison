@@ -1,13 +1,17 @@
-use std::{error::Error, fmt};
+use thiserror::Error;
 
-#[derive(Debug, Clone)]
-pub struct TableMissingError {
-    pub table: String,
+#[derive(Error, Debug)]
+pub enum MsiDataBaseError {
+    #[error("Table '{table}' is missing in package")]
+    TableMissingError { table: String },
+    #[error(
+        "Table '{table}' cell {row}:{column} is not of the expected type: {expected_type}, value: {value}"
+    )]
+    CellInvalidTypeError {
+        table: String,
+        row: usize,
+        column: usize,
+        expected_type: String,
+        value: String,
+    },
 }
-
-impl fmt::Display for TableMissingError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Table '{}' is missing in package", self.table)
-    }
-}
-impl Error for TableMissingError {}

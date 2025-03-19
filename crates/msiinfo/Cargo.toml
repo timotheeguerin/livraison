@@ -7,4 +7,4 @@ edition = "2024"
 clap = { version = "4.5.32", features = ["derive"] }
 msi  = { version = "0.8.0", path = "../msi", default-features = false }
 time = "0.3.39"
-quick-error = "2.0.1"
+thiserror = "2.0.12"

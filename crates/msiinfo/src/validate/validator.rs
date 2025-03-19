@@ -1,10 +1,10 @@
 use msi::{Package, Row};
-use quick_error::quick_error;
 use std::io::{Read, Seek};
+use thiserror::Error;
 
 use crate::{
     color::{green, red},
-    installer::{InstallUISequenceTable, Table, TableMissingError},
+    installer::{InstallUISequenceTable, MsiDataBaseError, Table},
 };
 
 struct Error {
@@ -24,17 +24,10 @@ fn printErrors(errors: &Vec<Error>) {
     }
 }
 
-quick_error! {
-    #[derive(Debug)]
-    #[non_exhaustive]
-    pub enum ValidationError {
-        TableMissing(err: TableMissingError) {
-            from()
-            display("Installer is missing table: {}", err.table)
-            source(err)
-        }
-
-    }
+#[derive(Error, Debug)]
+pub enum ValidationError {
+    #[error("MsiDataBaseError: {0}")]
+    MsiDataBaseError(#[from] MsiDataBaseError),
 }
 
 pub type ValidationResult = Result<(), ValidationError>;

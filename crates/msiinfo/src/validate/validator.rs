@@ -4,7 +4,7 @@ use std::io::{Read, Seek};
 
 use crate::{
     color::{green, red},
-    installer::{InstallUISequenceTable, TableMissingError},
+    installer::{InstallUISequenceTable, Table, TableMissingError},
 };
 
 struct Error {

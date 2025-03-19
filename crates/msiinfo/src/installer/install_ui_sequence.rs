@@ -19,7 +19,7 @@ impl TableRow for InstallUISequenceRow {
         Ok(InstallUISequenceRow {
             dialog: row.string(0)?,
             condition: row.opt_string(1)?,
-            order: row.int(2)?,
+            order: row.i32(2)?,
         })
     }
 }

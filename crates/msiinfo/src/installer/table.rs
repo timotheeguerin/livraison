@@ -75,10 +75,25 @@ impl<'a> RowView<'a> {
             }),
         }
     }
-    pub fn int(&self, index: usize) -> Result<i32, MsiDataBaseError> {
+
+    pub fn i32(&self, index: usize) -> Result<i32, MsiDataBaseError> {
         let cell = &self.row[index];
         match cell {
             msi::Value::Int(s) => Ok(s.clone()),
+            _ => Err(MsiDataBaseError::CellInvalidTypeError {
+                table: self.table.clone(),
+                row: self.row_index,
+                column: index,
+                expected_type: "int32".to_string(),
+                value: cell.to_string(),
+            }),
+        }
+    }
+
+    pub fn i16(&self, index: usize) -> Result<i16, MsiDataBaseError> {
+        let cell = &self.row[index];
+        match cell {
+            msi::Value::Int(s) => Ok(s.clone() as i16),
             _ => Err(MsiDataBaseError::CellInvalidTypeError {
                 table: self.table.clone(),
                 row: self.row_index,

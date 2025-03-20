@@ -9,9 +9,9 @@ pub fn create_cancel_dialog() -> Dialog {
         height: 85,
         attributes: 3,
         title: Some("[ProductName] Setup".to_string()),
-        control_first: "CancelNo".to_string(),
-        control_default: Some("CancelNo".to_string()),
-        control_cancel: Some("CancelNo".to_string()),
+        control_first: "No".to_string(),
+        control_default: Some("No".to_string()),
+        control_cancel: Some("No".to_string()),
     }
 }
 
@@ -19,7 +19,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
     vec![
         Control {
             dialog: "CancelDialog".to_string(),
-            control: "CancelNo".to_string(),
+            control: "No".to_string(),
             type_: "PushButton".to_string(),
             x: 132,
             y: 57,
@@ -28,18 +28,18 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
             attributes: 3,
             property: None,
             text: Some("Continue".to_string()),
-            control_next: Some("CancelYes".to_string()),
+            control_next: Some("Yes".to_string()),
             help: None,
         },
         Control {
             dialog: "CancelDialog".to_string(),
-            control: "CancelText".to_string(),
+            control: "Text".to_string(),
             type_: "Text".to_string(),
             x: 48,
             y: 15,
             width: 194,
             height: 30,
-            attributes: 3,
+            attributes: 131075,
             property: None,
             text: Some("Do you want to abort [ProductName] [Text_action]?".to_string()),
             control_next: None,
@@ -47,7 +47,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "CancelDialog".to_string(),
-            control: "CancelYes".to_string(),
+            control: "Yes".to_string(),
             type_: "PushButton".to_string(),
             x: 72,
             y: 57,
@@ -56,7 +56,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
             attributes: 3,
             property: None,
             text: Some("Abort".to_string()),
-            control_next: Some("CancelNo".to_string()),
+            control_next: Some("No".to_string()),
             help: None,
         },
     ]

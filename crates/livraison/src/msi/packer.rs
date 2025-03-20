@@ -773,11 +773,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Dialog::create_table(&mut self.package)?;
         let dialogs = [
             create_welcome_dialog(),
-            create_remove_dialog(),
+            // create_remove_dialog(),
             create_cancel_dialog(),
-            create_progress_dialog(),
-            create_exit_dialog(),
-            create_fatal_error_dialog(),
+            // create_progress_dialog(),
+            // create_exit_dialog(),
+            // create_fatal_error_dialog(),
         ];
         Dialog::insert(&mut self.package, &dialogs)?;
 
@@ -788,11 +788,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Control::create_table(&mut self.package)?;
         let controls: Vec<Control> = [
             create_welcome_dialog_controls(),
-            create_remove_dialog_controls(),
+            // create_remove_dialog_controls(),
             create_cancel_dialog_controls(),
-            create_progress_dialog_controls(),
-            create_exit_dialog_controls(),
-            create_fatal_error_dialog_controls(),
+            // create_progress_dialog_controls(),
+            // create_exit_dialog_controls(),
+            // create_fatal_error_dialog_controls(),
         ]
         .iter()
         .flatten()
@@ -831,13 +831,13 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let mut rows = Vec::new();
         #[rustfmt::skip]
     let actions: [(&str, &str, &str, &str, &str, i32); 20] = [
-        ("WelcomeDialog", "WelcomeCancel", "SpawnDialog", "CancelDialog", "1", 0),
-        ("WelcomeDialog", "WelcomeInstall", "[Mode]", "Install", "1", 1),
-        ("WelcomeDialog", "WelcomeInstall", "[Text_action]", "installation", "1", 2),
-        ("WelcomeDialog", "WelcomeInstall", "[Text_agent]", "installer", "1", 3),
-        ("WelcomeDialog", "WelcomeInstall", "[Text_Doing]", "Installing", "1", 4),
-        ("WelcomeDialog", "WelcomeInstall", "[Text_done]", "installed", "1", 5),
-        ("WelcomeDialog", "WelcomeInstall", "EndDialog", "Return", "1", 6),
+        ("WelcomeDialog", "Cancel", "SpawnDialog", "CancelDialog", "1", 0),
+        ("WelcomeDialog", "Next", "[Mode]", "Install", "1", 1),
+        ("WelcomeDialog", "Next", "[Text_action]", "installation", "1", 2),
+        ("WelcomeDialog", "Next", "[Text_agent]", "installer", "1", 3),
+        ("WelcomeDialog", "Next", "[Text_Doing]", "Installing", "1", 4),
+        ("WelcomeDialog", "Next", "[Text_done]", "installed", "1", 5),
+        ("WelcomeDialog", "Next", "EndDialog", "Return", "1", 6),
         ("RemoveDialog", "RemoveCancel", "[Text_action]", "removal", "1", 7),
         ("RemoveDialog", "RemoveCancel", "SpawnDialog", "CancelDialog", "1", 8),
         ("RemoveDialog", "RemoveRemove", "[Mode]", "Remove", "1", 9),
@@ -846,8 +846,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         ("RemoveDialog", "RemoveRemove", "[Text_Doing]", "Removing", "1", 12),
         ("RemoveDialog", "RemoveRemove", "[Text_done]", "uninstalled", "1", 13),
         ("RemoveDialog", "RemoveRemove", "EndDialog", "Return", "1", 14),
-        ("CancelDialog", "CancelNo", "EndDialog", "Return", "1", 15),
-        ("CancelDialog", "CancelYes", "EndDialog", "Exit", "1", 16),
+        ("CancelDialog", "No", "EndDialog", "Return", "1", 15),
+        ("CancelDialog", "Yes", "EndDialog", "Exit", "1", 16),
         ("ProgressDialog", "ProgressCancel", "SpawnDialog", "CancelDialog", "1", 17),
         ("ExitDialog", "ExitFinish", "EndDialog", "Return", "1", 18),
         ("FatalErrorDialog", "FatalFinish", "EndDialog", "Exit", "1", 19),

@@ -7,7 +7,7 @@ use crate::{
     installer::{Dialog, Entity, InstallUISequence, MsiDataBaseError},
 };
 
-pub fn validateMsiInstaller<F: Read + Seek>(package: &mut Package<F>) {
+pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
     match validate_dialogs(package) {
         Ok(errors) => {
             if errors.is_empty() {

@@ -13,6 +13,11 @@ use crate::{
 use msi_installer::tables::{Control, Dialog, Entity, InstallUISequence};
 use uuid::Uuid;
 
+use super::dialogs::{
+    cancel::create_cancel_dialog, exit::create_exit_dialog, fatal_error::create_fatal_error_dialog,
+    progress::create_progress_dialog, remove::create_remove_dialog,
+};
+
 // Namespace to construct uuid v5
 const UUID_NAMESPACE: Uuid = uuid::uuid!("3941a426-8f68-469a-a7c5-99944d6067d8");
 
@@ -763,7 +768,14 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
 
     fn create_dialog_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         Dialog::create_table(&mut self.package)?;
-        let dialogs = [create_welcome_dialog()];
+        let dialogs = [
+            create_welcome_dialog(),
+            create_remove_dialog(),
+            create_cancel_dialog(),
+            create_progress_dialog(),
+            create_exit_dialog(),
+            create_fatal_error_dialog(),
+        ];
         Dialog::insert(&mut self.package, &dialogs)?;
 
         //     let mut rows = Vec::new();

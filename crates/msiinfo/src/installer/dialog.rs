@@ -10,10 +10,10 @@ pub struct Dialog {
     pub width: i16,
     pub height: i16,
     pub attributes: i32,
-    pub title: String,
+    pub title: Option<String>,
     pub control_first: String,
-    pub control_default: String,
-    pub control_cancel: String,
+    pub control_default: Option<String>,
+    pub control_cancel: Option<String>,
 }
 
 impl Entity for Dialog {
@@ -29,10 +29,10 @@ impl Entity for Dialog {
             width: row.i16(3)?,
             height: row.i16(4)?,
             attributes: row.i32(5)?,
-            title: row.string(6)?,
+            title: row.opt_string(6)?,
             control_first: row.string(7)?,
-            control_default: row.string(8)?,
-            control_cancel: row.string(9)?,
+            control_default: row.opt_string(8)?,
+            control_cancel: row.opt_string(9)?,
         })
     }
 }

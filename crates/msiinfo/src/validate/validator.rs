@@ -7,14 +7,14 @@ use thiserror::Error;
 
 use crate::{
     color::{green, red},
-    installer::{Control, Dialog, Entity, InstallUISequence, MsiDataBaseError},
+    installer::{Control, Dialog, Entity, InstallUISequence, MsiDataBaseError, is_standard_action},
 };
 
 pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
     match validate_dialogs(package) {
         Ok(errors) => {
             if errors.is_empty() {
-                println!("{} No errors found", green("success"));
+                println!("{} No errors found", green("✓"));
             } else {
                 print_errors(&errors);
             }
@@ -57,8 +57,10 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
 
     let mut errors = Vec::new();
 
+    let dialog_exists =
+        |dialog: &str| -> bool { dialog_map.contains_key(dialog) || is_standard_action(dialog) };
     for row in install_ui_sequences.into_iter() {
-        if !dialog_map.contains_key(&row.dialog) {
+        if !dialog_exists(&row.dialog) {
             errors.push(ValidationError::MissingDialogError {
                 dialog: row.dialog.clone(),
                 reference: InstallUISequence::table_name().to_string(),
@@ -80,7 +82,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
     }
 
     for row in controls.into_iter() {
-        if !dialog_map.contains_key(&row.dialog) {
+        if !dialog_exists(&row.dialog) {
             errors.push(ValidationError::MissingDialogError {
                 dialog: row.dialog.clone(),
                 reference: Control::table_name().to_string(),

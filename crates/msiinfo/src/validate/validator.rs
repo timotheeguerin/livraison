@@ -1,5 +1,8 @@
 use msi::Package;
-use std::io::{Read, Seek};
+use std::{
+    collections::HashMap,
+    io::{Read, Seek},
+};
 use thiserror::Error;
 
 use crate::{
@@ -33,6 +36,12 @@ pub enum ValidationError {
 
     #[error("Dialog {dialog} referenced in {reference} is missing")]
     MissingDialogError { dialog: String, reference: String },
+    #[error("Control {control} in {dialog} referenced by {reference} is missing")]
+    MissingControlError {
+        dialog: String,
+        control: String,
+        reference: String,
+    },
 }
 
 pub type ValidationResult = Result<Vec<ValidationError>, ValidationError>;
@@ -56,12 +65,40 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
             });
         }
     }
-    for row in Control::list(package)?.into_iter() {
+
+    let controls = Control::list(package)?;
+    let mut control_map = HashMap::<String, HashMap<String, Control>>::new();
+    // TODO: this clone feels expensive
+    for row in controls.clone().into_iter() {
+        if !control_map.contains_key(&row.dialog) {
+            control_map.insert(row.dialog.clone(), HashMap::new());
+        }
+        control_map
+            .get_mut(&row.dialog)
+            .unwrap()
+            .insert(row.control.clone(), row.clone());
+    }
+
+    for row in controls.into_iter() {
         if !dialog_map.contains_key(&row.dialog) {
             errors.push(ValidationError::MissingDialogError {
                 dialog: row.dialog.clone(),
                 reference: Control::table_name().to_string(),
             });
+        }
+
+        if let Some(next_control) = row.control_next {
+            if !control_map
+                .get(&row.dialog)
+                .unwrap()
+                .contains_key(&next_control)
+            {
+                errors.push(ValidationError::MissingControlError {
+                    dialog: row.dialog.clone(),
+                    control: next_control.clone(),
+                    reference: format!("next_control of {}", row.control),
+                });
+            }
         }
     }
 

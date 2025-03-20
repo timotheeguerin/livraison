@@ -2,6 +2,7 @@ use super::{Entity, RowView, error::MsiDataBaseError};
 
 const TABLE_NAME: &str = "InstallUISequence";
 
+#[derive(Debug, Clone)]
 pub struct InstallUISequence {
     pub dialog: String,
     pub condition: Option<String>,

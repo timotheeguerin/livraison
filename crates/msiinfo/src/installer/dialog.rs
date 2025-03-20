@@ -2,6 +2,7 @@ use super::{Entity, RowView, error::MsiDataBaseError};
 
 const TABLE_NAME: &str = "Dialog";
 
+#[derive(Debug, Clone)]
 pub struct Dialog {
     pub dialog: String,
     pub h_centering: i16,

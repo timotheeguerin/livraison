@@ -2,6 +2,7 @@ use super::{Entity, RowView, error::MsiDataBaseError};
 
 /// Control Table
 /// https://learn.microsoft.com/en-us/windows/win32/msi/control-table
+#[derive(Debug, Clone)]
 pub struct Control {
     pub dialog: String,
     pub control: String,

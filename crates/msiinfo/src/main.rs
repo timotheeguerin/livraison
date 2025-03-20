@@ -2,7 +2,7 @@ use std::cmp;
 use std::io::{Read, Seek};
 use time::OffsetDateTime;
 
-use msiinfo::validate::validator::validateMsiInstaller;
+use msiinfo::validate::validator::validate_msi_installer;
 
 fn pad(mut string: String, fill: char, width: usize) -> String {
     while string.len() < width {
@@ -190,7 +190,7 @@ fn main() {
         }
         Command::Validate { path } => {
             let mut package = msi::open(path).expect("open package");
-            validateMsiInstaller(&mut package);
+            validate_msi_installer(&mut package);
         }
     }
 }

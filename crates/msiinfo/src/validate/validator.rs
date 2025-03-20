@@ -9,6 +9,9 @@ use std::{
 };
 use thiserror::Error;
 
+// Validators to add
+// - table primary keys must be all the first columns(can't skip)
+// - table order respecting key string id map not string itself
 pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
     match validate_dialogs(package) {
         Ok(errors) => {

@@ -31,12 +31,12 @@ fn print_errors(errors: &Vec<ValidationError>) {
 #[derive(Error, Debug)]
 pub enum ValidationError {
     #[error("MsiDataBaseError: {0}")]
-    MsiDataBaseError(#[from] MsiDataBaseError),
+    MsiDataBase(#[from] MsiDataBaseError),
 
     #[error("Dialog {dialog} referenced in {reference} is missing")]
-    MissingDialogError { dialog: String, reference: String },
+    MissingDialog { dialog: String, reference: String },
     #[error("Control {control} in {dialog} referenced by {reference} is missing")]
-    MissingControlError {
+    MissingControl {
         dialog: String,
         control: String,
         reference: String,
@@ -44,7 +44,15 @@ pub enum ValidationError {
     #[error(
         "Controls on dialog {dialog} do not form a valid cycle, control {control} is missing a next control"
     )]
-    ControlNotCircularError { dialog: String, control: String },
+    ControlNotCircular { dialog: String, control: String },
+    #[error(
+        "Control {next_control} on {dialog} is referenced as the next control by multiple dialogs {controls}."
+    )]
+    DuplicateControlNext {
+        dialog: String,
+        controls: String,
+        next_control: String,
+    },
 }
 
 pub type ValidationResult = Result<Vec<ValidationError>, ValidationError>;
@@ -61,7 +69,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
     // Validate install_ui_sequences dialog are referenced.
     for row in install_ui_sequences {
         if !dialog_map.has_dialog_or_std_action(&row.dialog) {
-            errors.push(ValidationError::MissingDialogError {
+            errors.push(ValidationError::MissingDialog {
                 dialog: row.dialog.clone(),
                 reference: InstallUISequence::table_name().to_string(),
             });
@@ -71,7 +79,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
     for complete_dialog in dialog_map.all() {
         let dialog = &complete_dialog.dialog;
         if !complete_dialog.has_control(&dialog.control_first) {
-            errors.push(ValidationError::MissingControlError {
+            errors.push(ValidationError::MissingControl {
                 dialog: dialog.dialog.clone(),
                 control: dialog.control_first.clone(),
                 reference: format!("control_first of dialog {}", dialog.dialog),
@@ -79,7 +87,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
         }
         if let Some(control_default) = &dialog.control_default {
             if !complete_dialog.has_control(control_default) {
-                errors.push(ValidationError::MissingControlError {
+                errors.push(ValidationError::MissingControl {
                     dialog: dialog.dialog.clone(),
                     control: control_default.clone(),
                     reference: format!("control_default of dialog {}", dialog.dialog),
@@ -88,7 +96,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
         }
         if let Some(control_cancel) = &dialog.control_cancel {
             if !complete_dialog.has_control(control_cancel) {
-                errors.push(ValidationError::MissingControlError {
+                errors.push(ValidationError::MissingControl {
                     dialog: dialog.dialog.clone(),
                     control: control_cancel.clone(),
                     reference: format!("control_cancel of dialog {}", dialog.dialog),
@@ -101,7 +109,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
         let dialog = match dialog_map.get(&row.dialog) {
             Some(dialog) => dialog,
             None => {
-                errors.push(ValidationError::MissingDialogError {
+                errors.push(ValidationError::MissingDialog {
                     dialog: row.dialog.clone(),
                     reference: Control::table_name().to_string(),
                 });
@@ -111,7 +119,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
 
         if let Some(next_control) = row.control_next {
             if !dialog.has_control(&next_control) {
-                errors.push(ValidationError::MissingControlError {
+                errors.push(ValidationError::MissingControl {
                     dialog: row.dialog.clone(),
                     control: next_control.clone(),
                     reference: format!("next_control of {}", row.control),
@@ -137,14 +145,14 @@ fn validate_dialogs_control_order(dialog_map: &DialogMap) -> Vec<ValidationError
         visited.insert(control.control.clone());
 
         if let Some(next_control_name) = control.control_next.as_ref() {
-            if let Some(next_control) = complete_dialog.get_control(&next_control_name) {
+            if let Some(next_control) = complete_dialog.get_control(next_control_name) {
                 visit(next_control, complete_dialog, visited)
             } else {
                 // ignore missing control error, it will be caught by the missing control validator
                 vec![]
             }
         } else {
-            vec![ValidationError::ControlNotCircularError {
+            vec![ValidationError::ControlNotCircular {
                 dialog: control.dialog.clone(),
                 control: control.control.clone(),
             }]
@@ -152,11 +160,10 @@ fn validate_dialogs_control_order(dialog_map: &DialogMap) -> Vec<ValidationError
     }
     let mut errors = Vec::new();
     for complete_dialog in dialog_map.all() {
-        let controls = complete_dialog.list_controls();
         // Contains control visited that have a next control.
         let mut visited = HashSet::<String>::new();
 
-        for control in controls {
+        for control in complete_dialog.list_controls() {
             if visited.contains(&control.control) {
                 continue;
             }
@@ -164,9 +171,46 @@ fn validate_dialogs_control_order(dialog_map: &DialogMap) -> Vec<ValidationError
                 errors.extend(visit(control, complete_dialog, &mut visited));
             }
         }
+        let mut dup = DuplicateTracker::new();
+
+        for control in complete_dialog.list_controls() {
+            if let Some(next_control_name) = control.control_next.as_ref() {
+                dup.track(next_control_name.clone(), control.control.clone());
+            }
+        }
+
+        for (next_control_name, controls) in dup.duplicates() {
+            if controls.len() > 1 {
+                errors.push(ValidationError::DuplicateControlNext {
+                    dialog: complete_dialog.dialog.dialog.clone(),
+                    controls: controls.join(", "),
+                    next_control: next_control_name.clone(),
+                });
+            }
+        }
     }
 
     errors
+}
+
+struct DuplicateTracker<T> {
+    map: HashMap<String, Vec<T>>,
+}
+
+impl<T> DuplicateTracker<T> {
+    pub fn new() -> Self {
+        DuplicateTracker {
+            map: HashMap::new(),
+        }
+    }
+
+    pub fn track(&mut self, key: String, value: T) {
+        self.map.entry(key).or_default().push(value);
+    }
+
+    pub fn duplicates(&self) -> &HashMap<String, Vec<T>> {
+        &self.map
+    }
 }
 
 struct DialogMap {

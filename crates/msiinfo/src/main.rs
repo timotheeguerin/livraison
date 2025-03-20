@@ -11,7 +11,7 @@ fn pad(mut string: String, fill: char, width: usize) -> String {
     string
 }
 
-use clap::{Args, Parser, Subcommand, arg, command};
+use clap::{Parser, Subcommand, command};
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]

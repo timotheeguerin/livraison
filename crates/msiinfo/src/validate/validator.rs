@@ -1,14 +1,13 @@
+use crate::color::{green, red};
 use msi::Package;
+use msi_installer::tables::{
+    Control, Dialog, Entity, InstallUISequence, MsiDataBaseError, is_standard_action,
+};
 use std::{
     collections::HashMap,
     io::{Read, Seek},
 };
 use thiserror::Error;
-
-use crate::{
-    color::{green, red},
-    installer::{Control, Dialog, Entity, InstallUISequence, MsiDataBaseError, is_standard_action},
-};
 
 pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
     match validate_dialogs(package) {

@@ -1,9 +1,10 @@
-use std::io::{Read, Seek};
+use std::io::{Read, Seek, Write};
 
 use super::error::MsiDataBaseError;
 
 pub trait Entity {
     fn table_name() -> &'static str;
+    fn definition() -> Vec<msi::Column>;
     fn from_row(row: &RowView) -> Result<Self, MsiDataBaseError>
     where
         Self: std::marker::Sized;
@@ -22,6 +23,14 @@ pub trait Entity {
                 table: table_name.to_string(),
             }),
         }
+    }
+
+    fn create_table<F: Read + Write + Seek>(
+        package: &mut msi::Package<F>,
+    ) -> Result<(), std::io::Error> {
+        let table_name = Self::table_name();
+        let columns = Self::definition();
+        package.create_table(table_name, columns)
     }
 }
 
@@ -71,7 +80,7 @@ impl<'a> RowView<'a> {
     pub fn i32(&self, index: usize) -> Result<i32, MsiDataBaseError> {
         let cell = &self.row[index];
         match cell {
-            msi::Value::Int(s) => Ok(s.clone()),
+            msi::Value::Int(s) => Ok(*s),
             _ => Err(MsiDataBaseError::CellInvalidTypeError {
                 table: self.table.clone(),
                 row: self.row_index,
@@ -85,7 +94,7 @@ impl<'a> RowView<'a> {
     pub fn i16(&self, index: usize) -> Result<i16, MsiDataBaseError> {
         let cell = &self.row[index];
         match cell {
-            msi::Value::Int(s) => Ok(s.clone() as i16),
+            msi::Value::Int(s) => Ok(*s as i16),
             _ => Err(MsiDataBaseError::CellInvalidTypeError {
                 table: self.table.clone(),
                 row: self.row_index,

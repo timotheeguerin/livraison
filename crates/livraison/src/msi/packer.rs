@@ -7,6 +7,7 @@ use std::{
 };
 
 use crate::LivraisonResult;
+use msi_installer::tables::{Control, Dialog, Entity, InstallUISequence};
 use uuid::Uuid;
 
 // Namespace to construct uuid v5
@@ -722,20 +723,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         &mut self,
         _cabinets: &[CabinetInfo],
     ) -> LivraisonResult<()> {
-        self.package.create_table(
-            "InstallUISequence",
-            vec![
-                msi::Column::build("Action").primary_key().id_string(72),
-                msi::Column::build("Condition")
-                    .nullable()
-                    .category(msi::Category::Condition)
-                    .string(255),
-                msi::Column::build("Sequence")
-                    .nullable()
-                    .range(-4, 0x7fff)
-                    .int16(),
-            ],
-        )?;
+        InstallUISequence::create_table(&mut self.package)?;
         let mut rows = Vec::new();
         let actions: [(&str, &str, i32); 9] = [
             ("FatalErrorDialog", "", -3),
@@ -771,35 +759,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     fn create_dialog_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "Dialog",
-            vec![
-                msi::Column::build("Dialog").primary_key().id_string(72),
-                msi::Column::build("HCentering").range(0, 100).int16(),
-                msi::Column::build("VCentering").range(0, 100).int16(),
-                msi::Column::build("Width").range(0, 0x7fff).int16(),
-                msi::Column::build("Height").range(0, 0x7fff).int16(),
-                msi::Column::build("Attributes")
-                    .nullable()
-                    .range(-4, 0x7fffffff)
-                    .int32(),
-                msi::Column::build("Title")
-                    .nullable()
-                    .category(msi::Category::Formatted)
-                    .string(128),
-                msi::Column::build("Control_First")
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Control_Default")
-                    .nullable()
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Control_Cancel")
-                    .nullable()
-                    .category(msi::Category::Identifier)
-                    .string(50),
-            ],
-        )?;
+        Dialog::create_table(&mut self.package)?;
         let mut rows = Vec::new();
         type DialogTableEntry<'a> = (
             &'a str,
@@ -850,43 +810,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     fn create_control_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "Control",
-            vec![
-                msi::Column::build("Dialog_").id_string(72),
-                msi::Column::build("Control")
-                    .primary_key()
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Type")
-                    .category(msi::Category::Identifier)
-                    .string(20),
-                msi::Column::build("X").range(0, 0x7fff).int16(),
-                msi::Column::build("Y").range(0, 0x7fff).int16(),
-                msi::Column::build("Width").range(0, 0x7fff).int16(),
-                msi::Column::build("Height").range(0, 0x7fff).int16(),
-                msi::Column::build("Attributes")
-                    .nullable()
-                    .range(-4, 0x7fffffff)
-                    .int32(),
-                msi::Column::build("Property")
-                    .nullable()
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Text")
-                    .nullable()
-                    .category(msi::Category::Formatted)
-                    .string(0),
-                msi::Column::build("Control_Next")
-                    .nullable()
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Help")
-                    .nullable()
-                    .category(msi::Category::Text)
-                    .string(50),
-            ],
-        )?;
+        Control::create_table(&mut self.package)?;
         let mut rows = Vec::new();
         type ControlTableEntry<'a> = (
             &'a str,

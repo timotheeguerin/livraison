@@ -1,11 +1,14 @@
 [package]
-name = "msiinfo"
+name = "msi_installer"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "msi_installer"
+path = "src/lib.rs"
+doc = true
+
 [dependencies]
-clap = { version = "4.5.32", features = ["derive"] }
 msi  = { version = "0.8.0", path = "../msi", default-features = false }
-msi_installer  = { version = "0.1.0", path = "../msi_installer" }
 time = "0.3.39"
 thiserror = "2.0.12"

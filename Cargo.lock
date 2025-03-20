@@ -413,6 +413,7 @@ dependencies = [
  "clap 4.5.32",
  "indoc",
  "msi",
+ "msi_installer",
  "pretty_assertions",
  "quick-error",
  "rand",
@@ -471,11 +472,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "msi_installer"
+version = "0.1.0"
+dependencies = [
+ "msi",
+ "thiserror",
+ "time",
+]
+
+[[package]]
 name = "msiinfo"
 version = "0.1.0"
 dependencies = [
  "clap 4.5.32",
  "msi",
+ "msi_installer",
  "thiserror",
  "time",
 ]

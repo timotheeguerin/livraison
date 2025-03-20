@@ -14,6 +14,20 @@ impl Entity for InstallUISequence {
         TABLE_NAME
     }
 
+    fn definition() -> Vec<msi::Column> {
+        vec![
+            msi::Column::build("Action").primary_key().id_string(72),
+            msi::Column::build("Condition")
+                .nullable()
+                .category(msi::Category::Condition)
+                .string(255),
+            msi::Column::build("Sequence")
+                .nullable()
+                .range(-4, 0x7fff)
+                .int16(),
+        ]
+    }
+
     fn from_row(row: &RowView) -> Result<InstallUISequence, MsiDataBaseError> {
         Ok(InstallUISequence {
             dialog: row.string(0)?,

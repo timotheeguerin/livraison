@@ -1,8 +1,8 @@
-use super::{RowView, Table, TableRow, error::MsiDataBaseError};
+use super::{Entity, RowView, error::MsiDataBaseError};
 
 const TABLE_NAME: &str = "Dialog";
 
-pub struct DialogRow {
+pub struct Dialog {
     pub dialog: String,
     pub h_centering: i16,
     pub v_centering: i16,
@@ -15,15 +15,13 @@ pub struct DialogRow {
     pub control_cancel: String,
 }
 
-pub type DialogTable = Table<DialogRow>;
-
-impl TableRow for DialogRow {
+impl Entity for Dialog {
     fn table_name() -> &'static str {
         TABLE_NAME
     }
 
-    fn from_row(row: &RowView) -> Result<DialogRow, MsiDataBaseError> {
-        Ok(DialogRow {
+    fn from_row(row: &RowView) -> Result<Dialog, MsiDataBaseError> {
+        Ok(Dialog {
             dialog: row.string(0)?,
             h_centering: row.i16(1)?,
             v_centering: row.i16(2)?,

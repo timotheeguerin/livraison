@@ -1,26 +1,28 @@
-use msi::{Package, Row};
+use msi::Package;
 use std::io::{Read, Seek};
 use thiserror::Error;
 
 use crate::{
     color::{green, red},
-    installer::{DialogTable, InstallUISequenceTable, MsiDataBaseError, Table},
+    installer::{Dialog, Entity, InstallUISequence, MsiDataBaseError},
 };
-
-struct Error {
-    message: String,
-}
 
 pub fn validateMsiInstaller<F: Read + Seek>(package: &mut Package<F>) {
     match validate_dialogs(package) {
-        Ok(_) => println!("{} No errors found", green("✓")),
+        Ok(errors) => {
+            if errors.is_empty() {
+                println!("{} No errors found", green("success"));
+            } else {
+                print_errors(&errors);
+            }
+        }
         Err(err) => println!("{} {}", red("error"), err),
     }
 }
 
-fn printErrors(errors: &Vec<Error>) {
+fn print_errors(errors: &Vec<ValidationError>) {
     for error in errors {
-        println!("{} {}", red("error"), error.message);
+        println!("{} {}", red("error"), error);
     }
 }
 
@@ -28,36 +30,32 @@ fn printErrors(errors: &Vec<Error>) {
 pub enum ValidationError {
     #[error("MsiDataBaseError: {0}")]
     MsiDataBaseError(#[from] MsiDataBaseError),
+
+    #[error("Dialog {dialog} referenced in {reference} is missing")]
+    MissingDialogError { dialog: String, reference: String },
 }
 
-pub type ValidationResult = Result<(), ValidationError>;
+pub type ValidationResult = Result<Vec<ValidationError>, ValidationError>;
 
 fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResult {
-    let install_ui_sequence_table = InstallUISequenceTable::from_package(package)?;
-    let dialog_table = DialogTable::from_package(package)?;
+    let install_ui_sequences = InstallUISequence::list(package)?;
+    let dialogs = Dialog::list(package)?;
 
-    for row in install_ui_sequence_table.rows.into_iter() {
-        println!(
-            "InstallUISequence: {} {:?} {}",
-            row.dialog, row.condition, row.order
-        );
+    let dialog_map = dialogs
+        .into_iter()
+        .map(|dialog| (dialog.dialog.clone(), dialog))
+        .collect::<std::collections::HashMap<String, Dialog>>();
+
+    let mut errors = Vec::new();
+
+    for row in install_ui_sequences.into_iter() {
+        if !dialog_map.contains_key(&row.dialog) {
+            errors.push(ValidationError::MissingDialogError {
+                dialog: row.dialog.clone(),
+                reference: InstallUISequence::table_name().to_string(),
+            });
+        }
     }
 
-    for row in dialog_table.rows.into_iter() {
-        println!(
-            "Dialog: {} {} {} {} {} {} {} {} {} {}",
-            row.dialog,
-            row.h_centering,
-            row.v_centering,
-            row.width,
-            row.height,
-            row.attributes,
-            row.title,
-            row.control_first,
-            row.control_default,
-            row.control_cancel
-        );
-    }
-
-    Ok(())
+    Ok(errors)
 }

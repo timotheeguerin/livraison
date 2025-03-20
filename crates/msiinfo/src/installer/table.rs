@@ -2,30 +2,22 @@ use std::io::{Read, Seek};
 
 use super::error::MsiDataBaseError;
 
-pub trait TableRow {
+pub trait Entity {
     fn table_name() -> &'static str;
     fn from_row(row: &RowView) -> Result<Self, MsiDataBaseError>
     where
         Self: std::marker::Sized;
-}
 
-pub struct Table<Row: TableRow> {
-    pub rows: Vec<Row>,
-}
-
-impl<Row: TableRow> Table<Row> {
-    pub fn from_package<F: Read + Seek>(
-        package: &mut msi::Package<F>,
-    ) -> Result<Self, MsiDataBaseError> {
-        let table_name = Row::table_name();
+    fn list<F: Read + Seek>(package: &mut msi::Package<F>) -> Result<Vec<Self>, MsiDataBaseError>
+    where
+        Self: std::marker::Sized,
+    {
+        let table_name = Self::table_name();
         match package.select_rows(msi::Select::table(table_name)) {
-            Ok(n) => {
-                let rows: Result<Vec<Row>, MsiDataBaseError> = n
-                    .enumerate()
-                    .map(|(i, row)| Row::from_row(&RowView::new(table_name, &row, i)))
-                    .collect();
-                Ok(Self { rows: rows? })
-            }
+            Ok(n) => n
+                .enumerate()
+                .map(|(i, row)| Self::from_row(&RowView::new(table_name, &row, i)))
+                .collect(),
             Err(_) => Err(MsiDataBaseError::TableMissingError {
                 table: table_name.to_string(),
             }),

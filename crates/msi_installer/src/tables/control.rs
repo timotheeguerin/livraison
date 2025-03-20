@@ -25,7 +25,10 @@ impl Entity for Control {
 
     fn definition() -> Vec<msi::Column> {
         vec![
-            msi::Column::build("Dialog_").id_string(72),
+            msi::Column::build("Dialog_")
+                .primary_key()
+                .category(msi::Category::Identifier)
+                .id_string(72),
             msi::Column::build("Control")
                 .primary_key()
                 .category(msi::Category::Identifier)

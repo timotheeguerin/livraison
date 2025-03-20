@@ -8,7 +8,7 @@ use std::{
 
 use crate::{
     LivraisonResult,
-    msi::dialogs::{create_welcome_dialog, create_welcome_dialog_controls},
+    msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
 };
 use msi_installer::tables::{Control, Dialog, Entity, InstallUISequence};
 use uuid::Uuid;

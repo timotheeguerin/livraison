@@ -51,6 +51,7 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
     let dialogs = Dialog::list(package)?;
 
     let dialog_map = dialogs
+        .clone()
         .into_iter()
         .map(|dialog| (dialog.dialog.clone(), dialog))
         .collect::<std::collections::HashMap<String, Dialog>>();
@@ -79,6 +80,46 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
             .get_mut(&row.dialog)
             .unwrap()
             .insert(row.control.clone(), row.clone());
+    }
+
+    for row in dialogs.into_iter() {
+        if !control_map
+            .get(&row.dialog)
+            .unwrap()
+            .contains_key(&row.control_first)
+        {
+            errors.push(ValidationError::MissingControlError {
+                dialog: row.dialog.clone(),
+                control: row.control_first.clone(),
+                reference: format!("control_first of dialog {}", row.dialog),
+            });
+        }
+        if let Some(control_default) = &row.control_default {
+            if !control_map
+                .get(&row.dialog)
+                .unwrap()
+                .contains_key(control_default)
+            {
+                errors.push(ValidationError::MissingControlError {
+                    dialog: row.dialog.clone(),
+                    control: control_default.clone(),
+                    reference: format!("control_default of dialog {}", row.dialog),
+                });
+            }
+        }
+        if let Some(control_cancel) = &row.control_cancel {
+            if !control_map
+                .get(&row.dialog)
+                .unwrap()
+                .contains_key(control_cancel)
+            {
+                errors.push(ValidationError::MissingControlError {
+                    dialog: row.dialog.clone(),
+                    control: control_cancel.clone(),
+                    reference: format!("control_cancel of dialog {}", row.dialog),
+                });
+            }
+        }
     }
 
     for row in controls.into_iter() {

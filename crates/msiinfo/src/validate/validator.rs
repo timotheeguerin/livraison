@@ -4,7 +4,7 @@ use thiserror::Error;
 
 use crate::{
     color::{green, red},
-    installer::{Dialog, Entity, InstallUISequence, MsiDataBaseError},
+    installer::{Control, Dialog, Entity, InstallUISequence, MsiDataBaseError},
 };
 
 pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
@@ -53,6 +53,14 @@ fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResul
             errors.push(ValidationError::MissingDialogError {
                 dialog: row.dialog.clone(),
                 reference: InstallUISequence::table_name().to_string(),
+            });
+        }
+    }
+    for row in Control::list(package)?.into_iter() {
+        if !dialog_map.contains_key(&row.dialog) {
+            errors.push(ValidationError::MissingDialogError {
+                dialog: row.dialog.clone(),
+                reference: Control::table_name().to_string(),
             });
         }
     }

@@ -51,6 +51,15 @@ impl Value {
         }
     }
 
+    /// Converts an optional string to a `Value`
+    pub fn from_opt_string(val: &Option<String>) -> Value {
+        if let Some(val) = val {
+            Value::Str(val.clone())
+        } else {
+            Value::Null
+        }
+    }
+
     /// Creates a boolean value.
     pub(crate) fn from_bool(boolean: bool) -> Value {
         if boolean {

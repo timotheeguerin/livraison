@@ -5,10 +5,10 @@ const TABLE_NAME: &str = "Dialog";
 #[derive(Debug, Clone)]
 pub struct Dialog {
     pub dialog: String,
-    pub h_centering: i16,
-    pub v_centering: i16,
-    pub width: i16,
-    pub height: i16,
+    pub h_centering: i32,
+    pub v_centering: i32,
+    pub width: i32,
+    pub height: i32,
     pub attributes: i32,
     pub title: Option<String>,
     pub control_first: String,
@@ -53,15 +53,30 @@ impl Entity for Dialog {
     fn from_row(row: &RowView) -> Result<Dialog, MsiDataBaseError> {
         Ok(Dialog {
             dialog: row.string(0)?,
-            h_centering: row.i16(1)?,
-            v_centering: row.i16(2)?,
-            width: row.i16(3)?,
-            height: row.i16(4)?,
+            h_centering: row.i32(1)?,
+            v_centering: row.i32(2)?,
+            width: row.i32(3)?,
+            height: row.i32(4)?,
             attributes: row.i32(5)?,
             title: row.opt_string(6)?,
             control_first: row.string(7)?,
             control_default: row.opt_string(8)?,
             control_cancel: row.opt_string(9)?,
         })
+    }
+
+    fn to_row(&self) -> Vec<msi::Value> {
+        vec![
+            msi::Value::Str(self.dialog.clone()),
+            msi::Value::Int(self.h_centering),
+            msi::Value::Int(self.v_centering),
+            msi::Value::Int(self.width),
+            msi::Value::Int(self.height),
+            msi::Value::Int(self.attributes),
+            msi::Value::from_opt_string(&self.title),
+            msi::Value::Str(self.control_first.clone()),
+            msi::Value::from_opt_string(&self.control_default),
+            msi::Value::from_opt_string(&self.control_cancel),
+        ]
     }
 }

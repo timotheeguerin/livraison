@@ -35,4 +35,12 @@ impl Entity for InstallUISequence {
             order: row.i32(2)?,
         })
     }
+
+    fn to_row(&self) -> Vec<msi::Value> {
+        vec![
+            msi::Value::Str(self.dialog.clone()),
+            msi::Value::from_opt_string(&self.condition),
+            msi::Value::Int(self.order),
+        ]
+    }
 }

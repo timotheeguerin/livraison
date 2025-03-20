@@ -2,17 +2,16 @@ use std::io::{Read, Seek, Write};
 
 use super::error::MsiDataBaseError;
 
-pub trait Entity {
+pub trait Entity
+where
+    Self: std::marker::Sized,
+{
     fn table_name() -> &'static str;
     fn definition() -> Vec<msi::Column>;
-    fn from_row(row: &RowView) -> Result<Self, MsiDataBaseError>
-    where
-        Self: std::marker::Sized;
+    fn from_row(row: &RowView) -> Result<Self, MsiDataBaseError>;
+    fn to_row(&self) -> Vec<msi::Value>;
 
-    fn list<F: Read + Seek>(package: &mut msi::Package<F>) -> Result<Vec<Self>, MsiDataBaseError>
-    where
-        Self: std::marker::Sized,
-    {
+    fn list<F: Read + Seek>(package: &mut msi::Package<F>) -> Result<Vec<Self>, MsiDataBaseError> {
         let table_name = Self::table_name();
         match package.select_rows(msi::Select::table(table_name)) {
             Ok(n) => n
@@ -31,6 +30,15 @@ pub trait Entity {
         let table_name = Self::table_name();
         let columns = Self::definition();
         package.create_table(table_name, columns)
+    }
+
+    fn insert<F: Read + Write + Seek>(
+        package: &mut msi::Package<F>,
+        items: &[Self],
+    ) -> Result<(), std::io::Error> {
+        let rows = items.iter().map(|item| item.to_row()).collect::<Vec<_>>();
+        package.insert_rows(msi::Insert::into(Self::table_name()).rows(rows))?;
+        Ok(())
     }
 }
 

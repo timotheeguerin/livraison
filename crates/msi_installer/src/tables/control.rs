@@ -7,10 +7,10 @@ pub struct Control {
     pub dialog: String,
     pub control: String,
     pub type_: String,
-    pub x: i16,
-    pub y: i16,
-    pub width: i16,
-    pub height: i16,
+    pub x: i32,
+    pub y: i32,
+    pub width: i32,
+    pub height: i32,
     pub attributes: i32,
     pub property: Option<String>,
     pub text: Option<String>,
@@ -65,15 +65,32 @@ impl Entity for Control {
             dialog: row.string(0)?,
             control: row.string(1)?,
             type_: row.string(2)?,
-            x: row.i16(3)?,
-            y: row.i16(4)?,
-            width: row.i16(5)?,
-            height: row.i16(6)?,
+            x: row.i32(3)?,
+            y: row.i32(4)?,
+            width: row.i32(5)?,
+            height: row.i32(6)?,
             attributes: row.i32(7)?,
             property: row.opt_string(8)?,
             text: row.opt_string(9)?,
             control_next: row.opt_string(10)?,
             help: row.opt_string(11)?,
         })
+    }
+
+    fn to_row(&self) -> Vec<msi::Value> {
+        vec![
+            msi::Value::Str(self.dialog.clone()),
+            msi::Value::Str(self.control.clone()),
+            msi::Value::Str(self.type_.clone()),
+            msi::Value::Int(self.x),
+            msi::Value::Int(self.y),
+            msi::Value::Int(self.width),
+            msi::Value::Int(self.height),
+            msi::Value::Int(self.attributes),
+            msi::Value::from_opt_string(&self.property),
+            msi::Value::from_opt_string(&self.text),
+            msi::Value::from_opt_string(&self.control_next),
+            msi::Value::from_opt_string(&self.help),
+        ]
     }
 }

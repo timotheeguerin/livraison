@@ -1,4 +1,4 @@
-use msi_installer::tables::Dialog;
+use msi_installer::tables::{Control, Dialog};
 
 pub fn create_welcome_dialog() -> Dialog {
     Dialog {
@@ -13,4 +13,93 @@ pub fn create_welcome_dialog() -> Dialog {
         control_default: Some("WelcomeInstall".to_string()),
         control_cancel: Some("WelcomeInstall".to_string()),
     }
+}
+
+pub fn create_welcome_dialog_controls() -> Vec<Control> {
+    vec![
+        Control {
+            dialog: "WelcomeDialog".to_string(),
+            control: "WelcomeDescription".to_string(),
+            type_: "Text".to_string(),
+            x: 135,
+            y: 70,
+            width: 220,
+            height: 50,
+            attributes: 196611,
+            property: None,
+            text: Some("{\\DefaultFont}This will install [ProductName] on your computer. Click Install to continue or Cancel to exit the installer.".to_string()),
+            control_next: None,
+            help: None,
+        },
+        Control {
+            dialog: "WelcomeDialog".to_string(),
+            control: "WelcomeTitle".to_string(),
+            type_: "Text".to_string(),
+            x: 135,
+            y: 20,
+            width: 220,
+            height: 60,
+            attributes: 196611,
+            property: None,
+            text: Some("{\\TitleFont}Welcome to the [ProductName] setup wizard".to_string()),
+            control_next: None,
+            help: None,
+        },
+        Control {
+            dialog: "WelcomeDialog".to_string(),
+            control: "WelcomeCancel".to_string(),
+            type_: "PushButton".to_string(),
+            x: 304,
+            y: 243,
+            width: 56,
+            height: 17,
+            attributes: 3,
+            property: None,
+            text: Some("Cancel".to_string()),
+            control_next: None,
+            help: None,
+        },
+        Control {
+            dialog: "WelcomeDialog".to_string(),
+            control: "WelcomeBack".to_string(),
+            type_: "PushButton".to_string(),
+            x: 180,
+            y: 243,
+            width: 56,
+            height: 17,
+            attributes: 1,
+            property: None,
+            text: Some("Back".to_string()),
+            control_next: Some("WelcomeInstall".to_string()),
+            help: None,
+        },
+        Control {
+            dialog: "WelcomeDialog".to_string(),
+            control: "WelcomeBottomLine".to_string(),
+            type_: "Line".to_string(),
+            x: 0,
+            y: 234,
+            width: 374,
+            height: 0,
+            attributes: 1,
+            property: None,
+            text: None,
+            control_next: None,
+            help: None,
+        },
+        Control {
+            dialog: "WelcomeDialog".to_string(),
+            control: "WelcomeInstall".to_string(),
+            type_: "PushButton".to_string(),
+            x: 236,
+            y: 243,
+            width: 56,
+            height: 17,
+            attributes: 3,
+            property: None,
+            text: Some("Install".to_string()),
+            control_next: Some("WelcomeCancel".to_string()),
+            help: None,
+        },
+    ]
 }

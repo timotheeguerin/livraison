@@ -1,4 +1,6 @@
-use msi_installer::tables::{Control, ControlAttributes, ControlEvent, Dialog, DialogStyle};
+use msi_installer::tables::{
+    Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle,
+};
 
 pub fn create_progress_dialog() -> Dialog {
     Dialog {
@@ -20,7 +22,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "Title".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 20,
             y: 15,
             width: 200,
@@ -37,7 +39,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "Cancel".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 304,
             y: 243,
             width: 56,
@@ -51,7 +53,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "Text".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 35,
             y: 65,
             width: 300,
@@ -68,7 +70,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "ActionText".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 70,
             y: 105,
             width: 265,
@@ -82,7 +84,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "BottomLine".to_string(),
-            type_: "Line".to_string(),
+            type_: ControlType::Line,
             x: 0,
             y: 234,
             width: 374,
@@ -96,7 +98,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "Next".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 236,
             y: 243,
             width: 56,
@@ -110,7 +112,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "BannerLine".to_string(),
-            type_: "Line".to_string(),
+            type_: ControlType::Line,
             x: 0,
             y: 44,
             width: 374,
@@ -124,7 +126,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "ProgressBar".to_string(),
-            type_: "ProgressBar".to_string(),
+            type_: ControlType::ProgressBar,
             x: 35,
             y: 125,
             width: 300,
@@ -138,7 +140,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "ProgressDialog".to_string(),
             control: "StatusLabel".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 35,
             y: 105,
             width: 35,

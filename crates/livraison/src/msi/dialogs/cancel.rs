@@ -1,4 +1,6 @@
-use msi_installer::tables::{Control, ControlAttributes, ControlEvent, Dialog, DialogStyle};
+use msi_installer::tables::{
+    Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle,
+};
 
 pub fn create_cancel_dialog() -> Dialog {
     Dialog {
@@ -20,7 +22,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "CancelDialog".to_string(),
             control: "No".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 132,
             y: 57,
             width: 56,
@@ -34,7 +36,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "CancelDialog".to_string(),
             control: "Text".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 48,
             y: 15,
             width: 194,
@@ -50,7 +52,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "CancelDialog".to_string(),
             control: "Yes".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 72,
             y: 57,
             width: 56,

@@ -1,4 +1,6 @@
-use msi_installer::tables::{Control, ControlAttributes, ControlEvent, Dialog, DialogStyle};
+use msi_installer::tables::{
+    Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle,
+};
 
 pub fn create_fatal_error_dialog() -> Dialog {
     Dialog {
@@ -20,7 +22,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "Title".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 135,
             y: 20,
             width: 220,
@@ -34,7 +36,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "Cancel".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 304,
             y: 243,
             width: 56,
@@ -48,7 +50,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "Back".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 180,
             y: 243,
             width: 56,
@@ -62,7 +64,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "BottomLine".to_string(),
-            type_: "Line".to_string(),
+            type_: ControlType::Line,
             x: 0,
             y: 234,
             width: 374,
@@ -76,7 +78,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "Finish".to_string(),
-            type_: "PushButton".to_string(),
+            type_: ControlType::PushButton,
             x: 236,
             y: 243,
             width: 56,
@@ -90,7 +92,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "Description1".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 135,
             y: 70,
             width: 220,
@@ -104,7 +106,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         Control {
             dialog: "FatalErrorDialog".to_string(),
             control: "Description2".to_string(),
-            type_: "Text".to_string(),
+            type_: ControlType::Text,
             x: 135,
             y: 115,
             width: 220,

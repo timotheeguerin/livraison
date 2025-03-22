@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, ControlEvent, Dialog, DialogStyle};
+use msi_installer::tables::{Control, ControlAttributes, ControlEvent, Dialog, DialogStyle};
 
 pub fn create_cancel_dialog() -> Dialog {
     Dialog {
@@ -25,7 +25,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
             y: 57,
             width: 56,
             height: 17,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("Continue".to_string()),
             control_next: Some("Yes".to_string()),
@@ -39,7 +39,9 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
             y: 15,
             width: 194,
             height: 30,
-            attributes: 131075,
+            attributes: ControlAttributes::NoPrefix
+                | ControlAttributes::Visible
+                | ControlAttributes::Enabled,
             property: None,
             text: Some("Do you want to abort [ProductName] [Text_action]?".to_string()),
             control_next: None,
@@ -53,7 +55,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
             y: 57,
             width: 56,
             height: 17,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("Abort".to_string()),
             control_next: Some("No".to_string()),

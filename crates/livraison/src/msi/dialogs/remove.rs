@@ -1,6 +1,6 @@
 use std::vec;
 
-use msi_installer::tables::{Control, ControlEvent, Dialog, DialogStyle};
+use msi_installer::tables::{Control, ControlAttributes, ControlEvent, Dialog, DialogStyle};
 
 pub fn create_remove_dialog() -> Dialog {
     Dialog {
@@ -27,7 +27,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             y: 70,
             width: 220,
             height: 50,
-            attributes: 196611,
+            attributes: ControlAttributes::NoPrefix | ControlAttributes::Transparent | ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("This will remove [ProductName] from your computer. Click Remove to continue or Cancel to exit the uninstaller.".to_string()),
             control_next: None,
@@ -41,7 +41,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             y: 20,
             width: 220,
             height: 60,
-            attributes: 196611,
+            attributes: ControlAttributes::NoPrefix | ControlAttributes::Transparent | ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("{\\TitleFont}Uninstall [ProductName]".to_string()),
             control_next: None,
@@ -55,7 +55,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             y: 243,
             width: 56,
             height: 17,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("Cancel".to_string()),
             control_next: Some("Back".to_string()),
@@ -69,7 +69,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             y: 243,
             width: 56,
             height: 17,
-            attributes: 1,
+            attributes: ControlAttributes::Visible,
             property: None,
             text: Some("Back".to_string()),
             control_next: Some("Remove".to_string()),
@@ -83,7 +83,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             y: 234,
             width: 374,
             height: 0,
-            attributes: 1,
+            attributes: ControlAttributes::Visible,
             property: None,
             text: None,
             control_next: None,
@@ -97,7 +97,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             y: 243,
             width: 56,
             height: 17,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("Remove".to_string()),
             control_next: Some("Cancel".to_string()),

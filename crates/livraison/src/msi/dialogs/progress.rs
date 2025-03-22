@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, ControlEvent, Dialog, DialogStyle};
+use msi_installer::tables::{Control, ControlAttributes, ControlEvent, Dialog, DialogStyle};
 
 pub fn create_progress_dialog() -> Dialog {
     Dialog {
@@ -25,7 +25,10 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 15,
             width: 200,
             height: 15,
-            attributes: 196611,
+            attributes: ControlAttributes::NoPrefix
+                | ControlAttributes::Transparent
+                | ControlAttributes::Visible
+                | ControlAttributes::Enabled,
             property: None,
             text: Some("{\\BoldFont}[Text_Doing] [ProductName]".to_string()),
             control_next: None,
@@ -39,7 +42,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 243,
             width: 56,
             height: 17,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("Cancel".to_string()),
             control_next: Some("Next".to_string()),
@@ -53,7 +56,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 65,
             width: 300,
             height: 25,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some(
                 "Please wait while [ProductName] is [Text_done]. This may take several minutes."
@@ -70,7 +73,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 105,
             width: 265,
             height: 15,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: None,
             control_next: None,
@@ -84,7 +87,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 234,
             width: 374,
             height: 0,
-            attributes: 1,
+            attributes: ControlAttributes::Visible,
             property: None,
             text: None,
             control_next: None,
@@ -98,7 +101,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 243,
             width: 56,
             height: 17,
-            attributes: 1,
+            attributes: ControlAttributes::Visible,
             property: None,
             text: Some("Next".to_string()),
             control_next: Some("Cancel".to_string()),
@@ -112,7 +115,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 44,
             width: 374,
             height: 0,
-            attributes: 1,
+            attributes: ControlAttributes::Visible,
             property: None,
             text: None,
             control_next: None,
@@ -126,7 +129,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 125,
             width: 300,
             height: 10,
-            attributes: 65537,
+            attributes: ControlAttributes::Progress95 | ControlAttributes::Visible,
             property: None,
             text: Some("Progress done".to_string()),
             control_next: None,
@@ -140,7 +143,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             y: 105,
             width: 35,
             height: 10,
-            attributes: 3,
+            attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
             property: None,
             text: Some("Status:".to_string()),
             control_next: None,

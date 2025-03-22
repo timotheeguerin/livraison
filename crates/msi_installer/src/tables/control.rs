@@ -1,5 +1,38 @@
 use super::{Entity, RowView, error::MsiDataBaseError};
 
+use bitflags::bitflags;
+
+bitflags! {
+    /// Dialog control Attributes
+    /// https://learn.microsoft.com/en-us/windows/win32/msi/control-attributes
+    #[derive(Debug, Clone)]
+    pub struct ControlAttributes: u32 {
+        const Visible = 1;
+        const Enabled = 2;
+        const Sunken = 4;
+        const Indirect = 8;
+        const IntegerControl = 16;
+        const RTLRO = 32;
+        const RightAligned = 64;
+        const LeftScroll = 128;
+        const BiDi = 224;
+
+        // Text attributes
+        const Transparent = 65536;
+        const NoPrefix = 131072;
+        const NoWrap = 262144;
+        const FormatSize = 524288;
+        const UsersLanguage = 1048576;
+        const Password = 2097152;
+
+        // Progress control attributes
+        const Progress95 = 65536;
+
+        // Edit control attributes
+        const MultiLine	= 65536;
+    }
+}
+
 /// Control Table
 /// https://learn.microsoft.com/en-us/windows/win32/msi/control-table
 #[derive(Debug, Clone)]
@@ -11,7 +44,7 @@ pub struct Control {
     pub y: i32,
     pub width: i32,
     pub height: i32,
-    pub attributes: i32,
+    pub attributes: ControlAttributes,
     pub property: Option<String>,
     pub text: Option<String>,
     pub control_next: Option<String>,
@@ -72,7 +105,7 @@ impl Entity for Control {
             y: row.i32(4)?,
             width: row.i32(5)?,
             height: row.i32(6)?,
-            attributes: row.i32(7)?,
+            attributes: ControlAttributes::from_bits_retain(row.i32(7)? as u32),
             property: row.opt_string(8)?,
             text: row.opt_string(9)?,
             control_next: row.opt_string(10)?,
@@ -89,7 +122,7 @@ impl Entity for Control {
             msi::Value::Int(self.y),
             msi::Value::Int(self.width),
             msi::Value::Int(self.height),
-            msi::Value::Int(self.attributes),
+            msi::Value::Int(self.attributes.bits() as i32),
             msi::Value::from_opt_string(&self.property),
             msi::Value::from_opt_string(&self.text),
             msi::Value::from_opt_string(&self.control_next),

@@ -12,3 +12,4 @@ doc = true
 msi  = { version = "0.8.0", path = "../msi", default-features = false }
 time = "0.3.39"
 thiserror = "2.0.12"
+bitflags = "2.9.0"

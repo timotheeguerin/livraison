@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, ControlEvent, Dialog};
+use msi_installer::tables::{Control, ControlEvent, Dialog, DialogStyle};
 
 pub fn create_exit_dialog() -> Dialog {
     Dialog {
@@ -7,7 +7,7 @@ pub fn create_exit_dialog() -> Dialog {
         v_centering: 50,
         width: 370,
         height: 270,
-        attributes: 3,
+        attributes: DialogStyle::Visible | DialogStyle::Modal,
         title: Some("[ProductName] Setup".to_string()),
         control_first: "Finish".to_string(),
         control_default: Some("Finish".to_string()),

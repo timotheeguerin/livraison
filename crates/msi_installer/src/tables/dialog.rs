@@ -1,6 +1,27 @@
 use super::{Entity, RowView, error::MsiDataBaseError};
+use bitflags::bitflags;
 
 const TABLE_NAME: &str = "Dialog";
+
+bitflags! {
+    /// Dialog Attributes
+    /// https://learn.microsoft.com/en-us/windows/win32/msi/dialog-style-bits
+    #[derive(Debug, Clone)]
+    pub struct DialogStyle: u32 {
+        const Visible = 1;
+        const Modal = 2;
+        const Minimize = 4;
+        const SysModal = 8;
+        const KeepModeless = 16;
+        const TrackDiskSpace = 32;
+        const UseCustomPalette = 64;
+        const RTLRO = 128;
+        const RightAligned = 256;
+        const LeftScroll = 512;
+        const BiDi = 896;
+        const Error = 65536;
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct Dialog {
@@ -9,7 +30,7 @@ pub struct Dialog {
     pub v_centering: i32,
     pub width: i32,
     pub height: i32,
-    pub attributes: i32,
+    pub attributes: DialogStyle,
     pub title: Option<String>,
     pub control_first: String,
     pub control_default: Option<String>,
@@ -57,7 +78,7 @@ impl Entity for Dialog {
             v_centering: row.i32(2)?,
             width: row.i32(3)?,
             height: row.i32(4)?,
-            attributes: row.i32(5)?,
+            attributes: DialogStyle::from_bits_retain(row.i32(5)? as u32),
             title: row.opt_string(6)?,
             control_first: row.string(7)?,
             control_default: row.opt_string(8)?,
@@ -72,7 +93,7 @@ impl Entity for Dialog {
             msi::Value::Int(self.v_centering),
             msi::Value::Int(self.width),
             msi::Value::Int(self.height),
-            msi::Value::Int(self.attributes),
+            msi::Value::Int(self.attributes.bits() as i32),
             msi::Value::from_opt_string(&self.title),
             msi::Value::Str(self.control_first.clone()),
             msi::Value::from_opt_string(&self.control_default),

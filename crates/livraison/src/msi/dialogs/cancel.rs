@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, ControlEvent, Dialog};
+use msi_installer::tables::{Control, ControlEvent, Dialog, DialogStyle};
 
 pub fn create_cancel_dialog() -> Dialog {
     Dialog {
@@ -7,7 +7,7 @@ pub fn create_cancel_dialog() -> Dialog {
         v_centering: 10,
         width: 260,
         height: 85,
-        attributes: 3,
+        attributes: DialogStyle::Visible | DialogStyle::Modal,
         title: Some("[ProductName] Setup".to_string()),
         control_first: "No".to_string(),
         control_default: Some("No".to_string()),

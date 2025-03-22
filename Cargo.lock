@@ -475,6 +475,7 @@ dependencies = [
 name = "msi_installer"
 version = "0.1.0"
 dependencies = [
+ "bitflags 2.9.0",
  "msi",
  "thiserror",
  "time",

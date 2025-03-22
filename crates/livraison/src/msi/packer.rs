@@ -10,7 +10,9 @@ use crate::{
     LivraisonResult,
     msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
 };
-use msi_installer::tables::{Control, ControlEvent, Dialog, Entity, InstallUISequence};
+use msi_installer::tables::{
+    Control, ControlEvent, Dialog, Entity, EventMapping, InstallUISequence,
+};
 use uuid::Uuid;
 
 use super::dialogs::{
@@ -833,38 +835,23 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     fn create_event_mapping_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "EventMapping",
-            vec![
-                msi::Column::build("Dialog_").id_string(72),
-                msi::Column::build("Control_")
-                    .primary_key()
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Event")
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Attribute")
-                    .category(msi::Category::Identifier)
-                    .string(50),
-            ],
-        )?;
-        let mut rows = Vec::new();
-        #[rustfmt::skip]
-    let actions: [(&str, &str, &str, &str); 2] = [
-        ("ProgressDialog", "ProgressActionText", "ActionText", "Text"),
-        ("ProgressDialog", "ProgressProgressBar", "SetProgress", "Progress"),
-    ];
-        for action in actions {
-            rows.push(vec![
-                msi::Value::Str(action.0.to_string()),
-                msi::Value::Str(action.1.to_string()),
-                msi::Value::Str(action.2.to_string()),
-                msi::Value::Str(action.3.to_string()),
-            ]);
-        }
-        self.package
-            .insert_rows(msi::Insert::into("EventMapping").rows(rows))?;
+        EventMapping::create_table(&mut self.package)?;
+
+        let items = vec![
+            EventMapping {
+                dialog: "ProgressDialog".to_string(),
+                control: "ProgressActionText".to_string(),
+                event: "ActionText".to_string(),
+                attribute: "Text".to_string(),
+            },
+            EventMapping {
+                dialog: "ProgressDialog".to_string(),
+                control: "ProgressProgressBar".to_string(),
+                event: "SetProgress".to_string(),
+                attribute: "Progress".to_string(),
+            },
+        ];
+        EventMapping::insert(&mut self.package, &items)?;
         Ok(())
     }
 

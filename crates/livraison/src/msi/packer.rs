@@ -840,13 +840,13 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let items = vec![
             EventMapping {
                 dialog: "ProgressDialog".to_string(),
-                control: "ProgressActionText".to_string(),
+                control: "ActionText".to_string(),
                 event: "ActionText".to_string(),
                 attribute: "Text".to_string(),
             },
             EventMapping {
                 dialog: "ProgressDialog".to_string(),
-                control: "ProgressProgressBar".to_string(),
+                control: "ProgressBar".to_string(),
                 event: "SetProgress".to_string(),
                 attribute: "Progress".to_string(),
             },

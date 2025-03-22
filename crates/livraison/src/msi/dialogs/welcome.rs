@@ -1,4 +1,6 @@
-use msi_installer::tables::{Control, Dialog};
+use std::vec;
+
+use msi_installer::tables::{Control, ControlEvent, Dialog};
 
 pub fn create_welcome_dialog() -> Dialog {
     Dialog {
@@ -102,4 +104,65 @@ pub fn create_welcome_dialog_controls() -> Vec<Control> {
             help: None,
         },
     ]
+}
+
+pub fn create_welcome_dialog_control_events() -> Vec<ControlEvent> {
+    return vec![
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Cancel".to_string(),
+            event: "SpawnDialog".to_string(),
+            argument: "CancelDialog".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(0),
+        },
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Next".to_string(),
+            event: "[Mode]".to_string(),
+            argument: "Install".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(1),
+        },
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Next".to_string(),
+            event: "[Text_action]".to_string(),
+            argument: "installation".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(2),
+        },
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Next".to_string(),
+            event: "[Text_agent]".to_string(),
+            argument: "installer".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(3),
+        },
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Next".to_string(),
+            event: "[Text_Doing]".to_string(),
+            argument: "Installing".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(4),
+        },
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Next".to_string(),
+            event: "[Text_done]".to_string(),
+            argument: "installed".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(5),
+        },
+        ControlEvent {
+            dialog: "WelcomeDialog".to_string(),
+            control: "Next".to_string(),
+            event: "EndDialog".to_string(),
+            argument: "Return".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(6),
+        },
+    ];
 }

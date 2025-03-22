@@ -10,15 +10,26 @@ use crate::{
     LivraisonResult,
     msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
 };
-use msi_installer::tables::{Control, Dialog, Entity, InstallUISequence};
+use msi_installer::tables::{Control, ControlEvent, Dialog, Entity, InstallUISequence};
 use uuid::Uuid;
 
 use super::dialogs::{
-    cancel::{create_cancel_dialog, create_cancel_dialog_controls},
-    exit::{create_exit_dialog, create_exit_dialog_controls},
-    fatal_error::{create_fatal_error_dialog, create_fatal_error_dialog_controls},
-    progress::{create_progress_dialog, create_progress_dialog_controls},
-    remove::{create_remove_dialog, create_remove_dialog_controls},
+    cancel::{
+        create_cancel_dialog, create_cancel_dialog_control_events, create_cancel_dialog_controls,
+    },
+    exit::{create_exit_dialog, create_exit_dialog_control_events, create_exit_dialog_controls},
+    fatal_error::{
+        create_fatal_error_dialog, create_fatal_error_dialog_control_events,
+        create_fatal_error_dialog_controls,
+    },
+    progress::{
+        create_progress_dialog, create_progress_dialog_control_events,
+        create_progress_dialog_controls,
+    },
+    remove::{
+        create_remove_dialog, create_remove_dialog_control_events, create_remove_dialog_controls,
+    },
+    welcome::create_welcome_dialog_control_events,
 };
 
 // Namespace to construct uuid v5
@@ -804,66 +815,20 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     fn create_control_event_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "ControlEvent",
-            vec![
-                msi::Column::build("Dialog_").id_string(72),
-                msi::Column::build("Control_")
-                    .category(msi::Category::Identifier)
-                    .string(50),
-                msi::Column::build("Event")
-                    .category(msi::Category::Formatted)
-                    .string(50),
-                msi::Column::build("Argument")
-                    .category(msi::Category::Formatted)
-                    .string(255),
-                msi::Column::build("Condition")
-                    .nullable()
-                    .category(msi::Category::Condition)
-                    .string(255),
-                msi::Column::build("Ordering")
-                    .primary_key()
-                    .nullable()
-                    .range(0, 0x7fffffff)
-                    .int16(),
-            ],
-        )?;
-        let mut rows = Vec::new();
-        #[rustfmt::skip]
-    let actions: [(&str, &str, &str, &str, &str, i32); 20] = [
-        ("WelcomeDialog", "Cancel", "SpawnDialog", "CancelDialog", "1", 0),
-        ("WelcomeDialog", "Next", "[Mode]", "Install", "1", 1),
-        ("WelcomeDialog", "Next", "[Text_action]", "installation", "1", 2),
-        ("WelcomeDialog", "Next", "[Text_agent]", "installer", "1", 3),
-        ("WelcomeDialog", "Next", "[Text_Doing]", "Installing", "1", 4),
-        ("WelcomeDialog", "Next", "[Text_done]", "installed", "1", 5),
-        ("WelcomeDialog", "Next", "EndDialog", "Return", "1", 6),
-        ("RemoveDialog", "RemoveCancel", "[Text_action]", "removal", "1", 7),
-        ("RemoveDialog", "RemoveCancel", "SpawnDialog", "CancelDialog", "1", 8),
-        ("RemoveDialog", "RemoveRemove", "[Mode]", "Remove", "1", 9),
-        ("RemoveDialog", "RemoveRemove", "[Text_action]", "removal", "1", 10),
-        ("RemoveDialog", "RemoveRemove", "[Text_agent]", "uninstaller", "1", 11),
-        ("RemoveDialog", "RemoveRemove", "[Text_Doing]", "Removing", "1", 12),
-        ("RemoveDialog", "RemoveRemove", "[Text_done]", "uninstalled", "1", 13),
-        ("RemoveDialog", "RemoveRemove", "EndDialog", "Return", "1", 14),
-        ("CancelDialog", "No", "EndDialog", "Return", "1", 15),
-        ("CancelDialog", "Yes", "EndDialog", "Exit", "1", 16),
-        ("ProgressDialog", "ProgressCancel", "SpawnDialog", "CancelDialog", "1", 17),
-        ("ExitDialog", "ExitFinish", "EndDialog", "Return", "1", 18),
-        ("FatalErrorDialog", "FatalFinish", "EndDialog", "Exit", "1", 19),
-    ];
-        for action in actions {
-            rows.push(vec![
-                msi::Value::Str(action.0.to_string()),
-                msi::Value::Str(action.1.to_string()),
-                msi::Value::Str(action.2.to_string()),
-                msi::Value::Str(action.3.to_string()),
-                msi::Value::Str(action.4.to_string()),
-                msi::Value::Int(action.5),
-            ]);
-        }
-        self.package
-            .insert_rows(msi::Insert::into("ControlEvent").rows(rows))?;
+        ControlEvent::create_table(&mut self.package)?;
+        let controls: Vec<ControlEvent> = [
+            create_welcome_dialog_control_events(),
+            create_remove_dialog_control_events(),
+            create_cancel_dialog_control_events(),
+            create_progress_dialog_control_events(),
+            create_exit_dialog_control_events(),
+            create_fatal_error_dialog_control_events(),
+        ]
+        .iter()
+        .flatten()
+        .cloned()
+        .collect();
+        ControlEvent::insert(&mut self.package, &controls)?;
         Ok(())
     }
 

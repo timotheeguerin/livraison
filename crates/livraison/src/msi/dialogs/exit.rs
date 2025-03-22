@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, Dialog};
+use msi_installer::tables::{Control, ControlEvent, Dialog};
 
 pub fn create_exit_dialog() -> Dialog {
     Dialog {
@@ -102,4 +102,15 @@ pub fn create_exit_dialog_controls() -> Vec<Control> {
             help: None,
         },
     ]
+}
+
+pub fn create_exit_dialog_control_events() -> Vec<ControlEvent> {
+    vec![ControlEvent {
+        dialog: "ExitDialog".to_string(),
+        control: "ExitFinish".to_string(),
+        event: "EndDialog".to_string(),
+        argument: "Return".to_string(),
+        condition: Some("1".to_string()),
+        ordering: Some(18),
+    }]
 }

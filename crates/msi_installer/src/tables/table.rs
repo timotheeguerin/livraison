@@ -85,6 +85,21 @@ impl<'a> RowView<'a> {
         }
     }
 
+    pub fn opt_i32(&self, index: usize) -> Result<Option<i32>, MsiDataBaseError> {
+        let cell = &self.row[index];
+        match cell {
+            msi::Value::Int(s) => Ok(Some(s.clone())),
+            msi::Value::Null => Ok(None),
+            _ => Err(MsiDataBaseError::CellInvalidTypeError {
+                table: self.table.clone(),
+                row: self.row_index,
+                column: index,
+                expected_type: "int32".to_string(),
+                value: cell.to_string(),
+            }),
+        }
+    }
+
     pub fn i32(&self, index: usize) -> Result<i32, MsiDataBaseError> {
         let cell = &self.row[index];
         match cell {

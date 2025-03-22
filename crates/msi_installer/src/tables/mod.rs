@@ -1,4 +1,5 @@
 mod control;
+mod control_event;
 mod dialog;
 mod error;
 mod install_ui_sequence;
@@ -6,6 +7,7 @@ mod standard_actions;
 mod table;
 
 pub use control::*;
+pub use control_event::*;
 pub use dialog::*;
 pub use error::MsiDataBaseError;
 pub use install_ui_sequence::*;

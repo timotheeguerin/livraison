@@ -60,6 +60,15 @@ impl Value {
         }
     }
 
+    /// Converts an optional i32 to a `Value`
+    pub fn from_opt_i32(val: &Option<i32>) -> Value {
+        if let Some(val) = val {
+            Value::Int(*val)
+        } else {
+            Value::Null
+        }
+    }
+
     /// Creates a boolean value.
     pub(crate) fn from_bool(boolean: bool) -> Value {
         if boolean {

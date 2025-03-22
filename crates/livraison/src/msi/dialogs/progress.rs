@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, Dialog};
+use msi_installer::tables::{Control, ControlEvent, Dialog};
 
 pub fn create_progress_dialog() -> Dialog {
     Dialog {
@@ -147,4 +147,15 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             help: None,
         },
     ]
+}
+
+pub fn create_progress_dialog_control_events() -> Vec<ControlEvent> {
+    vec![ControlEvent {
+        dialog: "ProgressDialog".to_string(),
+        control: "ProgressCancel".to_string(),
+        event: "SpawnDialog".to_string(),
+        argument: "CancelDialog".to_string(),
+        condition: Some("1".to_string()),
+        ordering: Some(17),
+    }]
 }

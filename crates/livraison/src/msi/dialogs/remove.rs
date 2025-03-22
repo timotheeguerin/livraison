@@ -1,4 +1,6 @@
-use msi_installer::tables::{Control, Dialog};
+use std::vec;
+
+use msi_installer::tables::{Control, ControlEvent, Dialog};
 
 pub fn create_remove_dialog() -> Dialog {
     Dialog {
@@ -100,6 +102,75 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             text: Some("Remove".to_string()),
             control_next: Some("Cancel".to_string()),
             help: None,
+        },
+    ]
+}
+
+pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
+    vec![
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveCancel".to_string(),
+            event: "[Text_action]".to_string(),
+            argument: "removal".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(7),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveCancel".to_string(),
+            event: "SpawnDialog".to_string(),
+            argument: "CancelDialog".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(8),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveRemove".to_string(),
+            event: "[Mode]".to_string(),
+            argument: "Remove".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(9),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveRemove".to_string(),
+            event: "[Text_action]".to_string(),
+            argument: "removal".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(10),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveRemove".to_string(),
+            event: "[Text_agent]".to_string(),
+            argument: "uninstaller".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(11),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveRemove".to_string(),
+            event: "[Text_Doing]".to_string(),
+            argument: "Removing".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(12),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveRemove".to_string(),
+            event: "[Text_done]".to_string(),
+            argument: "uninstalled".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(13),
+        },
+        ControlEvent {
+            dialog: "RemoveDialog".to_string(),
+            control: "RemoveRemove".to_string(),
+            event: "EndDialog".to_string(),
+            argument: "Return".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(14),
         },
     ]
 }

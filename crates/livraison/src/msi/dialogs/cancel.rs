@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, Dialog};
+use msi_installer::tables::{Control, ControlEvent, Dialog};
 
 pub fn create_cancel_dialog() -> Dialog {
     Dialog {
@@ -58,6 +58,27 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
             text: Some("Abort".to_string()),
             control_next: Some("No".to_string()),
             help: None,
+        },
+    ]
+}
+
+pub fn create_cancel_dialog_control_events() -> Vec<ControlEvent> {
+    vec![
+        ControlEvent {
+            dialog: "CancelDialog".to_string(),
+            control: "No".to_string(),
+            event: "EndDialog".to_string(),
+            argument: "Return".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(15),
+        },
+        ControlEvent {
+            dialog: "CancelDialog".to_string(),
+            control: "Yes".to_string(),
+            event: "EndDialog".to_string(),
+            argument: "Exit".to_string(),
+            condition: Some("1".to_string()),
+            ordering: Some(16),
         },
     ]
 }

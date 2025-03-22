@@ -1,4 +1,4 @@
-use msi_installer::tables::{Control, Dialog};
+use msi_installer::tables::{Control, ControlEvent, Dialog};
 
 pub fn create_fatal_error_dialog() -> Dialog {
     Dialog {
@@ -116,4 +116,15 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
             help: None,
         },
     ]
+}
+
+pub fn create_fatal_error_dialog_control_events() -> Vec<ControlEvent> {
+    vec![ControlEvent {
+        dialog: "FatalErrorDialog".to_string(),
+        control: "FatalFinish".to_string(),
+        event: "EndDialog".to_string(),
+        argument: "Exit".to_string(),
+        condition: Some("1".to_string()),
+        ordering: Some(19),
+    }]
 }

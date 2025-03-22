@@ -1,4 +1,8 @@
-use crate::color::{green, red};
+use super::{
+    error::{ValidationError, ValidationResult},
+    rules::validate_pks,
+};
+use crate::color::{cyan, green, red};
 use msi::Package;
 use msi_installer::tables::{
     Control, Dialog, Entity, InstallUISequence, MsiDataBaseError, is_standard_action,
@@ -7,58 +11,40 @@ use std::{
     collections::{HashMap, HashSet, hash_map::Values},
     io::{Read, Seek},
 };
-use thiserror::Error;
 
 // Validators to add
 // - table primary keys must be all the first columns(can't skip)
 // - table order respecting key string id map not string itself
 pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
-    match validate_dialogs(package) {
-        Ok(errors) => {
-            if errors.is_empty() {
-                println!("{} No errors found", green("✓"));
-            } else {
-                print_errors(&errors);
-            }
-        }
-        Err(err) => println!("{} {}", red("error"), err),
+    let mut errors: Vec<ValidationError> = Vec::new();
+
+    errors.extend(safe_result(validate_pks(package)));
+    errors.extend(safe_result(validate_dialogs(package)));
+
+    if errors.is_empty() {
+        println!("{} No errors found", green("✓"));
+    } else {
+        print_errors(&errors);
+        println!();
+        println!(
+            "{} Found {} errors",
+            red("✗"),
+            red(errors.len().to_string())
+        );
     }
 }
 
+fn safe_result(result: ValidationResult) -> Vec<ValidationError> {
+    match result {
+        Ok(errors) => errors,
+        Err(err) => vec![err],
+    }
+}
 fn print_errors(errors: &Vec<ValidationError>) {
     for error in errors {
         println!("{} {}", red("error"), error);
     }
 }
-
-#[derive(Error, Debug)]
-pub enum ValidationError {
-    #[error("MsiDataBaseError: {0}")]
-    MsiDataBase(#[from] MsiDataBaseError),
-
-    #[error("Dialog {dialog} referenced in {reference} is missing")]
-    MissingDialog { dialog: String, reference: String },
-    #[error("Control {control} in {dialog} referenced by {reference} is missing")]
-    MissingControl {
-        dialog: String,
-        control: String,
-        reference: String,
-    },
-    #[error(
-        "Controls on dialog {dialog} do not form a valid cycle, control {control} is missing a next control"
-    )]
-    ControlNotCircular { dialog: String, control: String },
-    #[error(
-        "Control {next_control} on {dialog} is referenced as the next control by multiple dialogs {controls}."
-    )]
-    DuplicateControlNext {
-        dialog: String,
-        controls: String,
-        next_control: String,
-    },
-}
-
-pub type ValidationResult = Result<Vec<ValidationError>, ValidationError>;
 
 fn validate_dialogs<F: Read + Seek>(package: &mut Package<F>) -> ValidationResult {
     let install_ui_sequences = InstallUISequence::list(package)?;

@@ -773,11 +773,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Dialog::create_table(&mut self.package)?;
         let dialogs = [
             create_welcome_dialog(),
-            // create_remove_dialog(),
+            create_remove_dialog(),
             create_cancel_dialog(),
-            // create_progress_dialog(),
-            // create_exit_dialog(),
-            // create_fatal_error_dialog(),
+            create_progress_dialog(),
+            create_exit_dialog(),
+            create_fatal_error_dialog(),
         ];
         Dialog::insert(&mut self.package, &dialogs)?;
 
@@ -788,11 +788,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Control::create_table(&mut self.package)?;
         let controls: Vec<Control> = [
             create_welcome_dialog_controls(),
-            // create_remove_dialog_controls(),
+            create_remove_dialog_controls(),
             create_cancel_dialog_controls(),
-            // create_progress_dialog_controls(),
-            // create_exit_dialog_controls(),
-            // create_fatal_error_dialog_controls(),
+            create_progress_dialog_controls(),
+            create_exit_dialog_controls(),
+            create_fatal_error_dialog_controls(),
         ]
         .iter()
         .flatten()

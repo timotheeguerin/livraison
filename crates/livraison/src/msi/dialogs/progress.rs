@@ -9,9 +9,9 @@ pub fn create_progress_dialog() -> Dialog {
         height: 270,
         attributes: 1,
         title: Some("[ProductName] Setup".to_string()),
-        control_first: "ProgressCancel".to_string(),
-        control_default: Some("ProgressCancel".to_string()),
-        control_cancel: Some("ProgressCancel".to_string()),
+        control_first: "Cancel".to_string(),
+        control_default: Some("Cancel".to_string()),
+        control_cancel: Some("Cancel".to_string()),
     }
 }
 
@@ -19,7 +19,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
     vec![
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressTitle".to_string(),
+            control: "Title".to_string(),
             type_: "Text".to_string(),
             x: 20,
             y: 15,
@@ -33,7 +33,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressCancel".to_string(),
+            control: "Cancel".to_string(),
             type_: "PushButton".to_string(),
             x: 304,
             y: 243,
@@ -42,12 +42,12 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             attributes: 3,
             property: None,
             text: Some("Cancel".to_string()),
-            control_next: None,
+            control_next: Some("Next".to_string()),
             help: None,
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressText".to_string(),
+            control: "Text".to_string(),
             type_: "Text".to_string(),
             x: 35,
             y: 65,
@@ -64,7 +64,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressActionText".to_string(),
+            control: "ActionText".to_string(),
             type_: "Text".to_string(),
             x: 70,
             y: 105,
@@ -78,21 +78,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressBack".to_string(),
-            type_: "PushButton".to_string(),
-            x: 180,
-            y: 243,
-            width: 56,
-            height: 17,
-            attributes: 1,
-            property: None,
-            text: Some("Back".to_string()),
-            control_next: Some("ProgressNext".to_string()),
-            help: None,
-        },
-        Control {
-            dialog: "ProgressDialog".to_string(),
-            control: "ProgressBottomLine".to_string(),
+            control: "BottomLine".to_string(),
             type_: "Line".to_string(),
             x: 0,
             y: 234,
@@ -106,7 +92,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressNext".to_string(),
+            control: "Next".to_string(),
             type_: "PushButton".to_string(),
             x: 236,
             y: 243,
@@ -115,12 +101,12 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
             attributes: 1,
             property: None,
             text: Some("Next".to_string()),
-            control_next: Some("ProgressCancel".to_string()),
+            control_next: Some("Cancel".to_string()),
             help: None,
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressBannerLine".to_string(),
+            control: "BannerLine".to_string(),
             type_: "Line".to_string(),
             x: 0,
             y: 44,
@@ -134,7 +120,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressProgressBar".to_string(),
+            control: "ProgressBar".to_string(),
             type_: "ProgressBar".to_string(),
             x: 35,
             y: 125,
@@ -148,7 +134,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "ProgressDialog".to_string(),
-            control: "ProgressStatusLabel".to_string(),
+            control: "StatusLabel".to_string(),
             type_: "Text".to_string(),
             x: 35,
             y: 105,

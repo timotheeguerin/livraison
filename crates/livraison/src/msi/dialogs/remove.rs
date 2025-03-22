@@ -9,9 +9,9 @@ pub fn create_remove_dialog() -> Dialog {
         height: 270,
         attributes: 3,
         title: Some("[ProductName] Setup".to_string()),
-        control_first: "RemoveRemove".to_string(),
-        control_default: Some("RemoveRemove".to_string()),
-        control_cancel: Some("RemoveRemove".to_string()),
+        control_first: "Remove".to_string(),
+        control_default: Some("Remove".to_string()),
+        control_cancel: Some("Remove".to_string()),
     }
 }
 
@@ -19,7 +19,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
     vec![
         Control {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveDescription".to_string(),
+            control: "Description".to_string(),
             type_: "Text".to_string(),
             x: 135,
             y: 70,
@@ -33,7 +33,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveTitle".to_string(),
+            control: "Title".to_string(),
             type_: "Text".to_string(),
             x: 135,
             y: 20,
@@ -47,7 +47,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveCancel".to_string(),
+            control: "Cancel".to_string(),
             type_: "PushButton".to_string(),
             x: 304,
             y: 243,
@@ -56,12 +56,12 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             attributes: 3,
             property: None,
             text: Some("Cancel".to_string()),
-            control_next: None,
+            control_next: Some("Back".to_string()),
             help: None,
         },
         Control {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveBack".to_string(),
+            control: "Back".to_string(),
             type_: "PushButton".to_string(),
             x: 180,
             y: 243,
@@ -70,12 +70,12 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             attributes: 1,
             property: None,
             text: Some("Back".to_string()),
-            control_next: Some("RemoveRemove".to_string()),
+            control_next: Some("Remove".to_string()),
             help: None,
         },
         Control {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveBottomLine".to_string(),
+            control: "BottomLine".to_string(),
             type_: "Line".to_string(),
             x: 0,
             y: 234,
@@ -89,7 +89,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             type_: "PushButton".to_string(),
             x: 236,
             y: 243,
@@ -98,7 +98,7 @@ pub fn create_remove_dialog_controls() -> Vec<Control> {
             attributes: 3,
             property: None,
             text: Some("Remove".to_string()),
-            control_next: Some("RemoveCancel".to_string()),
+            control_next: Some("Cancel".to_string()),
             help: None,
         },
     ]

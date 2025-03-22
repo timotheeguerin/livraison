@@ -9,9 +9,9 @@ pub fn create_fatal_error_dialog() -> Dialog {
         height: 270,
         attributes: 3,
         title: Some("[ProductName] Setup".to_string()),
-        control_first: "FatalFinish".to_string(),
-        control_default: Some("FatalFinish".to_string()),
-        control_cancel: Some("FatalFinish".to_string()),
+        control_first: "Finish".to_string(),
+        control_default: Some("Finish".to_string()),
+        control_cancel: Some("Finish".to_string()),
     }
 }
 
@@ -19,7 +19,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
     vec![
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalTitle".to_string(),
+            control: "Title".to_string(),
             type_: "Text".to_string(),
             x: 135,
             y: 20,
@@ -33,7 +33,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalCancel".to_string(),
+            control: "Cancel".to_string(),
             type_: "PushButton".to_string(),
             x: 304,
             y: 243,
@@ -42,12 +42,12 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
             attributes: 1,
             property: None,
             text: Some("Cancel".to_string()),
-            control_next: None,
+            control_next: Some("Back".to_string()),
             help: None,
         },
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalBack".to_string(),
+            control: "Back".to_string(),
             type_: "PushButton".to_string(),
             x: 180,
             y: 243,
@@ -56,12 +56,12 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
             attributes: 1,
             property: None,
             text: Some("Back".to_string()),
-            control_next: Some("FatalFinish".to_string()),
+            control_next: Some("Finish".to_string()),
             help: None,
         },
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalBottomLine".to_string(),
+            control: "BottomLine".to_string(),
             type_: "Line".to_string(),
             x: 0,
             y: 234,
@@ -75,7 +75,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalFinish".to_string(),
+            control: "Finish".to_string(),
             type_: "PushButton".to_string(),
             x: 236,
             y: 243,
@@ -84,12 +84,12 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
             attributes: 3,
             property: None,
             text: Some("Finish".to_string()),
-            control_next: Some("FatalCancel".to_string()),
+            control_next: Some("Cancel".to_string()),
             help: None,
         },
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalDescription1".to_string(),
+            control: "Description1".to_string(),
             type_: "Text".to_string(),
             x: 135,
             y: 70,
@@ -103,7 +103,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
         },
         Control {
             dialog: "FatalErrorDialog".to_string(),
-            control: "FatalDescription2".to_string(),
+            control: "Description2".to_string(),
             type_: "Text".to_string(),
             x: 135,
             y: 115,

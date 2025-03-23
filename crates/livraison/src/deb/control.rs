@@ -120,7 +120,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     fn mk_control() -> Control {
-        return Control {
+        Control {
             package: "test".to_string(),
             version: "1.0".to_string(),
             description: "A test package".to_string(),
@@ -130,7 +130,7 @@ mod tests {
             },
             architecture: "all".to_string(),
             ..Default::default()
-        };
+        }
     }
     #[test]
     fn write_basic_control() {

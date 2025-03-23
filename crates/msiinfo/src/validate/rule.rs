@@ -136,7 +136,7 @@ fn run_rule<F: Read + Seek>(
         ctx.error(e.to_string());
     }
 
-    if let Err(e) = rule.run(&mut ctx, &data) {
+    if let Err(e) = rule.run(&mut ctx, data) {
         ctx.error(e.to_string());
     }
     ctx.diagnostics

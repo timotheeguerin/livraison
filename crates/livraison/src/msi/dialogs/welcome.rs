@@ -109,7 +109,7 @@ pub fn create_welcome_dialog_controls() -> Vec<Control> {
 }
 
 pub fn create_welcome_dialog_control_events() -> Vec<ControlEvent> {
-    return vec![
+    vec![
         ControlEvent {
             dialog: "WelcomeDialog".to_string(),
             control: "Cancel".to_string(),
@@ -166,5 +166,5 @@ pub fn create_welcome_dialog_control_events() -> Vec<ControlEvent> {
             condition: Some("1".to_string()),
             ordering: Some(6),
         },
-    ];
+    ]
 }

@@ -4,6 +4,7 @@ use std::{
     fs,
     io::{self, Read, Seek, Write},
     path::{Path, PathBuf},
+    vec,
 };
 
 use crate::{
@@ -11,7 +12,7 @@ use crate::{
     msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
 };
 use msi_installer::tables::{
-    Control, ControlEvent, Dialog, Entity, EventMapping, InstallUISequence,
+    Control, ControlEvent, Dialog, Directory, Entity, EventMapping, InstallUISequence,
 };
 use uuid::Uuid;
 
@@ -392,42 +393,32 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     // Creates and populates the `Directory` database table for the package.
-    fn create_directory_table(&mut self, directories: &[DirectoryInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "Directory",
-            vec![
-                msi::Column::build("Directory").primary_key().id_string(72),
-                msi::Column::build("Directory_Parent")
-                    .nullable()
-                    .foreign_key("Directory", 1)
-                    .id_string(72),
-                msi::Column::build("DefaultDir")
-                    .category(msi::Category::DefaultDir)
-                    .string(255),
-            ],
-        )?;
-        let mut rows = Vec::new();
-        for directory in directories.iter() {
-            rows.push(vec![
-                msi::Value::Str(directory.key.clone()),
-                msi::Value::Str(directory.parent_key.clone()),
-                msi::Value::Str(directory.name.clone()),
-            ]);
+    fn create_directory_table(&mut self, user_dirs: &[DirectoryInfo]) -> LivraisonResult<()> {
+        Directory::create_table(&mut self.package)?;
+
+        let mut dirs = vec![
+            Directory {
+                directory: "TARGETDIR".to_string(),
+                parent: None,
+                default_dir: "SourceDir".to_string(),
+            },
+            Directory {
+                directory: "ProgramFilesFolder".to_string(),
+                parent: Some("TARGETDIR".to_string()),
+                default_dir: ".".to_string(),
+            },
+        ];
+
+        for dir in user_dirs.iter() {
+            dirs.push(Directory {
+                directory: dir.key.clone(),
+                parent: Some(dir.parent_key.clone()),
+                default_dir: dir.name.clone(),
+            });
         }
-        self.package.insert_rows(
-            msi::Insert::into("Directory")
-                .row(vec![
-                    msi::Value::from("TARGETDIR"),
-                    msi::Value::Null,
-                    msi::Value::from("SourceDir"),
-                ])
-                .row(vec![
-                    msi::Value::from("ProgramFilesFolder"),
-                    msi::Value::from("TARGETDIR"),
-                    msi::Value::from("."),
-                ])
-                .rows(rows),
-        )?;
+
+        Directory::insert(&mut self.package, &dirs)?;
+
         Ok(())
     }
 

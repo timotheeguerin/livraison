@@ -74,7 +74,7 @@ impl Entity for Control {
             y: row.i32(4)?,
             width: row.i32(5)?,
             height: row.i32(6)?,
-            attributes: ControlAttributes::from_bits_retain(row.i32(7)? as u32),
+            attributes: ControlAttributes::from_bits_retain(row.i32(7)?),
             property: row.opt_string(8)?,
             text: row.opt_string(9)?,
             control_next: row.opt_string(10)?,
@@ -91,7 +91,7 @@ impl Entity for Control {
             msi::Value::Int(self.y),
             msi::Value::Int(self.width),
             msi::Value::Int(self.height),
-            msi::Value::Int(self.attributes.bits() as i32),
+            msi::Value::Int(self.attributes.bits()),
             msi::Value::from_opt_string(&self.property),
             msi::Value::from_opt_string(&self.text),
             msi::Value::from_opt_string(&self.control_next),
@@ -104,7 +104,7 @@ bitflags! {
     /// Dialog control Attributes
     /// https://learn.microsoft.com/en-us/windows/win32/msi/control-attributes
     #[derive(Debug, Clone)]
-    pub struct ControlAttributes: u32 {
+    pub struct ControlAttributes: i32 {
         const Visible = 1;
         const Enabled = 2;
         const Sunken = 4;

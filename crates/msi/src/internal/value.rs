@@ -162,6 +162,14 @@ impl From<Uuid> for Value {
         Value::Str(string)
     }
 }
+impl From<Option<Uuid>> for Value {
+    fn from(uuid: Option<Uuid>) -> Value {
+        match uuid {
+            Some(uuid) => Value::from(uuid),
+            None => Value::Null,
+        }
+    }
+}
 
 // ========================================================================= //
 

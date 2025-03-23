@@ -1,11 +1,9 @@
-use std::convert::Infallible;
-
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum MsiDataBaseError {
-    #[error("Failed to deserialize data")]
-    DeserializationError(#[from] Infallible),
+    #[error("Failed to deserialize data: {0}")]
+    DeserializationError(String),
 
     #[error("Table '{table}' is missing in package")]
     TableMissingError { table: String },

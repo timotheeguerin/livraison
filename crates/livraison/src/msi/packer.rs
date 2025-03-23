@@ -12,7 +12,8 @@ use crate::{
     msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
 };
 use msi_installer::tables::{
-    Control, ControlEvent, Dialog, Directory, Entity, EventMapping, InstallUISequence,
+    Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity, EventMapping,
+    InstallUISequence,
 };
 use uuid::Uuid;
 
@@ -466,43 +467,22 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     // Creates and populates the `Component` database table for the package.  One
     // component is created for each subdirectory under in the install dir.
     fn create_component_table(&mut self, directories: &[DirectoryInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "Component",
-            vec![
-                msi::Column::build("Component").primary_key().id_string(72),
-                msi::Column::build("ComponentId")
-                    .nullable()
-                    .category(msi::Category::Guid)
-                    .string(38),
-                msi::Column::build("Directory_")
-                    .nullable()
-                    .foreign_key("Directory", 1)
-                    .id_string(72),
-                msi::Column::build("Attributes").int16(),
-                msi::Column::build("Condition")
-                    .nullable()
-                    .category(msi::Category::Condition)
-                    .string(255),
-                msi::Column::build("KeyPath").nullable().id_string(72),
-            ],
-        )?;
+        Component::create_table(&mut self.package)?;
         let mut rows = Vec::new();
         for directory in directories.iter() {
-            if !directory.files.is_empty() {
-                let hash_input = directory.files.join("/");
-                let uuid = Uuid::new_v5(&self.upgrade_code, hash_input.as_bytes());
-                rows.push(vec![
-                    msi::Value::Str(directory.key.clone()),
-                    msi::Value::from(uuid),
-                    msi::Value::Str(directory.key.clone()),
-                    msi::Value::Int(0),
-                    msi::Value::Null,
-                    msi::Value::Str(directory.files[0].clone()),
-                ]);
+            for file in directory.files.iter() {
+                let uuid = Uuid::new_v5(&self.upgrade_code, file.as_bytes());
+                rows.push(Component {
+                    component: file.clone(),
+                    id: Some(uuid),
+                    directory: directory.key.clone(),
+                    attributes: ComponentAttributes::empty(),
+                    condition: None,
+                    key_path: Some(file.clone()),
+                });
             }
         }
-        self.package
-            .insert_rows(msi::Insert::into("Component").rows(rows))?;
+        Component::insert(&mut self.package, &rows)?;
         Ok(())
     }
 

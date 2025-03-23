@@ -1,3 +1,4 @@
+mod component;
 mod control;
 mod control_event;
 mod dialog;
@@ -8,6 +9,7 @@ mod install_ui_sequence;
 mod standard_actions;
 mod table;
 
+pub use component::*;
 pub use control::*;
 pub use control_event::*;
 pub use dialog::*;

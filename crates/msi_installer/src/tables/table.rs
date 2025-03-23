@@ -1,5 +1,7 @@
 use std::io::{Read, Seek, Write};
 
+use uuid::Uuid;
+
 use super::error::MsiDataBaseError;
 
 pub trait Entity
@@ -88,7 +90,7 @@ impl<'a> RowView<'a> {
     pub fn opt_i32(&self, index: usize) -> Result<Option<i32>, MsiDataBaseError> {
         let cell = &self.row[index];
         match cell {
-            msi::Value::Int(s) => Ok(Some(s.clone())),
+            msi::Value::Int(s) => Ok(Some(*s)),
             msi::Value::Null => Ok(None),
             _ => Err(MsiDataBaseError::CellInvalidTypeError {
                 table: self.table.clone(),
@@ -123,6 +125,40 @@ impl<'a> RowView<'a> {
                 row: self.row_index,
                 column: index,
                 expected_type: "int32".to_string(),
+                value: cell.to_string(),
+            }),
+        }
+    }
+
+    pub fn opt_uuid(&self, index: usize) -> Result<Option<Uuid>, MsiDataBaseError> {
+        let cell = &self.row[index];
+        match cell {
+            msi::Value::Str(s) => match Uuid::parse_str(s) {
+                Ok(uuid) => Ok(Some(uuid)),
+                Err(e) => Err(MsiDataBaseError::DeserializationError(e.to_string())),
+            },
+            msi::Value::Null => Ok(None),
+            _ => Err(MsiDataBaseError::CellInvalidTypeError {
+                table: self.table.clone(),
+                row: self.row_index,
+                column: index,
+                expected_type: "uuid".to_string(),
+                value: cell.to_string(),
+            }),
+        }
+    }
+    pub fn uuid(&self, index: usize) -> Result<Uuid, MsiDataBaseError> {
+        let cell = &self.row[index];
+        match cell {
+            msi::Value::Str(s) => match Uuid::parse_str(s) {
+                Ok(uuid) => Ok(uuid),
+                Err(e) => Err(MsiDataBaseError::DeserializationError(e.to_string())),
+            },
+            _ => Err(MsiDataBaseError::CellInvalidTypeError {
+                table: self.table.clone(),
+                row: self.row_index,
+                column: index,
+                expected_type: "uuid".to_string(),
                 value: cell.to_string(),
             }),
         }

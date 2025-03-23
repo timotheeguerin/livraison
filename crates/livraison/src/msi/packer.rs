@@ -3,7 +3,6 @@ use std::{
     ffi::OsStr,
     fs,
     io::{self, Read, Seek, Write},
-    os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
     vec,
 };

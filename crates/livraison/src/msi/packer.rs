@@ -3,6 +3,7 @@ use std::{
     ffi::OsStr,
     fs,
     io::{self, Read, Seek, Write},
+    os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
     vec,
 };
@@ -13,7 +14,7 @@ use crate::{
 };
 use msi_installer::tables::{
     Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity, EventMapping,
-    File, InstallUISequence,
+    File, FileAttributes, InstallUISequence,
 };
 use uuid::Uuid;
 
@@ -243,11 +244,12 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let mut resources = Vec::<ResourceInfo>::new();
         if let Some(binaries) = &self.options.binaries {
             for binary in binaries {
+                let metadata = fs::metadata(&binary.path)?;
                 resources.push(ResourceInfo {
                     source_path: PathBuf::from(&binary.path),
                     dest_path: PathBuf::from(&binary.name),
                     filename: binary.name.clone(),
-                    size: 0,
+                    size: metadata.size(),
                     component_key: String::new(),
                 });
             }
@@ -571,21 +573,21 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let mut sequence: i32 = 1;
         for cabinet in cabinets.iter() {
             for resource in cabinet.resources.iter() {
-                rows.push(vec![
-                    msi::Value::Str(resource.filename.clone()),
-                    msi::Value::Str(resource.component_key.clone()),
-                    msi::Value::Str(resource.filename.clone()),
-                    msi::Value::Int(resource.size as i32),
-                    msi::Value::Null,
-                    msi::Value::Null,
-                    msi::Value::from(FILE_ATTR_VITAL),
-                    msi::Value::Int(sequence),
-                ]);
+                rows.push(File {
+                    file: resource.filename.clone(),
+                    component: resource.component_key.clone(),
+                    filename: resource.filename.clone(),
+                    size: resource.size as i32,
+                    sequence,
+                    attributes: FileAttributes::Vital,
+                    version: None,
+                    language: None,
+                });
                 sequence += 1;
             }
         }
-        self.package
-            .insert_rows(msi::Insert::into("File").rows(rows))?;
+
+        File::insert(&mut self.package, &rows)?;
         Ok(())
     }
 

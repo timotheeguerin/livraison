@@ -5,7 +5,7 @@ use super::{Entity, RowView, error::MsiDataBaseError};
 
 /// Component Table
 /// https://learn.microsoft.com/en-us/windows/win32/msi/component-table
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Component {
     pub component: String,
     pub id: Option<Uuid>,
@@ -66,7 +66,7 @@ impl Entity for Component {
 bitflags! {
     /// Component Attributes
 /// https://learn.microsoft.com/en-us/windows/win32/msi/component-table#Attributes
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Default)]
     pub struct ComponentAttributes: i32 {
         const SourceOnly = 1;
         const Optional = 2;

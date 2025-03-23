@@ -1,8 +1,10 @@
-use msi::Package;
-use msi_installer::tables::{Control, ControlEvent, Dialog, Entity, InstallUISequence};
+use msi::{Package, Rows, Select};
+use msi_installer::tables::{
+    Component, Control, ControlEvent, Dialog, Entity, File, InstallUISequence,
+};
 use std::{
     error::Error,
-    io::{Read, Seek},
+    io::{self, Read, Seek},
 };
 
 use super::dialog_map::DialogMap;
@@ -18,9 +20,11 @@ pub trait PackageReader {
     fn has_stream(&self, stream_name: &str) -> bool;
     fn has_digital_signature(&self) -> bool;
     // fn read_stream(&mut self, stream_name: &str) -> io::Result<StreamReader<F>>;
+
+    fn select_rows(&mut self, query: Select) -> io::Result<Rows>;
 }
 
-impl<T> PackageReader for Package<T> {
+impl<F: Read + Seek> PackageReader for Package<F> {
     fn package_type(&self) -> msi::PackageType {
         self.package_type()
     }
@@ -52,6 +56,9 @@ impl<T> PackageReader for Package<T> {
     fn has_digital_signature(&self) -> bool {
         self.has_digital_signature()
     }
+    fn select_rows(&mut self, query: Select) -> io::Result<Rows> {
+        self.select_rows(query)
+    }
 }
 
 #[allow(dead_code)]
@@ -60,6 +67,8 @@ pub struct RuleData {
     pub controls: Vec<Control>,
     pub control_events: Vec<ControlEvent>,
     pub install_ui_sequences: Vec<InstallUISequence>,
+    pub components: Vec<Component>,
+    pub files: Vec<File>,
     pub dialog_map: DialogMap,
 }
 
@@ -165,6 +174,8 @@ fn get_rule_data<F: Read + Seek>(
         control_events,
         install_ui_sequences,
         dialog_map,
+        components: safe_list::<Component, F>(diagnostics, package),
+        files: safe_list::<File, F>(diagnostics, package),
     }
 }
 

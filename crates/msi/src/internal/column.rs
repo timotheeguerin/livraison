@@ -271,6 +271,16 @@ impl Column {
         self.is_primary_key
     }
 
+    /// Returns true if this column is a foreign key.
+    pub fn is_foreign_key(&self) -> bool {
+        self.foreign_key.is_some()
+    }
+
+    /// Returns the (table name, column index) of the foreign key, if any.
+    pub fn get_foreign_key(&self) -> Option<(String, i32)> {
+        self.foreign_key.clone()
+    }
+
     /// Returns the (min, max) integer value range for this column, if any.
     pub fn value_range(&self) -> Option<(i32, i32)> {
         self.value_range

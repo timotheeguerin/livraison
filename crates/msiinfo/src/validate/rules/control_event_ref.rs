@@ -17,7 +17,6 @@ impl Rule for ControlEventRefRule {
             ..
         } = data;
 
-        // Validate install_ui_sequences dialog are referenced.
         for row in control_events {
             let dialog = match dialog_map.get(&row.dialog) {
                 Some(dialog) => dialog,

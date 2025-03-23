@@ -13,7 +13,7 @@ use crate::{
 };
 use msi_installer::tables::{
     Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity, EventMapping,
-    InstallUISequence,
+    File, InstallUISequence,
 };
 use uuid::Uuid;
 
@@ -319,7 +319,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             let directory = dir_map.get_mut(&dir_path).unwrap();
             debug_assert_eq!(directory.key, dir_key);
             directory.files.push(resource.filename.clone());
-            resource.component_key = dir_key.to_string();
+            resource.component_key = resource.filename.to_string();
         }
         Ok(dir_map.into_values().collect())
     }
@@ -497,7 +497,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             vec![
                 msi::Column::build("Feature_")
                     .primary_key()
-                    .foreign_key("Component", 1)
+                    .foreign_key("Feature", 1)
                     .id_string(38),
                 msi::Column::build("Component_")
                     .primary_key()
@@ -507,10 +507,10 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         )?;
         let mut rows = Vec::new();
         for directory in directories.iter() {
-            if !directory.files.is_empty() {
+            for file in directory.files.iter() {
                 rows.push(vec![
                     msi::Value::from(MAIN_FEATURE_NAME),
-                    msi::Value::Str(directory.key.clone()),
+                    msi::Value::Str(file.clone()),
                 ]);
             }
         }
@@ -566,32 +566,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     // entry for each resource file to be installed (including the main
     // executable).
     fn create_file_table(&mut self, cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "File",
-            vec![
-                msi::Column::build("File").primary_key().id_string(72),
-                msi::Column::build("Component_")
-                    .foreign_key("Component", 1)
-                    .id_string(72),
-                msi::Column::build("FileName")
-                    .category(msi::Category::Filename)
-                    .string(255),
-                msi::Column::build("FileSize").range(0, 0x7fffffff).int32(),
-                msi::Column::build("Version")
-                    .nullable()
-                    .category(msi::Category::Version)
-                    .string(72),
-                msi::Column::build("Language")
-                    .nullable()
-                    .category(msi::Category::Language)
-                    .string(20),
-                msi::Column::build("Attributes")
-                    .nullable()
-                    .range(0, 0x7fff)
-                    .int16(),
-                msi::Column::build("Sequence").range(1, 0x7fff).int16(),
-            ],
-        )?;
+        File::create_table(&mut self.package)?;
         let mut rows = Vec::new();
         let mut sequence: i32 = 1;
         for cabinet in cabinets.iter() {

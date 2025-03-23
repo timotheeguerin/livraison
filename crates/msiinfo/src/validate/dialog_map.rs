@@ -32,9 +32,6 @@ impl DialogMap {
         self.dialogs.get(dialog)
     }
 
-    pub fn has_dialog(&self, name: &str) -> bool {
-        self.dialogs.contains_key(name)
-    }
     pub fn has_dialog_or_std_action(&self, name: &str) -> bool {
         self.dialogs.contains_key(name) || is_standard_action(name)
     }

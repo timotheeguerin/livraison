@@ -98,8 +98,6 @@ pub fn pack(options: MsiInstallerOptions, dest: &Path) -> LivraisonResult<()> {
     let mut packer = MsiInstallerPacker::new(file, options)?;
 
     packer.write()?;
-    let mut package = msi::open(dest).expect("open package");
-    super::debug::print_all(&mut package);
     Ok(())
 }
 
@@ -384,6 +382,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             let stream = self.package.write_stream(cabinet_info.name.as_str())?;
             let mut cabinet_writer = builder.build(stream)?;
             while let Some(mut file_writer) = cabinet_writer.next_file()? {
+                dbg!(file_writer.file_name());
                 debug_assert!(file_map.contains_key(file_writer.file_name()));
                 let file_path = file_map.get(file_writer.file_name()).unwrap();
                 let mut file = fs::File::open(file_path)?;

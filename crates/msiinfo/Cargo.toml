@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+cab = "0.6.0"
 clap = { version = "4.5.32", features = ["derive"] }
 msi  = { version = "0.8.0", path = "../msi", default-features = false }
 msi_installer  = { version = "0.1.0", path = "../msi_installer" }
-time = "0.3.39"
 thiserror = "2.0.12"
+time = "0.3.39"

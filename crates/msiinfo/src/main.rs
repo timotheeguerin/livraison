@@ -1,3 +1,4 @@
+use msiinfo::color::{blue, cyan, yellow};
 use std::cmp;
 use std::io::{Read, Seek};
 use time::OffsetDateTime;
@@ -42,6 +43,9 @@ enum Command {
         path: String,
     },
     Validate {
+        path: String,
+    },
+    Content {
         path: String,
     },
 }
@@ -192,5 +196,47 @@ fn main() {
             let mut package = msi::open(path).expect("open package");
             validate_msi_installer(&mut package);
         }
+        Command::Content { path } => {
+            let mut package = msi::open(path).expect("open package");
+            print_content(&mut package);
+        }
+    }
+}
+
+fn print_content<F: Read + Seek>(package: &mut msi::Package<F>) {
+    let stream_names: Vec<String> = package.streams().collect();
+    for stream_name in stream_names {
+        if !stream_name.ends_with(".cab") {
+            continue;
+        }
+
+        let cab_stream = package.read_stream(&stream_name).expect("open cab stream");
+        println!("{}:", blue(stream_name));
+
+        for folder in cab::Cabinet::new(cab_stream)
+            .expect("open cab")
+            .folder_entries()
+        {
+            // println!("  Folder: {}", folder.);
+            for file in folder.file_entries() {
+                println!(
+                    "    {} {}",
+                    cyan(file.name()),
+                    yellow(print_byte_size(file.uncompressed_size())),
+                );
+            }
+        }
+    }
+}
+
+fn print_byte_size(size: u32) -> String {
+    if size < 1024 {
+        format!("{size}B")
+    } else if size < 1024 * 1024 {
+        format!("{:.2}KB", size / 1024)
+    } else if size < 1024 * 1024 * 1024 {
+        format!("{:.2}MB", size / 1024 / 1024)
+    } else {
+        format!("{:.2}GB", size / 1024 / 1024 / 1024)
     }
 }

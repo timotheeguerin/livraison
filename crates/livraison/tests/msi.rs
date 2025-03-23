@@ -17,7 +17,6 @@ pub static TESTDIR: LazyLock<TestTempDir> = LazyLock::new(|| {
 
 #[test]
 fn basic_msi() {
-    dbg!("FIX", fixture_path("msi/test-bin.txt"));
     let options = MsiInstallerOptions {
         name: "test".to_string(),
         version: "1.0.0".to_string(),

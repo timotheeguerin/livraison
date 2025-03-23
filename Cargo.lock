@@ -486,6 +486,7 @@ dependencies = [
 name = "msiinfo"
 version = "0.1.0"
 dependencies = [
+ "cab",
  "clap 4.5.32",
  "msi",
  "msi_installer",

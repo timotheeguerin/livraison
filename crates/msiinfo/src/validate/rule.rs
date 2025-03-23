@@ -114,46 +114,71 @@ impl Linter {
     pub fn lint<F: Read + Seek>(&self, package: &mut Package<F>) -> Vec<Diagnostic> {
         let mut diagnostics = Vec::new();
 
-        let dialog_map = match Self::get_rule_data(package) {
-            Ok(dialog_map) => dialog_map,
-            Err(e) => {
-                diagnostics.push(Diagnostic {
-                    code: "dialog-map-error".to_string(),
-                    message: e.to_string(),
-                });
-                return diagnostics;
-            }
-        };
+        let data = get_rule_data(&mut diagnostics, package);
         for rule in &self.rules {
-            let mut ctx = RuleContext {
-                code: rule.code().to_string(),
-                diagnostics: Vec::new(),
-            };
-            if let Err(e) = rule.validate_pks(&mut ctx, package) {
-                ctx.error(e.to_string());
-            }
-
-            if let Err(e) = rule.run(&mut ctx, &dialog_map) {
-                ctx.error(e.to_string());
-            }
-            diagnostics.extend(ctx.diagnostics);
+            diagnostics.extend(run_rule(rule.as_ref(), package, &data));
         }
 
         diagnostics
     }
+}
 
-    fn get_rule_data<F: Read + Seek>(package: &mut Package<F>) -> Result<RuleData, Box<dyn Error>> {
-        let dialogs = Dialog::list(package)?;
-        let controls = Control::list(package)?;
-        let install_ui_sequences = InstallUISequence::list(package)?;
-        let dialog_map = DialogMap::new(dialogs.clone(), Control::list(package)?);
+fn run_rule<F: Read + Seek>(
+    rule: &dyn Rule,
+    package: &mut Package<F>,
+    data: &RuleData,
+) -> Vec<Diagnostic> {
+    let mut ctx = RuleContext {
+        code: rule.code().to_string(),
+        diagnostics: Vec::new(),
+    };
+    if let Err(e) = rule.validate_pks(&mut ctx, package) {
+        ctx.error(e.to_string());
+    }
 
-        Ok(RuleData {
-            dialogs,
-            controls,
-            install_ui_sequences,
-            dialog_map,
-        })
+    if let Err(e) = rule.run(&mut ctx, &data) {
+        ctx.error(e.to_string());
+    }
+    ctx.diagnostics
+}
+
+#[allow(dead_code)]
+pub fn test_rule<F: Read + Seek>(rule: impl Rule, package: &mut Package<F>) -> Vec<Diagnostic> {
+    let data = get_rule_data(&mut vec![], package);
+    run_rule(&rule, package, &data)
+}
+
+fn get_rule_data<F: Read + Seek>(
+    diagnostics: &mut Vec<Diagnostic>,
+    package: &mut Package<F>,
+) -> RuleData {
+    let dialogs = safe_list::<Dialog>(diagnostics, Dialog::list(package));
+    let controls = safe_list::<Control>(diagnostics, Control::list(package));
+    let install_ui_sequences =
+        safe_list::<InstallUISequence>(diagnostics, InstallUISequence::list(package));
+    let dialog_map = DialogMap::new(dialogs.clone(), controls.clone());
+
+    RuleData {
+        dialogs,
+        controls,
+        install_ui_sequences,
+        dialog_map,
+    }
+}
+
+fn safe_list<T>(
+    diagnostics: &mut Vec<Diagnostic>,
+    result: Result<Vec<T>, msi_installer::tables::MsiDataBaseError>,
+) -> Vec<T> {
+    match result {
+        Ok(val) => val,
+        Err(e) => {
+            diagnostics.push(Diagnostic {
+                code: "table-read".to_string(),
+                message: e.to_string(),
+            });
+            vec![]
+        }
     }
 }
 

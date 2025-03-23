@@ -46,3 +46,39 @@ fn validate_table_pk(ctx: &mut RuleContext, table: &Table) {
         next_expected = i + 1;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::io::Cursor;
+
+    use msi::{Package, PackageType};
+
+    use super::PrimaryKeysRule;
+    use crate::validate::rule::test_rule;
+
+    #[test]
+    fn report_if_pk_out_of_order() {
+        let mut package = mock_package();
+        package
+            .create_table(
+                "Dummy",
+                vec![
+                    msi::Column::build("A").id_string(72),
+                    msi::Column::build("B").primary_key().id_string(72),
+                    msi::Column::build("C").int16(),
+                    msi::Column::build("D").int16(),
+                    msi::Column::build("E").int16(),
+                ],
+            )
+            .unwrap();
+        let diagnostics = test_rule(PrimaryKeysRule {}, &mut package);
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].code, "invalid-primary-keys");
+    }
+
+    fn mock_package() -> msi::Package<Cursor<Vec<u8>>> {
+        let cursor = Cursor::new(Vec::new());
+        Package::create(PackageType::Installer, cursor).expect("create")
+    }
+}

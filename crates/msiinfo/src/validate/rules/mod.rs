@@ -1,3 +1,4 @@
+mod dialog;
 mod primary_key;
-
-pub use primary_key::validate_pks;
+pub use dialog::DialogRule;
+pub use primary_key::PrimaryKeysRule;

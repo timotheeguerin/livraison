@@ -1,46 +1,48 @@
-use std::io::{Read, Seek};
+use crate::validate::rule::{PackageReader, Rule, RuleContext, macros::hl};
 
-use msi::{Package, Table};
+use msi::Table;
 
-use crate::validate::error::{ValidationError, ValidationResult};
-
-/// Validates that the primary key is a valid column in the table.
-pub fn validate_pks<F: Read + Seek>(package: &mut Package<F>) -> ValidationResult {
-    let tables = package.tables();
-    let mut errors = Vec::new();
-
-    for table in tables {
-        errors.extend(validate_table_pk(table));
+pub struct PrimaryKeysRule {}
+impl Rule for PrimaryKeysRule {
+    fn code(&self) -> &'static str {
+        "invalid-primary-keys"
     }
 
-    Ok(errors)
+    fn validate_pks(
+        &self,
+        ctx: &mut RuleContext,
+        package: &mut dyn PackageReader,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let tables = package.tables();
+
+        for table in tables {
+            validate_table_pk(ctx, table)
+        }
+
+        Ok(())
+    }
 }
 
-fn validate_table_pk(table: &Table) -> Vec<ValidationError> {
+/// Validates that the primary key is a valid column in the table.
+fn validate_table_pk(ctx: &mut RuleContext, table: &Table) {
     let columns = table.columns();
     let pk_columns: Vec<(usize, &msi::Column)> = columns
         .iter()
         .enumerate()
-        .filter(|(i, c)| c.is_primary_key())
+        .filter(|(_, c)| c.is_primary_key())
         .collect();
     if pk_columns.is_empty() {
-        return vec![ValidationError::MissingPrimaryKey {
-            table: table.name().to_string(),
-        }];
+        ctx.error(hl!("Table {} doesn't have any primary key.", table.name()));
+        return;
     }
 
     let mut next_expected = 0;
 
     for (i, c) in pk_columns {
         if i != next_expected {
-            return vec![ValidationError::PrimaryKeyLeading {
-                table: table.name().to_string(),
-                column: c.name().to_string(),
-                index: i,
-            }];
+            ctx.error(hl!("Table {} column {} (#{}) is a primary key but one or more columns defined before is not. Primary keys must be the leading columns of a table.", table.name(), c.name(), i));
+            return;
         }
         next_expected = i + 1;
     }
-
-    vec![]
 }

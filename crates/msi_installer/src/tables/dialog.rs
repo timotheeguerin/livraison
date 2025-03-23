@@ -6,7 +6,7 @@ const TABLE_NAME: &str = "Dialog";
 bitflags! {
     /// Dialog Attributes
     /// https://learn.microsoft.com/en-us/windows/win32/msi/dialog-style-bits
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Default)]
     pub struct DialogStyle: u32 {
         const Visible = 1;
         const Modal = 2;
@@ -23,7 +23,7 @@ bitflags! {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Dialog {
     pub dialog: String,
     pub h_centering: i32,

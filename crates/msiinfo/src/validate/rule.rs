@@ -1,5 +1,5 @@
 use msi::Package;
-use msi_installer::tables::{Control, Dialog, Entity, InstallUISequence};
+use msi_installer::tables::{Control, ControlEvent, Dialog, Entity, InstallUISequence};
 use std::{
     error::Error,
     io::{Read, Seek},
@@ -58,6 +58,7 @@ impl<T> PackageReader for Package<T> {
 pub struct RuleData {
     pub dialogs: Vec<Dialog>,
     pub controls: Vec<Control>,
+    pub control_events: Vec<ControlEvent>,
     pub install_ui_sequences: Vec<InstallUISequence>,
     pub dialog_map: DialogMap,
 }
@@ -152,25 +153,26 @@ fn get_rule_data<F: Read + Seek>(
     diagnostics: &mut Vec<Diagnostic>,
     package: &mut Package<F>,
 ) -> RuleData {
-    let dialogs = safe_list::<Dialog>(diagnostics, Dialog::list(package));
-    let controls = safe_list::<Control>(diagnostics, Control::list(package));
-    let install_ui_sequences =
-        safe_list::<InstallUISequence>(diagnostics, InstallUISequence::list(package));
+    let dialogs = safe_list::<Dialog, F>(diagnostics, package);
+    let controls = safe_list::<Control, F>(diagnostics, package);
+    let control_events = safe_list::<ControlEvent, F>(diagnostics, package);
+    let install_ui_sequences = safe_list::<InstallUISequence, F>(diagnostics, package);
     let dialog_map = DialogMap::new(dialogs.clone(), controls.clone());
 
     RuleData {
         dialogs,
         controls,
+        control_events,
         install_ui_sequences,
         dialog_map,
     }
 }
 
-fn safe_list<T>(
+fn safe_list<T: Entity, F: Read + Seek>(
     diagnostics: &mut Vec<Diagnostic>,
-    result: Result<Vec<T>, msi_installer::tables::MsiDataBaseError>,
+    package: &mut Package<F>,
 ) -> Vec<T> {
-    match result {
+    match T::list(package) {
         Ok(val) => val,
         Err(e) => {
             diagnostics.push(Diagnostic {

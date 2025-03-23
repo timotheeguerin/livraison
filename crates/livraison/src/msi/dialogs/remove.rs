@@ -112,7 +112,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
     vec![
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveCancel".to_string(),
+            control: "Cancel".to_string(),
             event: "[Text_action]".to_string(),
             argument: "removal".to_string(),
             condition: Some("1".to_string()),
@@ -120,7 +120,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveCancel".to_string(),
+            control: "Cancel".to_string(),
             event: "SpawnDialog".to_string(),
             argument: "CancelDialog".to_string(),
             condition: Some("1".to_string()),
@@ -128,7 +128,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             event: "[Mode]".to_string(),
             argument: "Remove".to_string(),
             condition: Some("1".to_string()),
@@ -136,7 +136,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             event: "[Text_action]".to_string(),
             argument: "removal".to_string(),
             condition: Some("1".to_string()),
@@ -144,7 +144,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             event: "[Text_agent]".to_string(),
             argument: "uninstaller".to_string(),
             condition: Some("1".to_string()),
@@ -152,7 +152,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             event: "[Text_Doing]".to_string(),
             argument: "Removing".to_string(),
             condition: Some("1".to_string()),
@@ -160,7 +160,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             event: "[Text_done]".to_string(),
             argument: "uninstalled".to_string(),
             condition: Some("1".to_string()),
@@ -168,7 +168,7 @@ pub fn create_remove_dialog_control_events() -> Vec<ControlEvent> {
         },
         ControlEvent {
             dialog: "RemoveDialog".to_string(),
-            control: "RemoveRemove".to_string(),
+            control: "Remove".to_string(),
             event: "EndDialog".to_string(),
             argument: "Return".to_string(),
             condition: Some("1".to_string()),

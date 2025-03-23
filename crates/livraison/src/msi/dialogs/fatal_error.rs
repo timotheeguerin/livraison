@@ -123,7 +123,7 @@ pub fn create_fatal_error_dialog_controls() -> Vec<Control> {
 pub fn create_fatal_error_dialog_control_events() -> Vec<ControlEvent> {
     vec![ControlEvent {
         dialog: "FatalErrorDialog".to_string(),
-        control: "FatalFinish".to_string(),
+        control: "Finish".to_string(),
         event: "EndDialog".to_string(),
         argument: "Exit".to_string(),
         condition: Some("1".to_string()),

@@ -157,7 +157,7 @@ pub fn create_progress_dialog_controls() -> Vec<Control> {
 pub fn create_progress_dialog_control_events() -> Vec<ControlEvent> {
     vec![ControlEvent {
         dialog: "ProgressDialog".to_string(),
-        control: "ProgressCancel".to_string(),
+        control: "Cancel".to_string(),
         event: "SpawnDialog".to_string(),
         argument: "CancelDialog".to_string(),
         condition: Some("1".to_string()),

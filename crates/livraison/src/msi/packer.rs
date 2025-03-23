@@ -406,7 +406,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             Directory {
                 directory: "ProgramFilesFolder".to_string(),
                 parent: Some("TARGETDIR".to_string()),
-                default_dir: ".".to_string(),
+                default_dir: "Program Files".to_string(),
             },
         ];
 

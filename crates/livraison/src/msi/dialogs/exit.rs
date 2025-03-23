@@ -115,10 +115,10 @@ pub fn create_exit_dialog_controls() -> Vec<Control> {
 pub fn create_exit_dialog_control_events() -> Vec<ControlEvent> {
     vec![ControlEvent {
         dialog: "ExitDialog".to_string(),
-        control: "ExitFinish".to_string(),
+        control: "Finish".to_string(),
         event: "EndDialog".to_string(),
         argument: "Return".to_string(),
         condition: Some("1".to_string()),
-        ordering: Some(18),
+        ordering: Some(999),
     }]
 }

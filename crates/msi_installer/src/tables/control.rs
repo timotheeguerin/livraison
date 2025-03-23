@@ -4,7 +4,7 @@ use bitflags::bitflags;
 
 /// Control Table
 /// https://learn.microsoft.com/en-us/windows/win32/msi/control-table
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Control {
     pub dialog: String,
     pub control: String,
@@ -103,7 +103,7 @@ impl Entity for Control {
 bitflags! {
     /// Dialog control Attributes
     /// https://learn.microsoft.com/en-us/windows/win32/msi/control-attributes
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Default)]
     pub struct ControlAttributes: i32 {
         const Visible = 1;
         const Enabled = 2;
@@ -158,6 +158,12 @@ pub enum ControlType {
     VolumeCostList,
     VolumeSelectCombo,
     Unknown(String),
+}
+
+impl Default for ControlType {
+    fn default() -> Self {
+        Self::Unknown("".to_string())
+    }
 }
 
 impl ControlType {

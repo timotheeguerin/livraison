@@ -2,7 +2,7 @@ use super::{Entity, RowView, error::MsiDataBaseError};
 
 /// Control Event Table
 /// https://learn.microsoft.com/en-us/windows/win32/msi/controlevent-table
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ControlEvent {
     pub dialog: String,
     pub control: String,

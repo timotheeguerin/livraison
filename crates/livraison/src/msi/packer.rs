@@ -249,7 +249,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
                     source_path: PathBuf::from(&binary.path),
                     dest_path: PathBuf::from(&binary.name),
                     filename: binary.name.clone(),
-                    size: metadata.size(),
+                    size: metadata.len(),
                     component_key: String::new(),
                 });
             }

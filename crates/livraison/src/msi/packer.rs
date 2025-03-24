@@ -333,7 +333,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             let mut total_size = 0;
             let mut leftovers = Vec::<ResourceInfo>::new();
             let mut cabinet = CabinetInfo {
-                name: format!("rsrc{:04}.cab", cabinets.len()),
+                name: format!("cab{}.cab", cabinets.len() + 1),
                 resources: Vec::new(),
             };
             for resource in resources.into_iter() {

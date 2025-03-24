@@ -3,7 +3,10 @@ use std::{
     io::{Read, Seek},
 };
 
-use crate::color::{bold, cyan, green, magenta, yellow};
+use crate::{
+    color::{bold, cyan, green, magenta, yellow},
+    info::style::TableStyles,
+};
 
 pub fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
     let mut col_widths: Vec<usize> = package
@@ -59,7 +62,7 @@ pub fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table
 fn print_separator(col_widths: &[usize]) {
     let mut line = String::new();
     for &width in col_widths.iter() {
-        let string = cyan("-".repeat(width));
+        let string = cyan(TableStyles::H_BORDER.repeat(width));
         line.push_str(&string);
         line.push_str("  ");
     }

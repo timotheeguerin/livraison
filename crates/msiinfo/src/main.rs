@@ -1,5 +1,6 @@
 use msiinfo::color::{blue, cyan, yellow};
-use msiinfo::info::print_table_contents::print_table_contents;
+use msiinfo::info::describe::print_table_description;
+use msiinfo::info::export::print_table_contents;
 use std::fs::File;
 use std::io;
 use std::io::{Read, Seek};
@@ -89,23 +90,6 @@ fn print_summary_info<F>(package: &msi::Package<F>) {
         for line in comments.lines() {
             println!("  {line}");
         }
-    }
-}
-
-fn print_table_description<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
-    if let Some(table) = package.get_table(table_name) {
-        println!("{}", table.name());
-        for column in table.columns() {
-            println!(
-                "  {:<16} {}{}{}",
-                column.name(),
-                if column.is_primary_key() { '*' } else { ' ' },
-                column.coltype(),
-                if column.is_nullable() { "?" } else { "" }
-            );
-        }
-    } else {
-        println!("No table {table_name:?} exists in the database.");
     }
 }
 

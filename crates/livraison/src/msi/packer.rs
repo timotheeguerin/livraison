@@ -118,24 +118,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.package.flush()?;
         self.create_property_table()?;
 
-        if let Some(icon) = &self.options.icon {
-            // Create app icon:
-            self.package.create_table(
-                "Icon",
-                vec![
-                    msi::Column::build("Name").primary_key().id_string(72),
-                    msi::Column::build("Data").binary(),
-                ],
-            )?;
-            let icon_name = format!("{}.ico", self.options.name);
-            let stream_name = format!("Icon.{icon_name}");
-            let mut stream = self.package.write_stream(&stream_name)?;
-            create_app_icon(&mut stream, Path::new(&icon))?;
-            self.package.insert_rows(
-                msi::Insert::into("Icon")
-                    .row(vec![msi::Value::Str(icon_name), msi::Value::from("Name")]),
-            )?;
-        }
         // Copy resource files into package:
         let mut resources = self.collect_resource_info()?;
         let directories = self.collect_directory_info(&mut resources)?;

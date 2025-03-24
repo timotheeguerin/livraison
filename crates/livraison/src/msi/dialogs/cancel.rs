@@ -6,7 +6,7 @@ pub fn create_cancel_dialog() -> Dialog {
     Dialog {
         dialog: "CancelDialog".to_string(),
         h_centering: 50,
-        v_centering: 10,
+        v_centering: 50,
         width: 260,
         height: 85,
         attributes: DialogStyle::Visible | DialogStyle::Modal,

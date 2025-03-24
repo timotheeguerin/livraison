@@ -1,6 +1,7 @@
 use msiinfo::color::{blue, cyan, yellow};
-use std::cmp;
-use std::io::{Read, Seek};
+use std::fs::File;
+use std::io::{Read, Seek, Write};
+use std::{cmp, io};
 use time::OffsetDateTime;
 
 use msiinfo::validate::validator::validate_msi_installer;
@@ -38,6 +39,12 @@ enum Command {
     Export {
         path: String,
         table: String,
+    },
+    Extract {
+        path: String,
+        stream: String,
+        #[arg(short = 'o', long)]
+        out: String,
     },
     Streams {
         path: String,
@@ -191,6 +198,12 @@ fn main() {
             for stream_name in package.streams() {
                 println!("{stream_name}");
             }
+        }
+        Command::Extract { path, stream, out } => {
+            let mut package = msi::open(path).expect("open package");
+            let mut stream = package.read_stream(&stream).expect("open stream");
+            let mut file = File::create(out).expect("create file");
+            io::copy(&mut stream, &mut file).expect("wrote stream to file");
         }
         Command::Validate { path } => {
             let mut package = msi::open(path).expect("open package");

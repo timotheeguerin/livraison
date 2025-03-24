@@ -46,9 +46,6 @@ const CABINET_MAX_FILES: usize = 1000;
 // The maximum number of data bytes we'll put in one cabinet:
 const CABINET_MAX_SIZE: u64 = 0x1000_0000;
 
-// File table attribute indicating that a file is "vital":
-const FILE_ATTR_VITAL: u16 = 0x200;
-
 // The name of the installer package's sole Feature:
 const MAIN_FEATURE_NAME: &str = "MainFeature";
 

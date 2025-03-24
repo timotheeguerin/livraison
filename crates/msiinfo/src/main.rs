@@ -1,17 +1,11 @@
 use msiinfo::color::{blue, cyan, yellow};
+use msiinfo::info::print_table_contents::print_table_contents;
 use std::fs::File;
+use std::io;
 use std::io::{Read, Seek};
-use std::{cmp, io};
 use time::OffsetDateTime;
 
 use msiinfo::validate::validator::validate_msi_installer;
-
-fn pad(mut string: String, fill: char, width: usize) -> String {
-    while string.len() < width {
-        string.push(fill);
-    }
-    string
-}
 
 use clap::{Parser, Subcommand, command};
 
@@ -112,62 +106,6 @@ fn print_table_description<F: Read + Seek>(package: &mut msi::Package<F>, table_
         }
     } else {
         println!("No table {table_name:?} exists in the database.");
-    }
-}
-
-fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
-    let mut col_widths: Vec<usize> = package
-        .get_table(table_name)
-        .unwrap()
-        .columns()
-        .iter()
-        .map(|column| column.name().len())
-        .collect();
-    let rows: Vec<Vec<String>> = package
-        .select_rows(msi::Select::table(table_name))
-        .expect("select")
-        .map(|row| {
-            let mut strings = Vec::with_capacity(row.len());
-            for index in 0..row.len() {
-                let string = row[index].to_string();
-                col_widths[index] = cmp::max(col_widths[index], string.len());
-                strings.push(string);
-            }
-            strings
-        })
-        .collect();
-    {
-        let mut line = String::new();
-        for (index, column) in package
-            .get_table(table_name)
-            .unwrap()
-            .columns()
-            .iter()
-            .enumerate()
-        {
-            let string = pad(column.name().to_string(), ' ', col_widths[index]);
-            line.push_str(&string);
-            line.push_str("  ");
-        }
-        println!("{line}");
-    }
-    {
-        let mut line = String::new();
-        for &width in col_widths.iter() {
-            let string = pad(String::new(), '-', width);
-            line.push_str(&string);
-            line.push_str("  ");
-        }
-        println!("{line}");
-    }
-    for row in rows.into_iter() {
-        let mut line = String::new();
-        for (index, value) in row.into_iter().enumerate() {
-            let string = pad(value, ' ', col_widths[index]);
-            line.push_str(&string);
-            line.push_str("  ");
-        }
-        println!("{line}");
     }
 }
 

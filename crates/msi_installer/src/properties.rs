@@ -68,11 +68,12 @@ impl PropertiesBuilder {
         self
     }
 
-    pub fn insert(&mut self, property: &str, value: &str) {
+    pub fn insert(&mut self, property: &str, value: &str) -> &mut Self {
         self.properties.insert(
             PropertyType::Custom(property.to_string()),
             value.to_string(),
         );
+        self
     }
 
     pub fn build(&self) -> Vec<Property> {

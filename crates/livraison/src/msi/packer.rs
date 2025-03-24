@@ -172,11 +172,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         })
         .install_per_user()
         .default_ui_font("DefaultFont")
-        // .insert("Mode", "Install")
-        // .insert("Text_action", "installation")
-        // .insert("Text_agent", "installer")
-        // .insert("Text_Doing", "installing")
-        // .insert("Text_done", "installed")
+        .insert("Mode", "Install")
+        .insert("Text_action", "installation")
+        .insert("Text_agent", "installer")
+        .insert("Text_Doing", "installing")
+        .insert("Text_done", "installed")
         .create_table(&mut self.package)?;
 
         Ok(())

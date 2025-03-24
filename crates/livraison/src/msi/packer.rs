@@ -824,15 +824,6 @@ fn compute_bundle_id(bundle_name: &str) -> uuid::Uuid {
     Uuid::new_v5(&UUID_NAMESPACE, bundle_name.as_bytes())
 }
 
-fn create_app_icon<W: Write>(writer: &mut W, icon_path: &Path) -> LivraisonResult<()> {
-    if icon_path.extension() == Some(OsStr::new("ico")) {
-        io::copy(&mut fs::File::open(icon_path)?, writer)?;
-        return Ok(());
-    }
-
-    Ok(())
-}
-
 // Info about a resource file (including the main executable) in the bundle.
 struct ResourceInfo {
     // The path to the existing file that will be bundled as a resource.

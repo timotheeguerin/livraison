@@ -116,5 +116,6 @@ enum PropertyType {
     AllUsers,
     #[strum(serialize = "MSIINSTALLPERUSER")]
     MsiInstallPerUser,
+    #[strum(to_string = "{0}")]
     Custom(String),
 }

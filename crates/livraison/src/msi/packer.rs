@@ -1,6 +1,5 @@
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
-    ffi::OsStr,
     fs,
     io::{self, Read, Seek, Write},
     path::{Path, PathBuf},
@@ -11,9 +10,13 @@ use crate::{
     LivraisonResult,
     msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
 };
-use msi_installer::tables::{
-    Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity, EventMapping,
-    File, FileAttributes, InstallUISequence,
+use msi::Language;
+use msi_installer::{
+    PropertiesBuilder, RequiredProperties,
+    tables::{
+        Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
+        EventMapping, File, FileAttributes, InstallUISequence,
+    },
 };
 use uuid::Uuid;
 
@@ -160,63 +163,22 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
 
     // Creates and populates the `Property` database table for the package.
     fn create_property_table(&mut self) -> LivraisonResult<()> {
-        self.package.create_table(
-            "Property",
-            vec![
-                msi::Column::build("Property").primary_key().id_string(72),
-                msi::Column::build("Value").localizable().text_string(0),
-            ],
-        )?;
-        self.package.insert_rows(
-            msi::Insert::into("Property")
-                .row(vec![
-                    msi::Value::from("ProductCode"),
-                    msi::Value::from(self.upgrade_code),
-                ])
-                .row(vec![
-                    msi::Value::from("ProductLanguage"),
-                    msi::Value::from(msi::Language::from_tag("en-US")),
-                ])
-                .row(vec![
-                    msi::Value::from("Manufacturer"),
-                    msi::Value::Str(self.options.author.clone()),
-                ])
-                .row(vec![
-                    msi::Value::from("ProductName"),
-                    msi::Value::from(self.options.name.clone()),
-                ])
-                .row(vec![
-                    msi::Value::from("ProductVersion"),
-                    msi::Value::from(self.options.version.clone()),
-                ])
-                // Install per users
-                .row(vec![msi::Value::from("ALLUSERS"), msi::Value::from("2")])
-                .row(vec![
-                    msi::Value::from("MSIINSTALLPERUSER"),
-                    msi::Value::from("1"),
-                ])
-                .row(vec![
-                    msi::Value::from("DefaultUIFont"),
-                    msi::Value::from("DefaultFont"),
-                ])
-                .row(vec![msi::Value::from("Mode"), msi::Value::from("Install")])
-                .row(vec![
-                    msi::Value::from("Text_action"),
-                    msi::Value::from("installation"),
-                ])
-                .row(vec![
-                    msi::Value::from("Text_agent"),
-                    msi::Value::from("installer"),
-                ])
-                .row(vec![
-                    msi::Value::from("Text_Doing"),
-                    msi::Value::from("installing"),
-                ])
-                .row(vec![
-                    msi::Value::from("Text_done"),
-                    msi::Value::from("installed"),
-                ]),
-        )?;
+        PropertiesBuilder::new(RequiredProperties {
+            produce_code: self.upgrade_code.to_string(),
+            product_language: Language::from_tag("en-US"),
+            manufacturer: self.options.author.clone(),
+            product_name: self.options.name.clone(),
+            product_version: self.options.version.clone(),
+        })
+        .install_per_user()
+        .default_ui_font("DefaultFont")
+        // .insert("Mode", "Install")
+        // .insert("Text_action", "installation")
+        // .insert("Text_agent", "installer")
+        // .insert("Text_Doing", "installing")
+        // .insert("Text_done", "installed")
+        .create_table(&mut self.package)?;
+
         Ok(())
     }
 

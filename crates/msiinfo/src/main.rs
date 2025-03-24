@@ -1,6 +1,6 @@
 use msiinfo::color::{blue, cyan, yellow};
 use std::fs::File;
-use std::io::{Read, Seek, Write};
+use std::io::{Read, Seek};
 use std::{cmp, io};
 use time::OffsetDateTime;
 

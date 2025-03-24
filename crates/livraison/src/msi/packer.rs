@@ -189,6 +189,12 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
                     msi::Value::from("ProductVersion"),
                     msi::Value::from(self.options.version.clone()),
                 ])
+                // Install per users
+                .row(vec![msi::Value::from("ALLUSERS"), msi::Value::from("2")])
+                .row(vec![
+                    msi::Value::from("MSIINSTALLPERUSER"),
+                    msi::Value::from("1"),
+                ])
                 .row(vec![
                     msi::Value::from("DefaultUIFont"),
                     msi::Value::from("DefaultFont"),

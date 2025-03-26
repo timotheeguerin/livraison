@@ -494,6 +494,7 @@ dependencies = [
  "msi_installer",
  "thiserror",
  "time",
+ "uuid",
 ]
 
 [[package]]

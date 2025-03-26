@@ -1,6 +1,6 @@
 use msi::{Package, Rows, Select};
 use msi_installer::tables::{
-    Component, Control, ControlEvent, Dialog, Entity, File, InstallUISequence,
+    Component, Control, ControlEvent, Dialog, Entity, File, InstallUISequence, Property,
 };
 use std::{
     error::Error,
@@ -66,6 +66,7 @@ pub struct RuleData {
     pub dialogs: Vec<Dialog>,
     pub controls: Vec<Control>,
     pub control_events: Vec<ControlEvent>,
+    pub properties: Vec<Property>,
     pub install_ui_sequences: Vec<InstallUISequence>,
     pub components: Vec<Component>,
     pub files: Vec<File>,
@@ -172,6 +173,7 @@ fn get_rule_data<F: Read + Seek>(
         dialogs,
         controls,
         control_events,
+        properties: safe_list::<Property, F>(diagnostics, package),
         install_ui_sequences,
         dialog_map,
         components: safe_list::<Component, F>(diagnostics, package),

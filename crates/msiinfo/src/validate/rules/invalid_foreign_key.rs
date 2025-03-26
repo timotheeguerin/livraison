@@ -85,7 +85,7 @@ mod tests {
     use std::io::Cursor;
 
     use msi::{Package, PackageType};
-    use msi_installer::tables::{Component, Entity, File};
+    use msi_installer::tables::{Component, Directory, Entity, File};
 
     use super::InvalidForeignKeyRule;
     use crate::validate::rule::test_rule;
@@ -107,7 +107,7 @@ mod tests {
         let diagnostics = test_rule(InvalidForeignKeyRule {}, &mut package);
 
         assert_eq!(diagnostics.len(), 1);
-        assert_eq!(diagnostics[0].code, "invalid-control-event-ref");
+        assert_eq!(diagnostics[0].code, "invalid-foreign-key");
     }
     #[test]
     fn success_if_component_is_defined() {
@@ -130,6 +130,16 @@ mod tests {
                 component: "Component1".to_string(),
                 directory: "Directory1".to_string(),
                 ..Default::default()
+            }],
+        )
+        .unwrap();
+        Directory::create_table(&mut package).unwrap();
+        Directory::insert(
+            &mut package,
+            &[Directory {
+                directory: "Directory1".to_string(),
+                default_dir: "foo/bar".to_string(),
+                parent: None,
             }],
         )
         .unwrap();

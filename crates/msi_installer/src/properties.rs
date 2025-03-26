@@ -4,12 +4,13 @@ use msi::{Language, Package};
 use std::collections::HashMap;
 use std::io::{Read, Seek, Write};
 use strum_macros::EnumString;
+use uuid::Uuid;
 
 use crate::tables::{Entity, Property};
 
 #[derive(Debug)]
 pub struct RequiredProperties {
-    pub produce_code: String,
+    pub product_code: Uuid,
     pub product_language: Language,
     pub manufacturer: String,
     pub product_name: String,
@@ -23,7 +24,10 @@ pub struct PropertiesBuilder {
 impl PropertiesBuilder {
     pub fn new(props: RequiredProperties) -> Self {
         let mut properties = HashMap::new();
-        properties.insert(PropertyType::ProductCode, props.produce_code);
+        properties.insert(
+            PropertyType::ProductCode,
+            format!("{{{}}}", props.product_code),
+        );
         properties.insert(
             PropertyType::ProductLanguage,
             props.product_language.code().to_string(),

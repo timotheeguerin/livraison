@@ -164,7 +164,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     // Creates and populates the `Property` database table for the package.
     fn create_property_table(&mut self) -> LivraisonResult<()> {
         PropertiesBuilder::new(RequiredProperties {
-            produce_code: self.upgrade_code.to_string(),
+            product_code: self.upgrade_code,
             product_language: Language::from_tag("en-US"),
             manufacturer: self.options.author.clone(),
             product_name: self.options.name.clone(),

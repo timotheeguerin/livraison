@@ -9,6 +9,7 @@ mod event_mapping;
 mod file;
 mod install_ui_sequence;
 mod property;
+mod registry;
 mod standard_actions;
 mod table;
 
@@ -23,5 +24,6 @@ pub use event_mapping::*;
 pub use file::*;
 pub use install_ui_sequence::*;
 pub use property::*;
+pub use registry::*;
 pub use standard_actions::is_standard_action;
 pub use table::*;

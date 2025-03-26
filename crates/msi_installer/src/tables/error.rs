@@ -7,6 +7,8 @@ pub enum MsiDataBaseError {
 
     #[error("Table '{table}' is missing in package")]
     TableMissingError { table: String },
+    #[error("Value '{0}' is not a valid registry root, only -1, 0, 1, 2, 3 are allowed")]
+    InvalidRegistryRoot(i32),
     #[error(
         "Table '{table}' cell {row}:{column} is not of the expected type: {expected_type}, value: {value}"
     )]

@@ -8,35 +8,47 @@ use std::{
 
 use crate::{
     LivraisonResult,
-    msi::dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
+    msi::{
+        dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
+        features::environment_vars::{
+            EnvironmentAction, EnvironmentActionKind, register_environment_vars,
+        },
+    },
 };
 use msi::Language;
 use msi_installer::{
     PropertiesBuilder, RequiredProperties,
     tables::{
         Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
-        EventMapping, File, FileAttributes, InstallUISequence,
+        Environment, EventMapping, File, FileAttributes, InstallUISequence,
     },
 };
 use uuid::Uuid;
 
-use super::dialogs::{
-    cancel::{
-        create_cancel_dialog, create_cancel_dialog_control_events, create_cancel_dialog_controls,
+use super::{
+    Context,
+    dialogs::{
+        cancel::{
+            create_cancel_dialog, create_cancel_dialog_control_events,
+            create_cancel_dialog_controls,
+        },
+        exit::{
+            create_exit_dialog, create_exit_dialog_control_events, create_exit_dialog_controls,
+        },
+        fatal_error::{
+            create_fatal_error_dialog, create_fatal_error_dialog_control_events,
+            create_fatal_error_dialog_controls,
+        },
+        progress::{
+            create_progress_dialog, create_progress_dialog_control_events,
+            create_progress_dialog_controls,
+        },
+        remove::{
+            create_remove_dialog, create_remove_dialog_control_events,
+            create_remove_dialog_controls,
+        },
+        welcome::create_welcome_dialog_control_events,
     },
-    exit::{create_exit_dialog, create_exit_dialog_control_events, create_exit_dialog_controls},
-    fatal_error::{
-        create_fatal_error_dialog, create_fatal_error_dialog_control_events,
-        create_fatal_error_dialog_controls,
-    },
-    progress::{
-        create_progress_dialog, create_progress_dialog_control_events,
-        create_progress_dialog_controls,
-    },
-    remove::{
-        create_remove_dialog, create_remove_dialog_control_events, create_remove_dialog_controls,
-    },
-    welcome::create_welcome_dialog_control_events,
 };
 
 // Namespace to construct uuid v5
@@ -85,6 +97,7 @@ pub struct MsiInstallerPacker<W: Read + Write + Seek> {
     upgrade_code: Uuid,
     package: msi::Package<W>,
     options: MsiInstallerOptions,
+    context: Context,
 }
 
 pub fn pack(options: MsiInstallerOptions, dest: &Path) -> LivraisonResult<()> {
@@ -110,6 +123,9 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             upgrade_code: bundle_id,
             package,
             options,
+            context: Context {
+                upgrade_code: bundle_id,
+            },
         })
     }
 
@@ -141,6 +157,17 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.create_control_event_table(&cabinets)?;
         self.create_event_mapping_table(&cabinets)?;
         self.create_text_style_table(&cabinets)?;
+
+        register_environment_vars(
+            &mut self.package,
+            &self.context,
+            &vec![EnvironmentAction {
+                id: "PATH".to_string(),
+                name: "PATH".to_string(),
+                value: "[INSTALLDIR]".to_string(),
+                kind: EnvironmentActionKind::Append,
+            }],
+        )?;
 
         self.package.flush()?;
         Ok(())
@@ -555,7 +582,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             ],
         )?;
         let mut rows = Vec::new();
-        let actions: [(&str, &str, i32); 24] = [
+        let actions: [(&str, &str, i32); 26] = [
             //("LaunchConditions", "", 100), // Requires a LaunchCondition table
             //("FindRelatedProducts", "", 200), // Requires an Upgrade table
             //("AppSearch", "", 400), // Requires a Signature table
@@ -587,7 +614,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             //("UnregisterMIMEInfo", "", 3000), // Requires a MIME table
             //("RemoveIniValues", "", 3100), // Requires an IniFile table
             //("RemoveShortcuts", "", 3200), // Requires a Shortcut table
-            //("RemoveEnvironmentStrings", "", 3300), // Requires an Environment table
+            ("RemoveEnvironmentStrings", "", 3300), // Requires an Environment table
             //("RemoveDuplicateFiles", "", 3400), // Requires a DuplicateFile table
             ("RemoveFiles", "", 3500),
             ("RemoveFolders", "", 3600),
@@ -604,7 +631,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             //("RegisterMIMEInfo", "", 4900), // Requires a MIME table
             //("WriteRegistryValues", "", 5000), // Requires a Registry table
             //("WriteIniValues", "", 5100), // Requires an IniFile table
-            //("WriteEnvironmentStrings", "", 5200), // Requires an Environment table
+            ("WriteEnvironmentStrings", "", 5200), // Requires an Environment table
             //("RegisterFonts", "", 5300), // Requires a Font table
             //("InstallODBC", "", 5400), // Requires an ODBC* table
             //("RegisterTypeLibraries", "", 5500), // Requires a TypeLib table

@@ -1,6 +1,9 @@
 use super::{
     rule::{Diagnostic, Linter},
-    rules::{ControlEventRefRule, DialogRule, InvalidForeignKeyRule, PrimaryKeysRule},
+    rules::{
+        ControlEventRefRule, DialogRule, InvalidForeignKeyRule, InvalidPropertyRule,
+        PrimaryKeysRule,
+    },
 };
 use crate::color::{cyan, green, red};
 use msi::Package;
@@ -15,6 +18,7 @@ pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
     linter.register(DialogRule {});
     linter.register(ControlEventRefRule {});
     linter.register(InvalidForeignKeyRule {});
+    linter.register(InvalidPropertyRule {});
 
     let diagnostics = linter.lint(package);
     // let mut errors: Vec<ValidationError> = Vec::new();

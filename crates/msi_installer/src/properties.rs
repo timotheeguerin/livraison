@@ -21,13 +21,14 @@ pub struct PropertiesBuilder {
     properties: HashMap<PropertyType, String>,
 }
 
+fn guid_string(value: &Uuid) -> String {
+    format!("{{{}}}", value)
+}
+
 impl PropertiesBuilder {
     pub fn new(props: RequiredProperties) -> Self {
         let mut properties = HashMap::new();
-        properties.insert(
-            PropertyType::ProductCode,
-            format!("{{{}}}", props.product_code),
-        );
+        properties.insert(PropertyType::ProductCode, guid_string(&props.product_code));
         properties.insert(
             PropertyType::ProductLanguage,
             props.product_language.code().to_string(),
@@ -36,6 +37,12 @@ impl PropertiesBuilder {
         properties.insert(PropertyType::ProductName, props.product_name);
         properties.insert(PropertyType::ProductVersion, props.product_version);
         Self { properties }
+    }
+
+    pub fn upgrade_code(&mut self, value: &Uuid) -> &mut Self {
+        self.properties
+            .insert(PropertyType::UpgradeCode, guid_string(value));
+        self
     }
 
     /// Install per user $LOCALAPPDATA/Programs
@@ -113,6 +120,7 @@ enum PropertyType {
     ProductVersion,
 
     // Other
+    UpgradeCode,
     DefaultUIFont,
     #[strum(serialize = "ARPNOMODIFY")]
     ArpNoModify,

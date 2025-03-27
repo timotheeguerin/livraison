@@ -20,7 +20,7 @@ use msi_installer::{
     PropertiesBuilder, RequiredProperties,
     tables::{
         Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
-        Environment, EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence,
+        EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence,
     },
 };
 use uuid::Uuid;
@@ -93,8 +93,6 @@ pub struct BinaryFile {
 }
 
 pub struct MsiInstallerPacker<W: Read + Write + Seek> {
-    /// The UUID that uniquely identifies this installer package even if the name changes.
-    upgrade_code: Uuid,
     package: msi::Package<W>,
     options: MsiInstallerOptions,
     context: Context,
@@ -117,14 +115,15 @@ pub fn pack(options: MsiInstallerOptions, dest: &Path) -> LivraisonResult<()> {
 impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     pub fn new(out: W, options: MsiInstallerOptions) -> LivraisonResult<MsiInstallerPacker<W>> {
         let package = msi::Package::create(msi::PackageType::Installer, out)?;
-        let bundle_id = compute_bundle_id(&options.bundle_name);
+        let product_code = compute_product_code(&options.bundle_name, &options.version);
+        let upgrade_code = compute_upgrade_code(&options.bundle_name);
 
         Ok(MsiInstallerPacker {
-            upgrade_code: bundle_id,
             package,
             options,
             context: Context {
-                upgrade_code: bundle_id,
+                product_code,
+                upgrade_code,
             },
         })
     }
@@ -191,7 +190,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         summary_info.set_arch("x64");
         summary_info.set_languages(&[msi::Language::from_tag("en-US")]);
         summary_info.set_subject(&self.options.name);
-        summary_info.set_uuid(self.upgrade_code);
+        summary_info.set_uuid(self.context.product_code);
         summary_info.set_comments(&self.options.description);
         summary_info.set_author(&self.options.author);
         summary_info.set_creating_application("livraison".to_string());
@@ -201,12 +200,13 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     // Creates and populates the `Property` database table for the package.
     fn create_property_table(&mut self) -> LivraisonResult<()> {
         PropertiesBuilder::new(RequiredProperties {
-            product_code: self.upgrade_code,
+            product_code: self.context.product_code,
             product_language: Language::from_tag("en-US"),
             manufacturer: self.options.author.clone(),
             product_name: self.options.name.clone(),
             product_version: self.options.version.clone(),
         })
+        .upgrade_code(&self.context.upgrade_code)
         .install_per_user()
         .default_ui_font("DefaultFont")
         .insert("Mode", "Install")
@@ -455,7 +455,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let mut rows = Vec::new();
         for directory in directories.iter() {
             for file in directory.files.iter() {
-                let uuid = Uuid::new_v5(&self.upgrade_code, file.as_bytes());
+                let uuid = Uuid::new_v5(&self.context.product_code, file.as_bytes());
                 rows.push(Component {
                     component: file.clone(),
                     id: Some(uuid),
@@ -812,8 +812,13 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 }
 
-fn compute_bundle_id(bundle_name: &str) -> uuid::Uuid {
+fn compute_upgrade_code(bundle_name: &str) -> uuid::Uuid {
     Uuid::new_v5(&UUID_NAMESPACE, bundle_name.as_bytes())
+}
+
+fn compute_product_code(bundle_name: &str, version: &str) -> uuid::Uuid {
+    let str = format!("{}@{}", bundle_name, version);
+    Uuid::new_v5(&UUID_NAMESPACE, str.as_bytes())
 }
 
 // Info about a resource file (including the main executable) in the bundle.

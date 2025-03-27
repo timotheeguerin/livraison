@@ -21,14 +21,14 @@ impl Rule for InvalidPropertyRule {
             .collect::<std::collections::HashMap<_, _>>();
 
         check_property_defined(ctx, &map, "ProductVersion");
-        check_property_defined(ctx, &map, "UpgradeCode");
+        check_property_defined(ctx, &map, "ProductCode");
         check_property_defined(ctx, &map, "Manufacturer");
         check_property_defined(ctx, &map, "ProductName");
         if check_property_defined(ctx, &map, "ProductCode") {
             let code = map.get("ProductCode").unwrap();
-            if code.starts_with('{')
+            if !(code.starts_with('{')
                 && code.ends_with('}')
-                && Uuid::parse_str(&code[1..code.len() - 1]).is_ok()
+                && Uuid::parse_str(&code[1..code.len() - 1]).is_ok())
             {
                 ctx.error(hl!(
                     "ProductCode {} property must be a uuid surrounded by braces {}",

@@ -47,9 +47,10 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
             component: component_id.clone(),
             id: Some(uuid),
             directory: "INSTALLDIR".to_string(),
-            attributes: ComponentAttributes::Bit64 | ComponentAttributes::RegistryKeyPath,
+            attributes: ComponentAttributes::Bit64, // | ComponentAttributes::RegistryKeyPath,
             condition: None,
-            key_path: Some(component_id.clone()),
+            key_path: None,
+            // key_path: Some(component_id.clone()),
         });
 
         environments.push(Environment {
@@ -59,14 +60,14 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
             component: component_id.clone(),
         });
 
-        registry_items.push(Registry {
-            registry: component_id.to_string(),
-            name: "InstallDir".to_string(),
-            key: "SOFTWARE\\Microsoft\\test".to_string(),
-            value: action.value.to_string(),
-            component: component_id.clone(),
-            root: RegistryRoot::CurrentUser,
-        });
+        // registry_items.push(Registry {
+        //     registry: component_id.to_string(),
+        //     name: "InstallDir".to_string(),
+        //     key: "SOFTWARE\\Microsoft\\test".to_string(),
+        //     value: action.value.to_string(),
+        //     component: component_id.clone(),
+        //     root: RegistryRoot::CurrentUser,
+        // });
 
         feature_components.push(FeatureComponents {
             feature: "MainFeature".to_string(),

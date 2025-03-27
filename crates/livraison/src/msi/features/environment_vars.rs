@@ -2,7 +2,7 @@ use std::io::{Read, Seek, Write};
 
 use msi::Package;
 use msi_installer::tables::{
-    Component, ComponentAttributes, Entity, Environment, Registry, RegistryRoot,
+    Component, ComponentAttributes, Entity, Environment, FeatureComponent, Registry, RegistryRoot,
 };
 use uuid::Uuid;
 
@@ -67,11 +67,17 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
             component: component_id.clone(),
             root: RegistryRoot::CurrentUser,
         });
+
+        feature_components.push(FeatureComponent {
+            feature: "DefaultFeature".to_string(),
+            component: component_id.clone(),
+        });
     }
 
     Component::insert(package, &components)?;
     Environment::insert(package, &environments)?;
     Registry::insert(package, &registry_items)?;
+    FeatureComponent::insert(package, &feature_components)?;
     Ok(())
 }
 

@@ -161,12 +161,20 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         register_environment_vars(
             &mut self.package,
             &self.context,
-            &vec![EnvironmentAction {
-                id: "PATH".to_string(),
-                name: "PATH".to_string(),
-                value: "[INSTALLDIR]".to_string(),
-                kind: EnvironmentActionKind::Append,
-            }],
+            &vec![
+                EnvironmentAction {
+                    id: "PATH".to_string(),
+                    name: "PATH".to_string(),
+                    value: "[INSTALLDIR]".to_string(),
+                    kind: EnvironmentActionKind::Append,
+                },
+                // EnvironmentAction {
+                //     id: "TEST_VAR".to_string(),
+                //     name: "TEST_VAR".to_string(),
+                //     value: "[INSTALLDIR]".to_string(),
+                //     kind: EnvironmentActionKind::Set,
+                // },
+            ],
         )?;
 
         self.package.flush()?;
@@ -582,7 +590,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             ],
         )?;
         let mut rows = Vec::new();
-        let actions: [(&str, &str, i32); 26] = [
+        let actions: [(&str, &str, i32); 28] = [
             //("LaunchConditions", "", 100), // Requires a LaunchCondition table
             //("FindRelatedProducts", "", 200), // Requires an Upgrade table
             //("AppSearch", "", 400), // Requires a Signature table
@@ -607,7 +615,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             //("UnregisterTypeLibraries", "", 2300), // Requires a TypeLib table
             //("RemoveODBC", "", 2400), // Requires an ODBC* table
             //("UnregisterFonts", "", 2500), // Requires a Font table
-            //("RemoveRegistryValues", "", 2600), // Requires a Registry table
+            ("RemoveRegistryValues", "", 2600), // Requires a Registry table
             //("UnregisterClassInfo", "", 2700), // Requires a Class table
             //("UnregisterExtensionInfo", "", 2800), // Requires an Extension table
             //("UnregisterProgIdInfo", "", 2900), // Requires ProgId, Extension or Class table
@@ -629,7 +637,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             //("RegisterExtensionInfo", "", 4700), // Requires an Extension table
             //("RegisterProgIdInfo", "", 4800), // Requires a ProgId table
             //("RegisterMIMEInfo", "", 4900), // Requires a MIME table
-            //("WriteRegistryValues", "", 5000), // Requires a Registry table
+            ("WriteRegistryValues", "", 5000), // Requires a Registry table
             //("WriteIniValues", "", 5100), // Requires an IniFile table
             ("WriteEnvironmentStrings", "", 5200), // Requires an Environment table
             //("RegisterFonts", "", 5300), // Requires a Font table

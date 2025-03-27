@@ -65,11 +65,16 @@ impl Entity for Component {
 
 bitflags! {
     /// Component Attributes
-/// https://learn.microsoft.com/en-us/windows/win32/msi/component-table#Attributes
+    /// https://learn.microsoft.com/en-us/windows/win32/msi/component-table#Attributes
     #[derive(Debug, Clone, Default)]
+
     pub struct ComponentAttributes: i32 {
+        /// Component can only be run from source.
+        /// Set this bit for all components belonging to a feature to prevent the feature from being run-from-my-computer.
         const SourceOnly = 1;
+        /// Component can run locally or from source.
         const Optional = 2;
+        /// If this bit is set, the value in the KeyPath column is used as a key into the Registry table.
         const RegistryKeyPath = 4;
         const SharedDllRefCount = 8;
         const Permanent = 16;

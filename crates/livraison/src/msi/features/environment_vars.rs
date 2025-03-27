@@ -1,7 +1,9 @@
 use std::io::{Read, Seek, Write};
 
 use msi::Package;
-use msi_installer::tables::{Component, ComponentAttributes, Entity, Environment};
+use msi_installer::tables::{
+    Component, ComponentAttributes, Entity, Environment, Registry, RegistryRoot,
+};
 use uuid::Uuid;
 
 use crate::{LivraisonError, msi::Context};
@@ -31,17 +33,21 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
     actions: &Vec<EnvironmentAction>,
 ) -> Result<(), LivraisonError> {
     Environment::create_table(package)?;
+    Registry::create_table(package)?;
 
     let mut environments: Vec<Environment> = Vec::new();
     let mut components: Vec<Component> = Vec::new();
+    let mut feature_components: Vec<FeatureComponent> = Vec::new();
+    let mut registry_items: Vec<Registry> = Vec::new();
     for action in actions {
-        let component_id = format!("env_{}", action.id);
+        // let component_id = format!("env_{}", action.id);
+        let component_id = "reg384648C2D0DE5577014AD3CB66D5A086".to_string();
         let uuid = Uuid::new_v5(&context.upgrade_code, component_id.as_bytes());
         components.push(Component {
             component: component_id.clone(),
             id: Some(uuid),
             directory: "INSTALLDIR".to_string(),
-            attributes: ComponentAttributes::Bit64,
+            attributes: ComponentAttributes::Bit64 | ComponentAttributes::RegistryKeyPath,
             condition: None,
             key_path: Some(component_id.clone()),
         });
@@ -52,10 +58,20 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
             value: Some(get_environment_value(action)),
             component: component_id.clone(),
         });
+
+        registry_items.push(Registry {
+            registry: component_id.to_string(),
+            name: "InstallDir".to_string(),
+            key: "SOFTWARE\\Microsoft\\test".to_string(),
+            value: action.value.to_string(),
+            component: component_id.clone(),
+            root: RegistryRoot::CurrentUser,
+        });
     }
 
     Component::insert(package, &components)?;
     Environment::insert(package, &environments)?;
+    Registry::insert(package, &registry_items)?;
     Ok(())
 }
 

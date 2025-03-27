@@ -20,7 +20,7 @@ use msi_installer::{
     PropertiesBuilder, RequiredProperties,
     tables::{
         Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
-        Environment, EventMapping, FeatureComponent, File, FileAttributes, InstallUISequence,
+        Environment, EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence,
     },
 };
 use uuid::Uuid;
@@ -142,6 +142,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let directories = self.collect_directory_info(&mut resources)?;
         let cabinets = self.divide_resources_into_cabinets(resources);
         self.generate_resource_cabinets(&cabinets)?;
+
+        FeatureComponents::create_table(&mut self.package)?;
 
         // Set up installer database tables:
         self.create_directory_table(&directories)?;
@@ -474,8 +476,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         &mut self,
         directories: &[DirectoryInfo],
     ) -> LivraisonResult<()> {
-        FeatureComponent::create_table(&mut self.package)?;
-
         let mut rows = Vec::new();
         for directory in directories.iter() {
             for file in directory.files.iter() {

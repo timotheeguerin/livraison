@@ -3,14 +3,14 @@ use super::{Entity, RowView, error::MsiDataBaseError};
 /// FeatureComponent Table
 /// https://learn.microsoft.com/en-us/windows/win32/msi/featurecomponent-table
 #[derive(Debug, Clone, Default)]
-pub struct FeatureComponent {
+pub struct FeatureComponents {
     pub feature: String,
     pub component: String,
 }
 
-impl Entity for FeatureComponent {
+impl Entity for FeatureComponents {
     fn table_name() -> &'static str {
-        "FeatureComponent"
+        "FeatureComponents"
     }
 
     fn definition() -> Vec<msi::Column> {
@@ -26,8 +26,8 @@ impl Entity for FeatureComponent {
         ]
     }
 
-    fn from_row(row: &RowView) -> Result<FeatureComponent, MsiDataBaseError> {
-        Ok(FeatureComponent {
+    fn from_row(row: &RowView) -> Result<FeatureComponents, MsiDataBaseError> {
+        Ok(FeatureComponents {
             feature: row.string(0)?,
             component: row.string(1)?,
         })

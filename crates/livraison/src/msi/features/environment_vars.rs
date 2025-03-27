@@ -2,7 +2,7 @@ use std::io::{Read, Seek, Write};
 
 use msi::Package;
 use msi_installer::tables::{
-    Component, ComponentAttributes, Entity, Environment, FeatureComponent, Registry, RegistryRoot,
+    Component, ComponentAttributes, Entity, Environment, FeatureComponents, Registry, RegistryRoot,
 };
 use uuid::Uuid;
 
@@ -37,11 +37,11 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
 
     let mut environments: Vec<Environment> = Vec::new();
     let mut components: Vec<Component> = Vec::new();
-    let mut feature_components: Vec<FeatureComponent> = Vec::new();
+    let mut feature_components: Vec<FeatureComponents> = Vec::new();
     let mut registry_items: Vec<Registry> = Vec::new();
     for action in actions {
-        // let component_id = format!("env_{}", action.id);
-        let component_id = "reg384648C2D0DE5577014AD3CB66D5A086".to_string();
+        let component_id = format!("env_{}", action.id.to_lowercase());
+        // let component_id = "reg384648C2D0DE5577014AD3CB66D5A086".to_string();
         let uuid = Uuid::new_v5(&context.upgrade_code, component_id.as_bytes());
         components.push(Component {
             component: component_id.clone(),
@@ -68,8 +68,8 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
             root: RegistryRoot::CurrentUser,
         });
 
-        feature_components.push(FeatureComponent {
-            feature: "DefaultFeature".to_string(),
+        feature_components.push(FeatureComponents {
+            feature: "MainFeature".to_string(),
             component: component_id.clone(),
         });
     }
@@ -77,7 +77,7 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
     Component::insert(package, &components)?;
     Environment::insert(package, &environments)?;
     Registry::insert(package, &registry_items)?;
-    FeatureComponent::insert(package, &feature_components)?;
+    FeatureComponents::insert(package, &feature_components)?;
     Ok(())
 }
 

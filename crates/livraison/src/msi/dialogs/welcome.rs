@@ -2,14 +2,14 @@ use std::vec;
 
 use msi_installer::{
     tables::{Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle},
-    ui::{self, control::ControlBuilder, dialog::DialogSize},
+    ui::{self, dialog::DialogSize},
 };
 
 pub fn create() -> ui::dialog::DialogBuilder {
     ui::dialog::new("WelcomeDialog", "[ProductName] Setup")
         .size(DialogSize::classic())
         .add(
-            ui::text::text(
+            ui::control::text(
                 "Title",
                 "{\\TitleFont}Welcome to the [ProductName] installer",
             )
@@ -17,12 +17,19 @@ pub fn create() -> ui::dialog::DialogBuilder {
             .size((220, 60)),
         )
         .add(
-            ui::text::text(
+            ui::control::text(
                 "Description",
                 "{\\DefaultFont}This will install [ProductName] on your computer. Click Install to continue or Cancel to exit the installer.",
             )
             .pos((135, 70))
             .size((220, 50)),
+        )
+        .add(
+            ui::control::button(
+                "Next",
+                "Install",
+            )
+            .pos(( 236, 243))
         )
 }
 

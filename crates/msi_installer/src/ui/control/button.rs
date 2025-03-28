@@ -1,19 +1,22 @@
-use crate::tables::{Control, ControlAttributes, ControlType};
+use crate::{
+    tables::{Control, ControlAttributes, ControlType},
+    ui::{position::Position, size::Size},
+};
 
-use super::{control::ControlBuilder, position::Position, size::Size};
+use super::ControlBuilder;
 
-pub fn text(id: &str, text: &str) -> Text {
-    Text {
+pub fn button(id: &str, text: &str) -> Button {
+    Button {
         id: id.to_string(),
         text: text.to_string(),
         pos: Position::ZERO,
-        size: Size::ZERO,
-        attributes: ControlAttributes::Visible,
+        size: Size::new(56, 17),
+        attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
     }
 }
 
 #[derive(Debug, Default)]
-pub struct Text {
+pub struct Button {
     id: String,
     text: String,
     pos: Position,
@@ -21,7 +24,7 @@ pub struct Text {
     attributes: ControlAttributes,
 }
 
-impl Text {
+impl Button {
     pub fn pos(mut self, pos: impl Into<Position>) -> Self {
         self.pos = pos.into();
         self
@@ -33,10 +36,16 @@ impl Text {
     }
 }
 
-impl ControlBuilder for Text {
+impl ControlBuilder for Button {
+    fn interactive(&self) -> bool {
+        true
+    }
+    fn id(&self) -> String {
+        self.id.clone()
+    }
     fn build(&self, dialog_id: &str) -> Control {
         Control {
-            type_: ControlType::Text,
+            type_: ControlType::PushButton,
             dialog: dialog_id.to_string(),
             control: self.id.clone(),
             x: self.pos.x,

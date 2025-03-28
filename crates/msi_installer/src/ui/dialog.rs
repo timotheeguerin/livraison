@@ -43,6 +43,11 @@ impl DialogBuilder {
     }
 
     pub fn as_dialog(&self) -> Dialog {
+        let first = self
+            .controls
+            .iter()
+            .find(|x| x.interactive())
+            .map(|x| x.id());
         Dialog {
             dialog: self.id.clone(),
             h_centering: self.centering.h,
@@ -51,7 +56,7 @@ impl DialogBuilder {
             height: self.size.height,
             attributes: self.attributes.clone(),
             title: Some(self.title.clone()),
-            control_first: "".to_string(),
+            control_first: first.expect("Dialog must have at least one interactive control"),
             control_default: None,
             control_cancel: None,
         }

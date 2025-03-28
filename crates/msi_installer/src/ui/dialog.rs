@@ -77,18 +77,18 @@ impl DialogBuilder {
             .find(|x| x.interactive())
             .map(|x| x.id());
 
-        let mut controls: Vec<Control> = Vec::with_capacity(self.controls.len());
+        let mut controls: Vec<Control> = Vec::new();
 
-        for i in (self.controls.len() - 1)..0 {
-            let control = &self.controls[i];
+        for control in self.controls.iter().rev() {
             let mut item = control.build(&self.id);
             if control.interactive() {
                 item.control_next = next;
                 next = Some(item.control.clone());
             }
-            controls[i] = item;
+            controls.push(item)
         }
 
+        controls.reverse();
         controls
     }
 }

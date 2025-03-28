@@ -1,4 +1,4 @@
-use crate::tables::{Dialog, DialogStyle};
+use crate::tables::{Control, Dialog, DialogStyle};
 
 use super::{control::ControlBuilder, size::Size};
 
@@ -48,6 +48,12 @@ impl DialogBuilder {
             .iter()
             .find(|x| x.interactive())
             .map(|x| x.id());
+
+        let cancel = self
+            .controls
+            .iter()
+            .find(|x| x.id() == "Cancel")
+            .map(|x| x.id());
         Dialog {
             dialog: self.id.clone(),
             h_centering: self.centering.h,
@@ -56,17 +62,34 @@ impl DialogBuilder {
             height: self.size.height,
             attributes: self.attributes.clone(),
             title: Some(self.title.clone()),
-            control_first: first.expect("Dialog must have at least one interactive control"),
-            control_default: None,
-            control_cancel: None,
+            control_first: first
+                .clone()
+                .expect("Dialog must have at least one interactive control"),
+            control_default: first,
+            control_cancel: cancel,
         }
     }
 
-    pub fn as_controls(&self) -> Vec<crate::tables::Control> {
-        self.controls
+    pub fn as_controls(&self) -> Vec<Control> {
+        let mut next = self
+            .controls
             .iter()
-            .map(|control| control.build(&self.id))
-            .collect()
+            .find(|x| x.interactive())
+            .map(|x| x.id());
+
+        let mut controls: Vec<Control> = Vec::with_capacity(self.controls.len());
+
+        for i in (self.controls.len() - 1)..0 {
+            let control = &self.controls[i];
+            let mut item = control.build(&self.id);
+            if control.interactive() {
+                item.control_next = next;
+                next = Some(item.control.clone());
+            }
+            controls[i] = item;
+        }
+
+        controls
     }
 }
 

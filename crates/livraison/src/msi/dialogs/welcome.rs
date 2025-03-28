@@ -29,7 +29,21 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Next",
                 "Install",
             )
-            .pos(( 236, 243))
+            .pos(( 236, 243)),
+        )
+        .add(
+            ui::control::button(
+                "Cancel",
+                "Cancel",
+            )
+            .pos((304, 243))
+        )
+        .add(
+            ui::control::button(
+                "Back",
+                "Back",
+            )
+            .pos((180, 243))
         )
 }
 

@@ -13,7 +13,7 @@ pub fn progress_bar(id: &str) -> ProgressBar {
             width: 0,
             height: 10,
         },
-        attributes: ControlAttributes::Visible,
+        attributes: ControlAttributes::Visible | ControlAttributes::Progress95,
     }
 }
 

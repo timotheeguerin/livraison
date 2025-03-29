@@ -24,29 +24,7 @@ use uuid::Uuid;
 
 use super::{
     Context,
-    dialogs::{
-        cancel::{
-            self, create_cancel_dialog, create_cancel_dialog_control_events,
-            create_cancel_dialog_controls,
-        },
-        exit::{
-            self, create_exit_dialog, create_exit_dialog_control_events,
-            create_exit_dialog_controls,
-        },
-        fatal_error::{
-            self, create_fatal_error_dialog, create_fatal_error_dialog_control_events,
-            create_fatal_error_dialog_controls,
-        },
-        progress::{
-            self, create_progress_dialog, create_progress_dialog_control_events,
-            create_progress_dialog_controls,
-        },
-        remove::{
-            self, create_remove_dialog, create_remove_dialog_control_events,
-            create_remove_dialog_controls,
-        },
-        welcome::{self, create_welcome_dialog_control_events},
-    },
+    dialogs::{cancel, exit, fatal_error, progress, remove, welcome},
 };
 
 // Namespace to construct uuid v5
@@ -151,9 +129,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.create_file_table(&cabinets)?;
         self.create_install_execute_sequence_table(&cabinets)?;
         self.create_install_ui_sequence_table(&cabinets)?;
-        self.create_dialog_table(&cabinets)?;
-        self.create_control_table(&cabinets)?;
-        self.create_control_event_table(&cabinets)?;
+        self.create_dialogs(&cabinets)?;
         self.create_event_mapping_table(&cabinets)?;
         self.create_text_style_table(&cabinets)?;
 
@@ -697,72 +673,41 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Ok(())
     }
 
-    fn create_dialog_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
+    fn create_dialogs(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         Dialog::create_table(&mut self.package)?;
-        let dialogs = [
-            welcome::create().dialog(),
-            remove::create().dialog(),
-            // create_remove_dialog(),
-            cancel::create().dialog(),
-            // create_cancel_dialog(),
-            progress::create().dialog(),
-            // create_progress_dialog(),
-            exit::create().dialog(),
-            // create_exit_dialog(),
-            fatal_error::create().dialog(),
-            // create_fatal_error_dialog(),
-        ];
-        Dialog::insert(&mut self.package, &dialogs)?;
-
-        Ok(())
-    }
-
-    fn create_control_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         Control::create_table(&mut self.package)?;
-        let controls: Vec<Control> = [
-            welcome::create().controls(),
-            // create_welcome_dialog_controls(),
-            remove::create().controls(),
-            // create_remove_dialog_controls(),
-            cancel::create().controls(),
-            // create_cancel_dialog_controls(),
-            progress::create().controls(),
-            // create_progress_dialog_controls(),
-            exit::create().controls(),
-            // create_exit_dialog_controls(),
-            fatal_error::create().controls(),
-            // create_fatal_error_dialog_controls(),
-        ]
-        .iter()
-        .flatten()
-        .cloned()
-        .collect();
-        Control::insert(&mut self.package, &controls)?;
-
-        Ok(())
-    }
-
-    fn create_control_event_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         ControlEvent::create_table(&mut self.package)?;
-        let controls: Vec<ControlEvent> = [
-            welcome::create().events(),
-            // create_welcome_dialog_control_events(),
-            remove::create().events(),
-            // create_remove_dialog_control_events(),
-            cancel::create().events(),
-            // create_cancel_dialog_control_events(),
-            progress::create().events(),
-            // create_progress_dialog_control_events(),
-            exit::create().events(),
-            // create_exit_dialog_control_events(),
-            fatal_error::create().events(),
-            // create_fatal_error_dialog_control_events(),
-        ]
-        .iter()
-        .flatten()
-        .cloned()
-        .collect();
-        ControlEvent::insert(&mut self.package, &controls)?;
+        let dialogs = [
+            welcome::create(),
+            remove::create(),
+            cancel::create(),
+            progress::create(),
+            exit::create(),
+            fatal_error::create(),
+        ];
+
+        Dialog::insert(
+            &mut self.package,
+            &dialogs
+                .iter()
+                .map(|dialog| dialog.dialog())
+                .collect::<Vec<Dialog>>(),
+        )?;
+
+        Control::insert(
+            &mut self.package,
+            &dialogs
+                .iter()
+                .flat_map(|dialog| dialog.controls())
+                .collect::<Vec<Control>>(),
+        )?;
+        ControlEvent::insert(
+            &mut self.package,
+            &dialogs
+                .iter()
+                .flat_map(|dialog| dialog.events())
+                .collect::<Vec<ControlEvent>>(),
+        )?;
         Ok(())
     }
 

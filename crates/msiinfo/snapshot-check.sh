@@ -7,3 +7,4 @@ cargo run -- export $MSI Dialog > snapshots/classic/Dialog.txt
 cargo run -- export $MSI Control > snapshots/classic/Control.txt        
 cargo run -- export $MSI ControlEvent > snapshots/classic/ControlEvent.txt        
 cargo run -- export $MSI EventMapping > snapshots/classic/EventMapping.txt        
+cargo run -- export $MSI InstallUISequence > snapshots/classic/InstallUISequence.txt        

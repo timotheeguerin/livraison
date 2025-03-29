@@ -1,4 +1,4 @@
-use crate::tables::{Control, Dialog, DialogStyle};
+use crate::tables::{Control, ControlEvent, Dialog, DialogStyle};
 
 use super::{control::ControlBuilder, size::Size};
 
@@ -90,6 +90,15 @@ impl DialogBuilder {
 
         controls.reverse();
         controls
+    }
+
+    pub fn events(&self) -> Vec<ControlEvent> {
+        let mut events: Vec<ControlEvent> = Vec::new();
+        for control in self.controls.iter().rev() {
+            events.extend(control.events(&self.id));
+        }
+
+        events
     }
 }
 

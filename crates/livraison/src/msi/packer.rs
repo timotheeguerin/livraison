@@ -8,11 +8,8 @@ use std::{
 
 use crate::{
     LivraisonResult,
-    msi::{
-        dialogs::welcome::{create_welcome_dialog, create_welcome_dialog_controls},
-        features::environment_vars::{
-            EnvironmentAction, EnvironmentActionKind, register_environment_vars,
-        },
+    msi::features::environment_vars::{
+        EnvironmentAction, EnvironmentActionKind, register_environment_vars,
     },
 };
 use msi::Language;
@@ -737,7 +734,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     fn create_control_event_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         ControlEvent::create_table(&mut self.package)?;
         let controls: Vec<ControlEvent> = [
-            create_welcome_dialog_control_events(),
+            welcome::create().events(),
+            // create_welcome_dialog_control_events(),
             create_remove_dialog_control_events(),
             create_cancel_dialog_control_events(),
             create_progress_dialog_control_events(),

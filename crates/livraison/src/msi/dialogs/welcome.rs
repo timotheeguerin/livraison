@@ -29,7 +29,8 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Next",
                 "Install",
             )
-            .pos(( 236, 243)),
+            .pos(( 236, 243))
+            .trigger(ui::event::spawn_dialog("CancelDialog")),
         )
         .add(
             ui::control::button(
@@ -37,6 +38,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Cancel",
             )
             .pos((304, 243))
+            .trigger(ui::event::spawn_dialog("CancelDialog")),
         )
         .add(
             ui::control::button(

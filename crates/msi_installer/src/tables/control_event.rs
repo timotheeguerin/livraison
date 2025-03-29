@@ -1,3 +1,5 @@
+use strum_macros::EnumString;
+
 use super::{Entity, RowView, error::MsiDataBaseError};
 
 /// Control Event Table
@@ -65,4 +67,16 @@ impl Entity for ControlEvent {
             msi::Value::from_opt_i32(&self.ordering),
         ]
     }
+}
+
+#[derive(Debug, Clone, Copy, EnumString, strum_macros::Display)]
+pub enum ControlEventType {
+    /// Replace the current dialog with a new one
+    NewDialog,
+
+    /// Spawn a child dialog
+    SpawnDialog,
+
+    /// Notifies the installer to remove a modal dialog box.
+    EndDialog,
 }

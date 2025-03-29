@@ -1,6 +1,6 @@
 use crate::{
-    tables::{Control, ControlAttributes, ControlType},
-    ui::{position::Position, size::Size},
+    tables::{Control, ControlAttributes, ControlEvent, ControlType},
+    ui::{event::Event, position::Position, size::Size},
 };
 
 use super::ControlBuilder;
@@ -12,6 +12,7 @@ pub fn button(id: &str, text: &str) -> Button {
         pos: Position::ZERO,
         size: Size::new(56, 17),
         attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
+        events: Vec::new(),
     }
 }
 
@@ -22,6 +23,7 @@ pub struct Button {
     pos: Position,
     size: Size,
     attributes: ControlAttributes,
+    events: Vec<Event>,
 }
 
 impl Button {
@@ -32,6 +34,10 @@ impl Button {
 
     pub fn size(mut self, size: impl Into<Size>) -> Self {
         self.size = size.into();
+        self
+    }
+    pub fn trigger(mut self, size: Event) -> Self {
+        self.events.push(size);
         self
     }
 }
@@ -58,5 +64,13 @@ impl ControlBuilder for Button {
             control_next: None,
             help: None,
         }
+    }
+
+    fn events(&self, _dialog_id: &str) -> Vec<ControlEvent> {
+        self.events
+            .iter()
+            .enumerate()
+            .map(|(i, x)| x.as_control_event("Dialog", &self.id, i as i32))
+            .collect()
     }
 }

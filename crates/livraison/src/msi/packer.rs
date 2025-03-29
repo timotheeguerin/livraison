@@ -699,7 +699,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     fn create_dialog_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         Dialog::create_table(&mut self.package)?;
         let dialogs = [
-            welcome::create().as_dialog(),
+            welcome::create().dialog(),
             create_remove_dialog(),
             create_cancel_dialog(),
             create_progress_dialog(),
@@ -714,7 +714,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     fn create_control_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
         Control::create_table(&mut self.package)?;
         let controls: Vec<Control> = [
-            welcome::create().as_controls(),
+            welcome::create().controls(),
             // create_welcome_dialog_controls(),
             create_remove_dialog_controls(),
             create_cancel_dialog_controls(),

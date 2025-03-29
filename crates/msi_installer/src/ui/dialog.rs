@@ -42,7 +42,7 @@ impl DialogBuilder {
         self
     }
 
-    pub fn as_dialog(&self) -> Dialog {
+    pub fn dialog(&self) -> Dialog {
         let first = self
             .controls
             .iter()
@@ -70,7 +70,7 @@ impl DialogBuilder {
         }
     }
 
-    pub fn as_controls(&self) -> Vec<Control> {
+    pub fn controls(&self) -> Vec<Control> {
         let mut next = self
             .controls
             .iter()

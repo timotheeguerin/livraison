@@ -37,7 +37,7 @@ use super::{
             create_fatal_error_dialog_controls,
         },
         progress::{
-            create_progress_dialog, create_progress_dialog_control_events,
+            self, create_progress_dialog, create_progress_dialog_control_events,
             create_progress_dialog_controls,
         },
         remove::{
@@ -702,7 +702,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             welcome::create().dialog(),
             create_remove_dialog(),
             create_cancel_dialog(),
-            create_progress_dialog(),
+            progress::create().dialog(),
+            // create_progress_dialog(),
             create_exit_dialog(),
             create_fatal_error_dialog(),
         ];
@@ -718,7 +719,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             // create_welcome_dialog_controls(),
             create_remove_dialog_controls(),
             create_cancel_dialog_controls(),
-            create_progress_dialog_controls(),
+            progress::create().controls(),
+            // create_progress_dialog_controls(),
             create_exit_dialog_controls(),
             create_fatal_error_dialog_controls(),
         ]
@@ -738,7 +740,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             // create_welcome_dialog_control_events(),
             create_remove_dialog_control_events(),
             create_cancel_dialog_control_events(),
-            create_progress_dialog_control_events(),
+            progress::create().events(),
+            // create_progress_dialog_control_events(),
             create_exit_dialog_control_events(),
             create_fatal_error_dialog_control_events(),
         ]

@@ -1,6 +1,57 @@
-use msi_installer::tables::{
-    Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle,
+use std::vec;
+
+use msi_installer::{
+    tables::{Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle},
+    ui::{self, dialog::DialogSize, event::EndDialogAction},
 };
+
+pub fn create() -> ui::dialog::DialogBuilder {
+    ui::dialog::new("ProgressDialog", "{\\BoldFont}[Text_Doing] [ProductName]")
+        .size(DialogSize::classic())
+        .add(
+            ui::control::text(
+                "Title",
+                "{\\TitleFont}Welcome to the [ProductName] installer",
+            )
+            .pos((135, 20))
+            .size((220, 60)),
+        )
+        .add(
+            ui::control::text(
+                "Text",
+                "Please wait while [ProductName] is [Text_done]. This may take several minutes.",
+            )
+            .pos((35, 65))
+            .size((300, 25)),
+        )
+        .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
+        .add(ui::control::line("BannerLine").pos((0, 44)).width(374))
+        .add(
+            ui::control::progress_bar("ProgressBar")
+                .pos((35, 125))
+                .width(300),
+        )
+        .add(
+            ui::control::text("StatusLabel", "Status:")
+                .pos((35, 105))
+                .size((35, 10)),
+        )
+        .add(
+            ui::control::button("Next", "Next")
+                .pos((236, 243))
+                .disable(),
+        )
+        .add(
+            ui::control::button("Cancel", "Cancel")
+                .pos((304, 243))
+                .trigger(ui::event::spawn_dialog("CancelDialog")),
+        )
+        .add(
+            ui::control::button("Back", "Back")
+                .pos((180, 243))
+                .disable(),
+        )
+}
 
 pub fn create_progress_dialog() -> Dialog {
     Dialog {

@@ -27,7 +27,7 @@ pub enum EndDialogAction {
 // Notifies the installer to remove a modal dialog box.
 pub fn end_dialog(name: EndDialogAction) -> Event {
     Event {
-        event: ControlEventType::NewDialog,
+        event: ControlEventType::EndDialog,
         argument: name.to_string(),
     }
 }

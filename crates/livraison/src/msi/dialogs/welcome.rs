@@ -8,20 +8,20 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Title",
                 "{\\TitleFont}Welcome to the [ProductName] installer",
             )
-            .pos((20, 15))
-            .size((330, 15)),
+            .pos((135, 20))
+            .size((220, 60)),
         )
         .add(
             ui::control::text(
                 "Description",
                 "{\\DefaultFont}This will install [ProductName] on your computer. Click Install to continue or Cancel to exit the installer.",
             )
-            .pos((135, 70))
-            .size((220, 50)),
+            .pos((135, 80))
+            .size((220, 60)),
         )
         .add(ui::control::bitmap("LeftBg", "ClassicImage")
             .pos((0, 0))
-            .size((370, 234))
+            .size((100, 234))
         )
         .add(
             ui::control::line("BottomLine")

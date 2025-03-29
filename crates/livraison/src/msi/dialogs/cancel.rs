@@ -5,7 +5,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
         .size((260, 85))
         .add(
             ui::control::text("Text", "Do you want to abort?")
-                .pos((48, 15))
+                .pos((72, 25))
                 .size((194, 30)),
         )
         .add(

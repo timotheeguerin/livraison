@@ -25,6 +25,11 @@ pub fn create() -> ui::dialog::DialogBuilder {
             .size((220, 50)),
         )
         .add(
+            ui::control::line("BottomLine")
+                .pos((0, 234))
+                .width(374),
+        )
+        .add(
             ui::control::button(
                 "Next",
                 "Install",

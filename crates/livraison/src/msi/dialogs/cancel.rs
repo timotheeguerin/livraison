@@ -9,7 +9,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
     ui::dialog::new("CancelDialog", "[ProductName] Setup")
         .size((260, 85))
         .add(
-            ui::control::text("Text", "Do you want to abort [ProductName] [Text_action]?")
+            ui::control::text("Text", "Do you want to abort?")
                 .pos((48, 15))
                 .size((194, 30)),
         )

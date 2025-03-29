@@ -36,6 +36,12 @@ impl DialogBuilder {
         self
     }
 
+    /// Disable Modal mode https://learn.microsoft.com/en-us/windows/win32/msi/modal-dialog-style-bit
+    pub fn modeless(mut self) -> Self {
+        self.attributes.remove(DialogStyle::Modal);
+        self
+    }
+
     #[allow(clippy::should_implement_trait)]
     pub fn add(mut self, control: impl ControlBuilder + 'static) -> Self {
         self.controls.push(Box::new(control));
@@ -95,7 +101,6 @@ impl DialogBuilder {
     pub fn events(&self) -> Vec<ControlEvent> {
         let mut events: Vec<ControlEvent> = Vec::new();
         for control in self.controls.iter().rev() {
-            dbg!(control.events(&self.id));
             events.extend(control.events(&self.id));
         }
 

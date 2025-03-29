@@ -8,6 +8,7 @@ use msi_installer::{
 pub fn create() -> ui::dialog::DialogBuilder {
     ui::dialog::new("ProgressDialog", "[ProductName] Setup")
         .size(DialogSize::classic())
+        .modeless()
         .add(
             ui::control::text("Title", "{\\TitleFont}Installing [ProductName]")
                 .pos((20, 15))

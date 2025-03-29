@@ -1,3 +1,5 @@
+use std::io::IsTerminal;
+
 pub fn formatter<T>(s1: &'static str, s2: &'static str) -> impl Fn(T) -> String
 where
     T: AsRef<str>,
@@ -9,8 +11,12 @@ macro_rules! make_color {
     ( $( $name:ident: [$begin:expr, $end:expr]),* ) => {
         $(
            pub fn $name<T: AsRef<str>>(content: T) -> String {
-                let content = content.as_ref();
-                format!("{}{}{}", $begin, content, $end)
+               let content = content.as_ref();
+               if std::io::stdout().is_terminal() {
+                    format!("{}{}{}", $begin, content, $end)
+                } else {
+                    content.to_string()
+                }
            }
         )*
     }

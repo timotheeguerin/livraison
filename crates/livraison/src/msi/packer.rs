@@ -30,7 +30,8 @@ use super::{
             create_cancel_dialog_controls,
         },
         exit::{
-            create_exit_dialog, create_exit_dialog_control_events, create_exit_dialog_controls,
+            self, create_exit_dialog, create_exit_dialog_control_events,
+            create_exit_dialog_controls,
         },
         fatal_error::{
             create_fatal_error_dialog, create_fatal_error_dialog_control_events,
@@ -704,7 +705,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             create_cancel_dialog(),
             progress::create().dialog(),
             // create_progress_dialog(),
-            create_exit_dialog(),
+            exit::create().dialog(),
+            // create_exit_dialog(),
             create_fatal_error_dialog(),
         ];
         Dialog::insert(&mut self.package, &dialogs)?;
@@ -721,7 +723,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             create_cancel_dialog_controls(),
             progress::create().controls(),
             // create_progress_dialog_controls(),
-            create_exit_dialog_controls(),
+            exit::create().controls(),
+            // create_exit_dialog_controls(),
             create_fatal_error_dialog_controls(),
         ]
         .iter()
@@ -742,7 +745,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             create_cancel_dialog_control_events(),
             progress::create().events(),
             // create_progress_dialog_control_events(),
-            create_exit_dialog_control_events(),
+            exit::create().events(),
+            // create_exit_dialog_control_events(),
             create_fatal_error_dialog_control_events(),
         ]
         .iter()
@@ -795,9 +799,9 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         )?;
         let mut rows = Vec::new();
         let actions: [(&str, &str, i32, i32, i32); 3] = [
-            ("DefaultFont", "Tahoma", 10, 0, 0),
-            ("BoldFont", "Tahoma", 10, 0, 1),
-            ("TitleFont", "Verdana", 14, 0, 1),
+            ("DefaultFont", "Tahoma", 8, 0, 0),
+            ("BoldFont", "Tahoma", 12, 0, 1),
+            ("TitleFont", "Tahoma", 9, 0, 1),
         ];
         for action in actions {
             rows.push(vec![

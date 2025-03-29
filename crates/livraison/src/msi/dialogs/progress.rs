@@ -2,7 +2,7 @@ use std::vec;
 
 use msi_installer::{
     tables::{Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle},
-    ui::{self, dialog::DialogSize, event::EndDialogAction},
+    ui::{self, dialog::DialogSize},
 };
 
 pub fn create() -> ui::dialog::DialogBuilder {
@@ -24,14 +24,14 @@ pub fn create() -> ui::dialog::DialogBuilder {
         .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
         .add(ui::control::line("BannerLine").pos((0, 44)).width(374))
         .add(
-            ui::control::progress_bar("ProgressBar")
-                .pos((35, 125))
-                .width(300),
+            ui::control::text("StatusLabel", "Status:")
+                .pos((20, 100))
+                .size((50, 10)),
         )
         .add(
-            ui::control::text("StatusLabel", "Status:")
-                .pos((35, 105))
-                .size((35, 10)),
+            ui::control::progress_bar("ProgressBar")
+                .pos((20, 115))
+                .width(330),
         )
         .add(
             ui::control::button("Cancel", "Cancel")

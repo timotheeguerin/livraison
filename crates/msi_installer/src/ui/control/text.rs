@@ -5,10 +5,19 @@ use crate::{
 
 use super::ControlBuilder;
 
+pub fn dyn_text(id: &str) -> Text {
+    Text {
+        id: id.to_string(),
+        text: None,
+        pos: Position::ZERO,
+        size: Size::ZERO,
+        attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
+    }
+}
 pub fn text(id: &str, text: &str) -> Text {
     Text {
         id: id.to_string(),
-        text: text.to_string(),
+        text: Some(text.to_string()),
         pos: Position::ZERO,
         size: Size::ZERO,
         attributes: ControlAttributes::Visible,
@@ -18,7 +27,7 @@ pub fn text(id: &str, text: &str) -> Text {
 #[derive(Debug, Default)]
 pub struct Text {
     id: String,
-    text: String,
+    text: Option<String>,
     pos: Position,
     size: Size,
     attributes: ControlAttributes,
@@ -59,7 +68,7 @@ impl ControlBuilder for Text {
             width: self.size.width,
             height: self.size.height,
             attributes: self.attributes.clone(),
-            text: Some(self.text.clone()),
+            text: self.text.clone(),
             property: None,
             control_next: None,
             help: None,

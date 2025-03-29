@@ -4,11 +4,11 @@ Dialog_             Control_  Event            Argument        Condition  Orderi
 "FatalErrorDialog"  "Finish"  "EndDialog"      "Exit"          "1"        19        
 "ExitDialog"        "Finish"  "EndDialog"      "Return"        "1"        0         
 "WelcomeDialog"     "Next"    "EndDialog"      "Return"        "1"        0         
-"WelcomeDialog"     "Cancel"  "NewDialog"      "CancelDialog"  "1"        0         
-"RemoveDialog"      "Cancel"  "[Text_action]"  "removal"       "1"        7         
+"WelcomeDialog"     "Cancel"  "SpawnDialog"    "CancelDialog"  "1"        0         
 "RemoveDialog"      "Cancel"  "SpawnDialog"    "CancelDialog"  "1"        8         
+"RemoveDialog"      "Cancel"  "[Text_action]"  "removal"       "1"        7         
 "RemoveDialog"      "Remove"  "Remove"         "All"           "1"        14        
 "RemoveDialog"      "Remove"  "EndDialog"      "Return"        "1"        14        
-"ProgressDialog"    "Cancel"  "NewDialog"      "CancelDialog"  "1"        0         
+"ProgressDialog"    "Cancel"  "SpawnDialog"    "CancelDialog"  "1"        0         
 "CancelDialog"      "No"      "EndDialog"      "Return"        "1"        15        
 "CancelDialog"      "Yes"     "EndDialog"      "Exit"          "1"        16        

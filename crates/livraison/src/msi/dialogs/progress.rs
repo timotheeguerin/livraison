@@ -24,10 +24,9 @@ pub fn create() -> ui::dialog::DialogBuilder {
         )
         .add(ui::control::line("BannerLine").pos((0, 44)).width(374))
         .add(
-            ui::control::text("ActionText", "")
+            ui::control::dyn_text("ActionText")
                 .pos((70, 100))
-                .size((285, 10))
-                .enable(),
+                .size((285, 10)),
         )
         .add(
             ui::control::text("StatusLabel", "Status:")

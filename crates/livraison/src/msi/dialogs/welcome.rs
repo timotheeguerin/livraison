@@ -13,8 +13,8 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Title",
                 "{\\TitleFont}Welcome to the [ProductName] installer",
             )
-            .pos((135, 20))
-            .size((220, 60)),
+            .pos((20, 15))
+            .size((330, 15)),
         )
         .add(
             ui::control::text(

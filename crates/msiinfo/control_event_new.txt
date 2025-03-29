@@ -1,7 +1,7 @@
 ──────────────────  ────────  ───────────────  ──────────────  ─────────  ────────  
 Dialog_             Control_  Event            Argument        Condition  Ordering  
 ──────────────────  ────────  ───────────────  ──────────────  ─────────  ────────  
-"FatalErrorDialog"  "Finish"  "EndDialog"      "Exit"          "1"        19        
+"FatalErrorDialog"  "Finish"  "EndDialog"      "Exit"          "1"        0         
 "ExitDialog"        "Finish"  "EndDialog"      "Return"        "1"        0         
 "WelcomeDialog"     "Next"    "EndDialog"      "Return"        "1"        0         
 "WelcomeDialog"     "Cancel"  "SpawnDialog"    "CancelDialog"  "1"        0         
@@ -10,5 +10,5 @@ Dialog_             Control_  Event            Argument        Condition  Orderi
 "RemoveDialog"      "Remove"  "Remove"         "All"           "1"        14        
 "RemoveDialog"      "Remove"  "EndDialog"      "Return"        "1"        14        
 "ProgressDialog"    "Cancel"  "SpawnDialog"    "CancelDialog"  "1"        0         
-"CancelDialog"      "No"      "EndDialog"      "Return"        "1"        15        
-"CancelDialog"      "Yes"     "EndDialog"      "Exit"          "1"        16        
+"CancelDialog"      "Cancel"  "EndDialog"      "Return"        "1"        0         
+"CancelDialog"      "Yes"     "EndDialog"      "Exit"          "1"        0         

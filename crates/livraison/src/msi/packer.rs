@@ -26,7 +26,7 @@ use super::{
     Context,
     dialogs::{
         cancel::{
-            create_cancel_dialog, create_cancel_dialog_control_events,
+            self, create_cancel_dialog, create_cancel_dialog_control_events,
             create_cancel_dialog_controls,
         },
         exit::{
@@ -34,7 +34,7 @@ use super::{
             create_exit_dialog_controls,
         },
         fatal_error::{
-            create_fatal_error_dialog, create_fatal_error_dialog_control_events,
+            self, create_fatal_error_dialog, create_fatal_error_dialog_control_events,
             create_fatal_error_dialog_controls,
         },
         progress::{
@@ -702,12 +702,14 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let dialogs = [
             welcome::create().dialog(),
             create_remove_dialog(),
-            create_cancel_dialog(),
+            cancel::create().dialog(),
+            // create_cancel_dialog(),
             progress::create().dialog(),
             // create_progress_dialog(),
             exit::create().dialog(),
             // create_exit_dialog(),
-            create_fatal_error_dialog(),
+            fatal_error::create().dialog(),
+            // create_fatal_error_dialog(),
         ];
         Dialog::insert(&mut self.package, &dialogs)?;
 
@@ -720,12 +722,14 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             welcome::create().controls(),
             // create_welcome_dialog_controls(),
             create_remove_dialog_controls(),
-            create_cancel_dialog_controls(),
+            cancel::create().controls(),
+            // create_cancel_dialog_controls(),
             progress::create().controls(),
             // create_progress_dialog_controls(),
             exit::create().controls(),
             // create_exit_dialog_controls(),
-            create_fatal_error_dialog_controls(),
+            fatal_error::create().controls(),
+            // create_fatal_error_dialog_controls(),
         ]
         .iter()
         .flatten()
@@ -742,12 +746,14 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             welcome::create().events(),
             // create_welcome_dialog_control_events(),
             create_remove_dialog_control_events(),
-            create_cancel_dialog_control_events(),
+            cancel::create().events(),
+            // create_cancel_dialog_control_events(),
             progress::create().events(),
             // create_progress_dialog_control_events(),
             exit::create().events(),
             // create_exit_dialog_control_events(),
-            create_fatal_error_dialog_control_events(),
+            fatal_error::create().events(),
+            // create_fatal_error_dialog_control_events(),
         ]
         .iter()
         .flatten()

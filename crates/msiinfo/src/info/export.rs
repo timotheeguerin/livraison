@@ -16,7 +16,7 @@ pub fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table
         .iter()
         .map(|column| column.name().len())
         .collect();
-    let rows: Vec<Vec<msi::Value>> = package
+    let mut rows: Vec<Vec<msi::Value>> = package
         .select_rows(msi::Select::table(table_name))
         .expect("select")
         .map(|row| {
@@ -48,6 +48,7 @@ pub fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table
     }
     print_separator(&col_widths);
 
+    rows.sort();
     for row in rows.into_iter() {
         let mut line = String::new();
         for (index, value) in row.into_iter().enumerate() {

@@ -11,7 +11,7 @@ pub fn new(id: &str, title: &str) -> DialogBuilder {
             width: 260,
             height: 100,
         },
-        attributes: DialogStyle::Visible | DialogStyle::Modal,
+        attributes: DialogStyle::Visible | DialogStyle::Modal | DialogStyle::Minimize,
         controls: Vec::new(),
     }
 }

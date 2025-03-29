@@ -36,7 +36,7 @@ impl Entity for Binary {
     fn to_row(&self) -> Vec<msi::Value> {
         vec![
             msi::Value::Str(self.binary.clone()),
-            msi::Value::Str("_".to_string()),
+            msi::Value::Int(-32767),
         ]
     }
 }

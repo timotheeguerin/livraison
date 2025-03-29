@@ -31,28 +31,31 @@ pub enum ColumnType {
     Int32,
     /// A string, with the specified maximum length (or zero for no max).
     Str(usize),
+
+    /// Binary data(this doesn't actually contain the binary data and is basically a dumb reference)
+    Binary,
 }
 
 impl ColumnType {
     #[allow(clippy::if_same_then_else)]
     fn from_bitfield(type_bits: i32) -> io::Result<ColumnType> {
         let field_size = (type_bits & COL_FIELD_SIZE_MASK) as usize;
-        if (type_bits & COL_STRING_BIT) != 0 {
-            Ok(ColumnType::Str(field_size))
-        } else if field_size == 4 {
-            Ok(ColumnType::Int32)
-        } else if field_size == 2 {
-            Ok(ColumnType::Int16)
-        } else if field_size == 1 {
-            // Some implementations seem to set the integer field size to 1 for
-            // certain columns, but still store the data with 2 bytes?  See
-            // https://github.com/mdsteele/rust-msi/issues/8.
-            Ok(ColumnType::Int16)
+        if type_bits & COL_NONBINARY_BIT != 0 {
+            if type_bits & COL_STRING_BIT != 0 {
+                Ok(ColumnType::Str(field_size))
+            } else if field_size == 2 {
+                Ok(ColumnType::Int16)
+            } else if field_size == 4 {
+                Ok(ColumnType::Int32)
+            } else {
+                Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    format!("Invalid column type: {:#x}", type_bits),
+                ))
+            }
         } else {
-            invalid_data!(
-                "Invalid field size for integer column ({})",
-                field_size
-            );
+            dbg!(type_bits);
+            Ok(ColumnType::Binary)
         }
     }
 
@@ -61,6 +64,7 @@ impl ColumnType {
             ColumnType::Int16 => 0x2,
             ColumnType::Int32 => 0x4,
             ColumnType::Str(max_len) => COL_STRING_BIT | (max_len as i32),
+            ColumnType::Binary => COL_STRING_BIT,
         }
     }
 
@@ -84,6 +88,10 @@ impl ColumnType {
                     None => Ok(ValueRef::Null),
                 }
             }
+            ColumnType::Binary => match reader.read_i16::<LittleEndian>()? {
+                0 => Ok(ValueRef::Null),
+                number => Ok(ValueRef::Int((number ^ -0x8000) as i32)),
+            },
         }
     }
 
@@ -130,12 +138,25 @@ impl ColumnType {
                 };
                 StringRef::write(writer, string_ref, long_string_refs)?;
             }
+            ColumnType::Binary => match value_ref {
+                ValueRef::Null => writer.write_i16::<LittleEndian>(0)?,
+                ValueRef::Int(number) => {
+                    let number = (number as i16) ^ -0x8000;
+                    writer.write_i16::<LittleEndian>(number)?
+                }
+                ValueRef::Str(_) => invalid_input!(
+                    "Cannot write {:?} to {} column",
+                    value_ref,
+                    self
+                ),
+            },
         }
         Ok(())
     }
 
     pub(crate) fn width(&self, long_string_refs: bool) -> u64 {
         match *self {
+            ColumnType::Binary => 2,
             ColumnType::Int16 => 2,
             ColumnType::Int32 => 4,
             ColumnType::Str(_) => {
@@ -152,6 +173,7 @@ impl ColumnType {
 impl fmt::Display for ColumnType {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         match *self {
+            ColumnType::Binary => formatter.write_str("BINARY"),
             ColumnType::Int16 => formatter.write_str("SMALLINT"),
             ColumnType::Int32 => formatter.write_str("INTEGER"),
             ColumnType::Str(max_len) => {
@@ -227,6 +249,7 @@ impl Column {
             bits |= COL_NULLABLE_BIT;
         }
         let nonbinary = match self.coltype {
+            ColumnType::Binary => false,
             ColumnType::Int16 => true,
             ColumnType::Int32 => false,
             ColumnType::Str(0) => self.category != Some(Category::Binary),
@@ -317,6 +340,7 @@ impl Column {
                     }
                 }
                 match self.coltype {
+                    ColumnType::Binary => true,
                     ColumnType::Int16 => {
                         number > (i16::MIN as i32)
                             && number <= (i16::MAX as i32)
@@ -326,6 +350,7 @@ impl Column {
                 }
             }
             Value::Str(ref string) => match self.coltype {
+                ColumnType::Binary => false,
                 ColumnType::Int16 | ColumnType::Int32 => false,
                 ColumnType::Str(max_len) => {
                     if let Some(category) = self.category {
@@ -456,7 +481,7 @@ impl ColumnBuilder {
     /// category to `Category::Binary` in addition to setting the column
     /// type.
     pub fn binary(self) -> Column {
-        self.category(Category::Binary).string(0)
+        self.category(Category::Binary).with_type(ColumnType::Binary)
     }
 
     fn with_type(self, coltype: ColumnType) -> Column {
@@ -475,6 +500,9 @@ impl ColumnBuilder {
 
     pub(crate) fn with_bitfield(self, type_bits: i32) -> io::Result<Column> {
         let is_nullable = (type_bits & COL_NULLABLE_BIT) != 0;
+        if type_bits & COL_NONBINARY_BIT == 0 {
+            println!("With: {}", &self.name);
+        }
         Ok(Column {
             name: self.name,
             coltype: ColumnType::from_bitfield(type_bits)?,

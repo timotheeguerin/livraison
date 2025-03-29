@@ -47,6 +47,7 @@ pub fn print_table_description<F: Read + Seek>(package: &mut msi::Package<F>, ta
 
 fn color_col_type(coltype: msi::ColumnType) -> String {
     match coltype {
+        msi::ColumnType::Binary => blue("binary"),
         msi::ColumnType::Int16 => blue("int16"),
         msi::ColumnType::Int32 => blue("int32"),
         msi::ColumnType::Str(s) => format!("{}({})", blue("string"), yellow(s.to_string())),

@@ -36,6 +36,12 @@ impl Button {
         self.size = size.into();
         self
     }
+
+    pub fn disable(mut self) -> Self {
+        self.attributes.remove(ControlAttributes::Enabled);
+        self
+    }
+
     pub fn trigger(mut self, size: Event) -> Self {
         self.events.push(size);
         self

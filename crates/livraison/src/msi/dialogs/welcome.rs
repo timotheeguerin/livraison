@@ -2,7 +2,7 @@ use std::vec;
 
 use msi_installer::{
     tables::{Control, ControlAttributes, ControlEvent, ControlType, Dialog, DialogStyle},
-    ui::{self, dialog::DialogSize},
+    ui::{self, dialog::DialogSize, event::EndDialogAction},
 };
 
 pub fn create() -> ui::dialog::DialogBuilder {
@@ -30,7 +30,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Install",
             )
             .pos(( 236, 243))
-            .trigger(ui::event::spawn_dialog("CancelDialog")),
+            .trigger(ui::event::end_dialog(EndDialogAction::Return)),
         )
         .add(
             ui::control::button(
@@ -46,6 +46,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Back",
             )
             .pos((180, 243))
+            .disable()
         )
 }
 

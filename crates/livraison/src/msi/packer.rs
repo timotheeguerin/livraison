@@ -121,7 +121,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         FeatureComponents::create_table(&mut self.package)?;
         Binary::create_table(&mut self.package)?;
 
-        self.add_binary_data("ClassicImage", include_bytes!("./assets/classic_bg.jpeg"))?;
+        self.add_binary_data("ClassicImage", include_bytes!("./assets/classic_bg.jpg"))?;
         // Set up installer database tables:
         self.create_directory_table(&directories)?;
         self.create_feature_table()?;

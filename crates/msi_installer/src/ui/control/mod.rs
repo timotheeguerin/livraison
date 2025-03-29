@@ -1,9 +1,11 @@
+mod bitmap;
 mod builder;
 mod button;
 mod line;
 mod progress_bar;
 mod text;
 
+pub use bitmap::bitmap;
 pub(crate) use builder::ControlBuilder;
 pub use button::button;
 pub use line::line;

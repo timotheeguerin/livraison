@@ -19,6 +19,10 @@ pub fn create() -> ui::dialog::DialogBuilder {
             .pos((135, 70))
             .size((220, 50)),
         )
+        .add(ui::control::bitmap("LeftBg", "ClassicImage")
+            .pos((0, 0))
+            .size((370, 234))
+        )
         .add(
             ui::control::line("BottomLine")
                 .pos((0, 234))

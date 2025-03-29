@@ -1,3 +1,4 @@
+mod binary;
 mod component;
 mod control;
 mod control_event;
@@ -14,6 +15,7 @@ mod registry;
 mod standard_actions;
 mod table;
 
+pub use binary::*;
 pub use component::*;
 pub use control::*;
 pub use control_event::*;

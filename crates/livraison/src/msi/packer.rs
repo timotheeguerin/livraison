@@ -16,7 +16,7 @@ use msi::Language;
 use msi_installer::{
     PropertiesBuilder, RequiredProperties,
     tables::{
-        Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
+        Binary, Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
         EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence,
     },
 };
@@ -119,7 +119,9 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.generate_resource_cabinets(&cabinets)?;
 
         FeatureComponents::create_table(&mut self.package)?;
+        Binary::create_table(&mut self.package)?;
 
+        self.add_binary_data("ClassicImage", include_bytes!("./assets/classic_bg.jpeg"))?;
         // Set up installer database tables:
         self.create_directory_table(&directories)?;
         self.create_feature_table()?;
@@ -190,6 +192,18 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         .insert("Text_done", "installed")
         .create_table(&mut self.package)?;
 
+        Ok(())
+    }
+
+    /// Add a binary file to use in the installer.
+    fn add_binary_data(&mut self, name: &str, data: &[u8]) -> LivraisonResult<()> {
+        let row = Binary {
+            binary: name.to_string(),
+        };
+
+        let writer = self.package.write_stream(&row.stream_name());
+        writer?.write_all(data)?;
+        Binary::insert(&mut self.package, &[row])?;
         Ok(())
     }
 

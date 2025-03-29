@@ -26,7 +26,8 @@ pub fn create() -> ui::dialog::DialogBuilder {
         .add(
             ui::control::text("ActionText", "")
                 .pos((70, 100))
-                .size((285, 10)),
+                .size((285, 10))
+                .enable(),
         )
         .add(
             ui::control::text("StatusLabel", "Status:")

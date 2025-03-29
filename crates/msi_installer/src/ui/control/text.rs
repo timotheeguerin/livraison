@@ -34,6 +34,12 @@ impl Text {
         self.size = size.into();
         self
     }
+
+    /// Enable the text control for event mapping.
+    pub fn enable(mut self) -> Self {
+        self.attributes |= ControlAttributes::Enabled;
+        self
+    }
 }
 
 impl ControlBuilder for Text {

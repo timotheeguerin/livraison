@@ -126,7 +126,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.create_install_execute_sequence_table(&cabinets)?;
         self.create_install_ui_sequence_table(&cabinets)?;
         self.create_dialogs(&cabinets)?;
-        self.create_event_mapping_table(&cabinets)?;
         self.create_text_style_table(&cabinets)?;
 
         register_environment_vars(
@@ -684,6 +683,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Dialog::create_table(&mut self.package)?;
         Control::create_table(&mut self.package)?;
         ControlEvent::create_table(&mut self.package)?;
+        EventMapping::create_table(&mut self.package)?;
         let dialogs = classic::create_classic_dialogs();
 
         Dialog::insert(
@@ -708,27 +708,13 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
                 .flat_map(|dialog| dialog.events())
                 .collect::<Vec<ControlEvent>>(),
         )?;
-        Ok(())
-    }
-
-    fn create_event_mapping_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        EventMapping::create_table(&mut self.package)?;
-
-        let items = vec![
-            EventMapping {
-                dialog: "ProgressDialog".to_string(),
-                control: "ActionText".to_string(),
-                event: "ActionText".to_string(),
-                attribute: "Text".to_string(),
-            },
-            EventMapping {
-                dialog: "ProgressDialog".to_string(),
-                control: "ProgressBar".to_string(),
-                event: "SetProgress".to_string(),
-                attribute: "Progress".to_string(),
-            },
-        ];
-        EventMapping::insert(&mut self.package, &items)?;
+        EventMapping::insert(
+            &mut self.package,
+            &dialogs
+                .iter()
+                .flat_map(|dialog| dialog.event_mappings())
+                .collect::<Vec<EventMapping>>(),
+        )?;
         Ok(())
     }
 

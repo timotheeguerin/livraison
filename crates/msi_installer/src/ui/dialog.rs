@@ -1,4 +1,4 @@
-use crate::tables::{Control, ControlEvent, Dialog, DialogStyle};
+use crate::tables::{Control, ControlEvent, Dialog, DialogStyle, EventMapping};
 
 use super::{control::ControlBuilder, size::Size};
 
@@ -99,12 +99,16 @@ impl DialogBuilder {
     }
 
     pub fn events(&self) -> Vec<ControlEvent> {
-        let mut events: Vec<ControlEvent> = Vec::new();
-        for control in self.controls.iter().rev() {
-            events.extend(control.events(&self.id));
-        }
-
-        events
+        self.controls
+            .iter()
+            .flat_map(|x| x.events(&self.id))
+            .collect()
+    }
+    pub fn event_mappings(&self) -> Vec<EventMapping> {
+        self.controls
+            .iter()
+            .flat_map(|x| x.event_mappings(&self.id))
+            .collect()
     }
 }
 

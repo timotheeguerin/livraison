@@ -1,5 +1,5 @@
 use crate::{
-    tables::{Control, ControlAttributes, ControlType},
+    tables::{Control, ControlAttributes, ControlType, EventMapping},
     ui::{position::Position, size::Size},
 };
 
@@ -14,6 +14,7 @@ pub fn progress_bar(id: &str) -> ProgressBar {
             height: 10,
         },
         attributes: ControlAttributes::Visible | ControlAttributes::Progress95,
+        listener: Some("SetProgress".to_string()),
     }
 }
 
@@ -23,6 +24,7 @@ pub struct ProgressBar {
     pos: Position,
     size: Size,
     attributes: ControlAttributes,
+    listener: Option<String>,
 }
 
 impl ProgressBar {
@@ -40,6 +42,12 @@ impl ProgressBar {
             width: size,
             height: self.size.height,
         };
+        self
+    }
+
+    /// Set the text when this event is triggered with the event argument.
+    pub fn on_event(mut self, event: &str) -> Self {
+        self.listener = Some(event.to_string());
         self
     }
 }
@@ -65,6 +73,19 @@ impl ControlBuilder for ProgressBar {
             property: None,
             control_next: None,
             help: None,
+        }
+    }
+
+    fn event_mappings(&self, dialog_id: &str) -> Vec<EventMapping> {
+        if let Some(event) = &self.listener {
+            vec![EventMapping {
+                dialog: dialog_id.to_string(),
+                control: self.id.clone(),
+                event: event.clone(),
+                attribute: "Progress".to_string(),
+            }]
+        } else {
+            Vec::new()
         }
     }
 }

@@ -19,7 +19,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
         )
         .add(ui::control::line("BannerLine").pos((0, 44)).width(374))
         .add(
-            ui::control::dyn_text("ActionText")
+            ui::control::dyn_text("ActionText", "ActionText")
                 .pos((70, 100))
                 .size((285, 10)),
         )

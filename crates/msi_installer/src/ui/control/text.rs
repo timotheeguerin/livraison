@@ -1,17 +1,18 @@
 use crate::{
-    tables::{Control, ControlAttributes, ControlType},
+    tables::{Control, ControlAttributes, ControlType, EventMapping},
     ui::{position::Position, size::Size},
 };
 
 use super::ControlBuilder;
 
-pub fn dyn_text(id: &str) -> Text {
+pub fn dyn_text(id: &str, event: &str) -> Text {
     Text {
         id: id.to_string(),
         text: None,
         pos: Position::ZERO,
         size: Size::ZERO,
         attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
+        listener: Some(event.to_string()),
     }
 }
 pub fn text(id: &str, text: &str) -> Text {
@@ -21,6 +22,7 @@ pub fn text(id: &str, text: &str) -> Text {
         pos: Position::ZERO,
         size: Size::ZERO,
         attributes: ControlAttributes::Visible,
+        listener: None,
     }
 }
 
@@ -31,6 +33,7 @@ pub struct Text {
     pos: Position,
     size: Size,
     attributes: ControlAttributes,
+    listener: Option<String>,
 }
 
 impl Text {
@@ -47,6 +50,12 @@ impl Text {
     /// Enable the text control for event mapping.
     pub fn enable(mut self) -> Self {
         self.attributes |= ControlAttributes::Enabled;
+        self
+    }
+
+    /// Set the text when this event is triggered with the event argument.
+    pub fn on_event(mut self, event: &str) -> Self {
+        self.listener = Some(event.to_string());
         self
     }
 }
@@ -72,6 +81,19 @@ impl ControlBuilder for Text {
             property: None,
             control_next: None,
             help: None,
+        }
+    }
+
+    fn event_mappings(&self, dialog_id: &str) -> Vec<EventMapping> {
+        if let Some(event) = &self.listener {
+            vec![EventMapping {
+                dialog: dialog_id.to_string(),
+                control: self.id.clone(),
+                event: event.clone(),
+                attribute: "Text".to_string(),
+            }]
+        } else {
+            Vec::new()
         }
     }
 }

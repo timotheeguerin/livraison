@@ -11,7 +11,7 @@ pub fn new_dialog(name: &str) -> Event {
 // Spawn a new child dialog
 pub fn spawn_dialog(name: &str) -> Event {
     Event {
-        event: ControlEventType::NewDialog,
+        event: ControlEventType::SpawnDialog,
         argument: name.to_string(),
     }
 }

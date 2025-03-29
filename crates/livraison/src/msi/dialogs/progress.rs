@@ -22,8 +22,12 @@ pub fn create() -> ui::dialog::DialogBuilder {
             .pos((20, 65))
             .size((330, 35)),
         )
-        .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
         .add(ui::control::line("BannerLine").pos((0, 44)).width(374))
+        .add(
+            ui::control::text("ActionText", "")
+                .pos((70, 100))
+                .size((285, 10)),
+        )
         .add(
             ui::control::text("StatusLabel", "Status:")
                 .pos((20, 100))
@@ -34,6 +38,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 .pos((20, 115))
                 .width(330),
         )
+        .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
         .add(
             ui::control::button("Cancel", "Cancel")
                 .pos((304, 243))

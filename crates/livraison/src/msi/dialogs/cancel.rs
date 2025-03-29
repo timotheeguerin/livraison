@@ -67,7 +67,7 @@ pub fn create_cancel_dialog_controls() -> Vec<Control> {
                 | ControlAttributes::Visible
                 | ControlAttributes::Enabled,
             property: None,
-            text: Some("Do you want to abort [ProductName] [Text_action]?".to_string()),
+            text: Some("Do you want to abort?".to_string()),
             control_next: None,
             help: None,
         },

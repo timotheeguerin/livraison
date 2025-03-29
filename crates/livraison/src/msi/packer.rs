@@ -42,7 +42,7 @@ use super::{
             create_progress_dialog_controls,
         },
         remove::{
-            create_remove_dialog, create_remove_dialog_control_events,
+            self, create_remove_dialog, create_remove_dialog_control_events,
             create_remove_dialog_controls,
         },
         welcome::{self, create_welcome_dialog_control_events},
@@ -701,7 +701,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Dialog::create_table(&mut self.package)?;
         let dialogs = [
             welcome::create().dialog(),
-            create_remove_dialog(),
+            remove::create().dialog(),
+            // create_remove_dialog(),
             cancel::create().dialog(),
             // create_cancel_dialog(),
             progress::create().dialog(),
@@ -721,7 +722,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let controls: Vec<Control> = [
             welcome::create().controls(),
             // create_welcome_dialog_controls(),
-            create_remove_dialog_controls(),
+            remove::create().controls(),
+            // create_remove_dialog_controls(),
             cancel::create().controls(),
             // create_cancel_dialog_controls(),
             progress::create().controls(),
@@ -745,7 +747,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         let controls: Vec<ControlEvent> = [
             welcome::create().events(),
             // create_welcome_dialog_control_events(),
-            create_remove_dialog_control_events(),
+            remove::create().events(),
+            // create_remove_dialog_control_events(),
             cancel::create().events(),
             // create_cancel_dialog_control_events(),
             progress::create().events(),

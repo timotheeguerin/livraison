@@ -22,10 +22,7 @@ use msi_installer::{
 };
 use uuid::Uuid;
 
-use super::{
-    Context,
-    dialogs::{cancel, exit, fatal_error, progress, remove, welcome},
-};
+use super::{Context, dialogs::classic};
 
 // Namespace to construct uuid v5
 const UUID_NAMESPACE: Uuid = uuid::uuid!("3941a426-8f68-469a-a7c5-99944d6067d8");
@@ -105,9 +102,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     pub fn write(&mut self) -> LivraisonResult<()> {
-        dbg!(self.package.database_codepage());
-        dbg!(self.package.database_codepage().id());
-
         self.set_summary_info();
         self.package.flush()?;
         self.create_property_table()?;
@@ -354,7 +348,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             let stream = self.package.write_stream(cabinet_info.name.as_str())?;
             let mut cabinet_writer = builder.build(stream)?;
             while let Some(mut file_writer) = cabinet_writer.next_file()? {
-                dbg!(file_writer.file_name());
                 debug_assert!(file_map.contains_key(file_writer.file_name()));
                 let file_path = file_map.get(file_writer.file_name()).unwrap();
                 let mut file = fs::File::open(file_path)?;
@@ -691,14 +684,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Dialog::create_table(&mut self.package)?;
         Control::create_table(&mut self.package)?;
         ControlEvent::create_table(&mut self.package)?;
-        let dialogs = [
-            welcome::create(),
-            remove::create(),
-            cancel::create(),
-            progress::create(),
-            exit::create(),
-            fatal_error::create(),
-        ];
+        let dialogs = classic::create_classic_dialogs();
 
         Dialog::insert(
             &mut self.package,

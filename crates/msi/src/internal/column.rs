@@ -54,7 +54,6 @@ impl ColumnType {
                 ))
             }
         } else {
-            dbg!(type_bits);
             Ok(ColumnType::Binary)
         }
     }
@@ -500,9 +499,6 @@ impl ColumnBuilder {
 
     pub(crate) fn with_bitfield(self, type_bits: i32) -> io::Result<Column> {
         let is_nullable = (type_bits & COL_NULLABLE_BIT) != 0;
-        if type_bits & COL_NONBINARY_BIT == 0 {
-            println!("With: {}", &self.name);
-        }
         Ok(Column {
             name: self.name,
             coltype: ColumnType::from_bitfield(type_bits)?,

@@ -33,10 +33,7 @@ impl DebPackage {
     pub fn write<W: Write>(&self, out: W) -> LivraisonResult<ArchiveBuilder<W>> {
         let mut archive = ArchiveBuilder::new(out)?;
         archive.add_control(&self.create_control_tar()?)?;
-        dbg!("Control tar added");
         archive.add_data(&self.create_data_tar()?)?;
-        dbg!("Data tar added");
-
         archive.finish()?;
         Ok(archive)
     }

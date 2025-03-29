@@ -1,5 +1,7 @@
 use msi_installer::ui::{self, dialog::DialogSize, event::EndDialogAction};
 
+use super::common;
+
 pub fn create() -> ui::dialog::DialogBuilder {
     ui::dialog::new("ExitDialog", "[ProductName] Setup")
         .size(DialogSize::classic())
@@ -13,9 +15,10 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Description",
                 "Click the Finish button to exit the [Text_agent].",
             )
-            .pos((135, 70))
-            .size((220, 20)),
+            .pos((135, 80))
+            .size((220, 60)),
         )
+        .add(common::side_image())
         .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
         .add(
             ui::control::button("Finish", "Finish")

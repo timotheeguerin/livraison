@@ -1,0 +1,9 @@
+──────────────────  ──────────  ──────────  ─────  ──────  ──────────  ──────────  ─────────────────────  ───────────────  ──────────────  
+Dialog              HCentering  VCentering  Width  Height  Attributes  Title       Control_First          Control_Default  Control_Cancel  
+──────────────────  ──────────  ──────────  ─────  ──────  ──────────  ──────────  ─────────────────────  ───────────────  ──────────────  
+"FatalErrorDialog"  50          50          370    270     -32761      "KeyTable"  "[ProductName] Setup"  "Finish"         "Finish"        
+"ExitDialog"        50          50          370    270     0           ""          "[ProductName] Setup"  "Finish"         "Finish"        
+"WelcomeDialog"     50          50          370    270     -32761      "MinValue"  "[ProductName] Setup"  "Next"           "Next"          
+"RemoveDialog"      50          50          370    270     0           ""          "[ProductName] Setup"  "Remove"         "Remove"        
+"ProgressDialog"    50          50          370    270     -32761      "KeyTable"  "[ProductName] Setup"  "Cancel"         "Cancel"        
+"CancelDialog"      50          50          260    85      0           ""          "[ProductName] Setup"  "Cancel"         "Cancel"        

@@ -1,12 +1,14 @@
 use msi_installer::ui::{self, dialog::DialogSize, event::EndDialogAction};
 
+use super::common;
+
 pub fn create() -> ui::dialog::DialogBuilder {
-    ui::dialog::new("WelcomeDialog", "[ProductName] Setup")
+    ui::dialog::new("RemoveDialog", "[ProductName] Setup")
         .size(DialogSize::classic())
         .add(
             ui::control::text(
                 "Title",
-                "{\\TitleFont}Welcome to the [ProductName] installer",
+                "{\\TitleFont}Uninstall [ProductName]",
             )
             .pos((135, 20))
             .size((220, 60)),
@@ -14,15 +16,12 @@ pub fn create() -> ui::dialog::DialogBuilder {
         .add(
             ui::control::text(
                 "Description",
-                "{\\DefaultFont}This will install [ProductName] on your computer. Click Install to continue or Cancel to exit the installer.",
+                "This will remove [ProductName] from your computer. Click Remove to continue or Cancel to exit the uninstaller.",
             )
             .pos((135, 80))
             .size((220, 60)),
         )
-        .add(ui::control::bitmap("LeftBg", "ClassicImage")
-            .pos((0, 0))
-            .size((100, 234))
-        )
+        .add(common::side_image())
         .add(
             ui::control::line("BottomLine")
                 .pos((0, 234))
@@ -30,10 +29,10 @@ pub fn create() -> ui::dialog::DialogBuilder {
         )
         .add(
             ui::control::button(
-                "Next",
-                "Install",
+                "Remove",
+                "Remove",
             )
-            .pos(( 236, 243))
+            .pos((236, 243))
             .trigger(ui::event::end_dialog(EndDialogAction::Return)),
         )
         .add(

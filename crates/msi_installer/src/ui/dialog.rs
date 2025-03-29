@@ -95,6 +95,7 @@ impl DialogBuilder {
     pub fn events(&self) -> Vec<ControlEvent> {
         let mut events: Vec<ControlEvent> = Vec::new();
         for control in self.controls.iter().rev() {
+            dbg!(control.events(&self.id));
             events.extend(control.events(&self.id));
         }
 

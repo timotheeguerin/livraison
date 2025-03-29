@@ -66,11 +66,11 @@ impl ControlBuilder for Button {
         }
     }
 
-    fn events(&self, _dialog_id: &str) -> Vec<ControlEvent> {
+    fn events(&self, dialog_id: &str) -> Vec<ControlEvent> {
         self.events
             .iter()
             .enumerate()
-            .map(|(i, x)| x.as_control_event("Dialog", &self.id, i as i32))
+            .map(|(i, x)| x.as_control_event(dialog_id, &self.id, i as i32))
             .collect()
     }
 }

@@ -37,7 +37,7 @@ pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
         .add(
             ui::control::button("Cancel", "Cancel")
                 .pos((304, 243))
-                .trigger(ui::event::spawn_dialog("CancelDialog")),
+                .trigger(ui::event::spawn_dialog("CancelDlg")),
         )
         .add(
             ui::control::button("Next", "Next")

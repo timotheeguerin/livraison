@@ -649,8 +649,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         InstallUISequence::create_table(&mut self.package)?;
         let mut rows = Vec::new();
         let actions: [(&str, &str, i32); 9] = [
-            ("FatalErrorDialog", "", -3),
-            ("ExitDialog", "", -1),
+            ("FatalErrorDlg", "", -3),
+            ("ExitDlg", "", -1),
             //("LaunchConditions", "", 100), // Requires a LaunchCondition table
             //("FindRelatedProducts", "", 200), // Requires an Upgrade table
             //("AppSearch", "", 400), // Requires a Signature table
@@ -660,9 +660,9 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
             ("FileCost", "", 900),
             ("CostFinalize", "", 1000),
             //("MigrateFeatureStates", "", 1200),
-            ("WelcomeDialog", "NOT Installed", 1230),
-            ("RemoveDialog", "Installed", 1240),
-            ("ProgressDialog", "", 1280),
+            ("WelcomeDlg", "NOT Installed", 1230),
+            ("RemoveDlg", "Installed", 1240),
+            ("ProgressDlg", "", 1280),
             ("ExecuteAction", "", 1300),
         ];
         for action in actions {

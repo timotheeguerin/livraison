@@ -4,9 +4,9 @@ Action              Condition        Sequence
 "CostFinalize"      null             1000      
 "CostInitialize"    null             800       
 "ExecuteAction"     null             1300      
-"ExitDialog"        null             -1        
-"FatalErrorDialog"  null             -3        
+"ExitDlg"        null             -1        
+"FatalErrorDlg"  null             -3        
 "FileCost"          null             900       
-"ProgressDialog"    null             1280      
-"RemoveDialog"      "Installed"      1240      
-"WelcomeDialog"     "NOT Installed"  1230      
+"ProgressDlg"    null             1280      
+"RemoveDlg"      "Installed"      1240      
+"WelcomeDlg"     "NOT Installed"  1230      

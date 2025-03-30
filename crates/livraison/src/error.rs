@@ -1,4 +1,3 @@
-use colorgrad::GradientBuilderError;
 use quick_error::quick_error;
 
 quick_error! {
@@ -6,11 +5,6 @@ quick_error! {
     #[non_exhaustive]
     pub enum LivraisonError {
         Io(err: std::io::Error) {
-            from()
-            display("{}", err)
-            source(err)
-        }
-        GradientBuilderError(err: GradientBuilderError) {
             from()
             display("{}", err)
             source(err)

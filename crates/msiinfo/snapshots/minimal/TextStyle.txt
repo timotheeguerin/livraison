@@ -1,6 +1,6 @@
 ─────────────  ──────────  ────  ─────  ─────────  
 TextStyle      FaceName    Size  Color  StyleBits  
 ─────────────  ──────────  ────  ─────  ─────────  
-"BoldFont"     "Segoe UI"  12    0      null       
-"DefaultFont"  "Segoe UI"  8     null   0          
-"TitleFont"    "Segoe UI"  9     null   0          
+"BoldFont"     "Segoe UI"  12    0      1          
+"DefaultFont"  "Segoe UI"  8     0      null       
+"TitleFont"    "Segoe UI"  9     0      1          

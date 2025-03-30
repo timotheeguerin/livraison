@@ -40,21 +40,21 @@ impl ColumnType {
     #[allow(clippy::if_same_then_else)]
     fn from_bitfield(type_bits: i32) -> io::Result<ColumnType> {
         let field_size = (type_bits & COL_FIELD_SIZE_MASK) as usize;
-        if type_bits & COL_NONBINARY_BIT != 0 {
-            if type_bits & COL_STRING_BIT != 0 {
+        if type_bits & COL_STRING_BIT != 0 {
+            if type_bits & COL_NONBINARY_BIT != 0 {
                 Ok(ColumnType::Str(field_size))
-            } else if field_size == 2 {
-                Ok(ColumnType::Int16)
-            } else if field_size == 4 {
-                Ok(ColumnType::Int32)
             } else {
-                Err(io::Error::new(
-                    io::ErrorKind::InvalidData,
-                    format!("Invalid column type: {:#x}", type_bits),
-                ))
+                Ok(ColumnType::Binary)
             }
+        } else if field_size == 2 {
+            Ok(ColumnType::Int16)
+        } else if field_size == 4 {
+            Ok(ColumnType::Int32)
         } else {
-            Ok(ColumnType::Binary)
+            Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                format!("Invalid column type: {:#x}", type_bits),
+            ))
         }
     }
 

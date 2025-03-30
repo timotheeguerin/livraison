@@ -1,8 +1,8 @@
-───────────────  ──────────  ──────────  ─────  ──────  ──────────  ──────────  ─────────────────────  ───────────────  ──────────────  
-Dialog           HCentering  VCentering  Width  Height  Attributes  Title       Control_First          Control_Default  Control_Cancel  
-───────────────  ──────────  ──────────  ─────  ──────  ──────────  ──────────  ─────────────────────  ───────────────  ──────────────  
-"ExitDlg"        50          50          260    100     0           "KeyTable"  "[ProductName] Setup"  "Finish"         "Finish"        
-"FatalErrorDlg"  50          50          370    270     -32761      ""          "[ProductName] Setup"  "Finish"         "Finish"        
-"ProgressDlg"    50          50          260    100     -32761      ""          "[ProductName] Setup"  "Cancel"         "Cancel"        
-"RemoveDlg"      50          50          260    100     0           "MinValue"  "[ProductName] Setup"  "Remove"         "Remove"        
-"WelcomeDlg"     50          50          260    100     -32761      ""          "[ProductName] Setup"  "Next"           "Next"          
+───────────────  ──────────  ──────────  ─────  ──────  ──────────  ─────────────────────  ─────────────  ───────────────  ──────────────  
+Dialog           HCentering  VCentering  Width  Height  Attributes  Title                  Control_First  Control_Default  Control_Cancel  
+───────────────  ──────────  ──────────  ─────  ──────  ──────────  ─────────────────────  ─────────────  ───────────────  ──────────────  
+"ExitDlg"        50          50          260    100     7           "[ProductName] Setup"  "Finish"       "Finish"         "Cancel"        
+"FatalErrorDlg"  50          50          370    270     7           "[ProductName] Setup"  "Finish"       "Finish"         null            
+"ProgressDlg"    50          50          260    100     5           "[ProductName] Setup"  "Cancel"       "Cancel"         "Cancel"        
+"RemoveDlg"      50          50          260    100     7           "[ProductName] Setup"  "Remove"       "Remove"         "Cancel"        
+"WelcomeDlg"     50          50          260    100     7           "[ProductName] Setup"  "Next"         "Next"           "Cancel"        

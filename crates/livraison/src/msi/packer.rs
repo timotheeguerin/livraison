@@ -118,11 +118,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Binary::create_table(&mut self.package)?;
 
         self.add_binary_data("ClassicImage", include_bytes!("./assets/classic_bg.jpg"))?;
-
-        self.add_binary_data(
-            "MinimalBackground",
-            &minimalist::common::create_background_image(),
-        )?;
         // Set up installer database tables:
         self.create_directory_table(&directories)?;
         self.create_feature_table()?;
@@ -747,9 +742,9 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         )?;
         let mut rows = Vec::new();
         let actions: [(&str, &str, i32, i32, i32); 3] = [
-            ("DefaultFont", "Tahoma", 8, 0, 0),
-            ("BoldFont", "Tahoma", 12, 0, 1),
-            ("TitleFont", "Tahoma", 9, 0, 1),
+            ("DefaultFont", "Segoe UI", 8, 0, 0),
+            ("BoldFont", "Segoe UI", 12, 0, 1),
+            ("TitleFont", "Segoe UI", 9, 0, 1),
         ];
         for action in actions {
             rows.push(vec![

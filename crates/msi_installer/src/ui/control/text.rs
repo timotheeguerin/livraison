@@ -11,7 +11,9 @@ pub fn dyn_text(id: &str, event: &str) -> Text {
         text: None,
         pos: Position::ZERO,
         size: Size::ZERO,
-        attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
+        attributes: ControlAttributes::Visible
+            | ControlAttributes::Enabled
+            | ControlAttributes::Transparent,
         listener: Some(event.to_string()),
     }
 }
@@ -21,7 +23,7 @@ pub fn text(id: &str, text: &str) -> Text {
         text: Some(text.to_string()),
         pos: Position::ZERO,
         size: Size::ZERO,
-        attributes: ControlAttributes::Visible,
+        attributes: ControlAttributes::Visible | ControlAttributes::Transparent,
         listener: None,
     }
 }

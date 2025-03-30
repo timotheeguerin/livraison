@@ -6,38 +6,26 @@ pub fn create() -> ui::dialog::DialogBuilder {
         .modeless()
         .add(
             ui::control::text("Title", "{\\TitleFont}Installing [ProductName]")
-                .pos((20, 15))
-                .size((330, 15)),
+                .pos((20, 10))
+                .size((220, 20)),
         )
         .add(
             ui::control::text(
                 "Text",
                 "Please wait while [ProductName] is [Text_done]. This may take several minutes.",
             )
-            .pos((20, 65))
-            .size((330, 35)),
-        )
-        .add(ui::control::line("BannerLine").pos((0, 44)).width(374))
-        .add(
-            ui::control::dyn_text("ActionText", "ActionText")
-                .pos((70, 100))
-                .size((285, 10)),
-        )
-        .add(
-            ui::control::text("StatusLabel", "Status:")
-                .pos((20, 100))
-                .size((50, 10)),
+            .pos((20, 30))
+            .size((220, 40)),
         )
         .add(
             ui::control::progress_bar("ProgressBar")
-                .pos((20, 115))
-                .width(330),
+                .pos((20, 60))
+                .width(220),
         )
-        .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
         .add(
             ui::control::button("Cancel", "Cancel")
-                .pos((104, 80))
+                .pos((134, 75))
                 .trigger(ui::event::end_dialog(EndDialogAction::Exit)),
         )
-        .add(ui::control::button("Next", "Next").pos((36, 80)).disable())
+        .add(ui::control::button("Next", "Next").pos((66, 75)).disable())
 }

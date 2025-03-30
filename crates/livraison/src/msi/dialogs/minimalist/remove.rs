@@ -18,21 +18,15 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Description",
                 "This will remove [ProductName] from your computer. Click Remove to continue or Cancel to exit the uninstaller.",
             )
-            .pos((20, 80))
-            .size((220, 60)),
-        )
-        .add(common::background_image())
-        .add(
-            ui::control::line("BottomLine")
-                .pos((0, 234))
-                .width(374),
+            .pos((20, 30))
+            .size((220, 40)),
         )
         .add(
             ui::control::button(
                 "Remove",
                 "Remove",
             )
-            .pos((36, 80))
+            .pos((66, 75))
             .trigger(ui::event::end_dialog(EndDialogAction::Return)),
         )
         .add(
@@ -40,7 +34,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Cancel",
                 "Cancel",
             )
-            .pos((104, 80))
+            .pos((134, 75))
             .trigger(ui::event::end_dialog(EndDialogAction::Exit)),
         )
 }

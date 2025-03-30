@@ -11,7 +11,9 @@ pub fn button(id: &str, text: &str) -> Button {
         text: text.to_string(),
         pos: Position::ZERO,
         size: Size::new(56, 17),
-        attributes: ControlAttributes::Visible | ControlAttributes::Enabled,
+        attributes: ControlAttributes::Visible
+            | ControlAttributes::Enabled
+            | ControlAttributes::Transparent,
         events: Vec::new(),
     }
 }

@@ -11,7 +11,7 @@ pub fn bitmap(id: &str, bitmap: &str) -> Bitmap {
         bitmap: Some(bitmap.to_string()),
         pos: Position::ZERO,
         size: Size::ZERO,
-        attributes: ControlAttributes::Visible,
+        attributes: ControlAttributes::Visible | ControlAttributes::Transparent,
     }
 }
 

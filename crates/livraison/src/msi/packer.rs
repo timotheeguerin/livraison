@@ -12,6 +12,7 @@ use crate::{
         EnvironmentAction, EnvironmentActionKind, register_environment_vars,
     },
 };
+use colorgrad::Gradient;
 use msi::Language;
 use msi_installer::{
     PropertiesBuilder, RequiredProperties,
@@ -19,10 +20,11 @@ use msi_installer::{
         Binary, Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
         EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence,
     },
+    ui::dialog::DialogSize,
 };
 use uuid::Uuid;
 
-use super::{Context, dialogs::classic};
+use super::{Context, dialogs::classic, dialogs::minimalist};
 
 // Namespace to construct uuid v5
 const UUID_NAMESPACE: Uuid = uuid::uuid!("3941a426-8f68-469a-a7c5-99944d6067d8");
@@ -116,6 +118,22 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Binary::create_table(&mut self.package)?;
 
         self.add_binary_data("ClassicImage", include_bytes!("./assets/classic_bg.jpg"))?;
+        let g = colorgrad::GradientBuilder::new()
+            .html_colors(&["#FFF", "#00F"])
+            .mode(colorgrad::BlendMode::Rgb)
+            .build::<colorgrad::LinearGradient>()?;
+
+        let imgbuf = image::ImageBuffer::from_fn(
+            DialogSize::minimal().width as u32,
+            DialogSize::minimal().height as u32,
+            |x, _| {
+                image::Rgba(
+                    g.at(x as f32 / DialogSize::minimal().width as f32)
+                        .to_rgba8(),
+                )
+            },
+        );
+        self.add_binary_data("MinimalBackground", &imgbuf.into_vec())?;
         // Set up installer database tables:
         self.create_directory_table(&directories)?;
         self.create_feature_table()?;
@@ -684,7 +702,8 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Control::create_table(&mut self.package)?;
         ControlEvent::create_table(&mut self.package)?;
         EventMapping::create_table(&mut self.package)?;
-        let dialogs = classic::create_classic_dialogs();
+        // let dialogs = classic::create_dialogs();
+        let dialogs = minimalist::create_dialogs();
 
         Dialog::insert(
             &mut self.package,

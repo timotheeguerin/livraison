@@ -1,6 +1,5 @@
 use msi_installer::ui;
 
-mod cancel;
 mod common;
 mod exit;
 mod fatal_error;
@@ -15,6 +14,5 @@ pub fn create_dialogs() -> Vec<ui::dialog::DialogBuilder> {
         fatal_error::create(),
         progress::create(),
         exit::create(),
-        cancel::create(),
     ]
 }

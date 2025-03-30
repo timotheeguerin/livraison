@@ -12,20 +12,17 @@ use crate::{
         EnvironmentAction, EnvironmentActionKind, register_environment_vars,
     },
 };
-use colorgrad::Gradient;
 use msi::Language;
 use msi_installer::{
     PropertiesBuilder, RequiredProperties,
     tables::{
-        Binary, Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
-        EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence, StyleAttributes,
-        TextStyle,
+        Binary, Component, ComponentAttributes, Directory, Entity, FeatureComponents, File,
+        FileAttributes,
     },
-    ui::{control::Text, dialog::DialogSize},
 };
 use uuid::Uuid;
 
-use super::{Context, dialogs::classic, dialogs::minimalist};
+use super::{Context, dialogs::minimalist};
 
 // Namespace to construct uuid v5
 const UUID_NAMESPACE: Uuid = uuid::uuid!("3941a426-8f68-469a-a7c5-99944d6067d8");

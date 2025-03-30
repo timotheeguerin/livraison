@@ -9,7 +9,7 @@ use thiserror::Error;
 pub struct DialogRule {}
 impl Rule for DialogRule {
     fn code(&self) -> &'static str {
-        "invalid-Dlg"
+        "invalid-dialog"
     }
 
     fn run(

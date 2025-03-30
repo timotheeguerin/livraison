@@ -127,7 +127,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.create_media_table(&cabinets)?;
         self.create_file_table(&cabinets)?;
         self.create_install_execute_sequence_table(&cabinets)?;
-        self.create_install_ui_sequence_table(&cabinets)?;
         minimalist::create().insert(&mut self.package)?;
 
         register_environment_vars(
@@ -639,45 +638,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         }
         self.package
             .insert_rows(msi::Insert::into("InstallExecuteSequence").rows(rows))?;
-        Ok(())
-    }
-
-    fn create_install_ui_sequence_table(
-        &mut self,
-        _cabinets: &[CabinetInfo],
-    ) -> LivraisonResult<()> {
-        InstallUISequence::create_table(&mut self.package)?;
-        let mut rows = Vec::new();
-        let actions: [(&str, &str, i32); 9] = [
-            ("FatalErrorDlg", "", -3),
-            ("ExitDlg", "", -1),
-            //("LaunchConditions", "", 100), // Requires a LaunchCondition table
-            //("FindRelatedProducts", "", 200), // Requires an Upgrade table
-            //("AppSearch", "", 400), // Requires a Signature table
-            //("CCPSearch", "NOT Installed", 500), // Requires a Signature or *Locator table
-            //("RMCCPSearch", "NOT Installed", 600), // Requires the CCP_DRIVE property and a DrLocator table
-            ("CostInitialize", "", 800),
-            ("FileCost", "", 900),
-            ("CostFinalize", "", 1000),
-            //("MigrateFeatureStates", "", 1200),
-            ("WelcomeDlg", "NOT Installed", 1230),
-            ("RemoveDlg", "Installed", 1240),
-            ("ProgressDlg", "", 1280),
-            ("ExecuteAction", "", 1300),
-        ];
-        for action in actions {
-            rows.push(vec![
-                msi::Value::Str(action.0.to_string()),
-                if !action.1.is_empty() {
-                    msi::Value::Str(action.1.to_string())
-                } else {
-                    msi::Value::Null
-                },
-                msi::Value::Int(action.2),
-            ]);
-        }
-        self.package
-            .insert_rows(msi::Insert::into("InstallUISequence").rows(rows))?;
         Ok(())
     }
 }

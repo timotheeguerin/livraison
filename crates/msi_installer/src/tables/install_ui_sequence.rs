@@ -9,6 +9,16 @@ pub struct InstallUISequence {
     pub order: i32,
 }
 
+impl InstallUISequence {
+    pub fn new(dialog: &str, condition: Option<&str>, order: i32) -> Self {
+        InstallUISequence {
+            dialog: dialog.to_string(),
+            condition: condition.map(|s| s.to_string()),
+            order,
+        }
+    }
+}
+
 impl Entity for InstallUISequence {
     fn table_name() -> &'static str {
         TABLE_NAME

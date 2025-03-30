@@ -11,7 +11,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Title",
                 "{\\TitleFont}Welcome to the [ProductName] installer",
             )
-            .pos((135, 20))
+            .pos((20, 20))
             .size((220, 60)),
         )
         .add(
@@ -19,7 +19,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Description",
                 "{\\DefaultFont}This will install [ProductName] on your computer. Click Install to continue or Cancel to exit the installer.",
             )
-            .pos((135, 80))
+            .pos((20, 80))
             .size((220, 60)),
         )
         .add(
@@ -27,7 +27,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Next",
                 "Install",
             )
-            .pos((236, 243))
+            .pos((36, 80))
             .trigger(ui::event::end_dialog(EndDialogAction::Return)),
         )
         .add(
@@ -35,7 +35,7 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Cancel",
                 "Cancel",
             )
-            .pos((304, 243))
+            .pos((104, 80))
             .trigger(ui::event::end_dialog(EndDialogAction::Exit)),
         )
 }

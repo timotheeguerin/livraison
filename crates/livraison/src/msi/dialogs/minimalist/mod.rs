@@ -1,6 +1,6 @@
 use msi_installer::ui;
 
-mod common;
+pub mod common;
 mod exit;
 mod fatal_error;
 mod progress;

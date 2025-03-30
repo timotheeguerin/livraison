@@ -118,22 +118,11 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         Binary::create_table(&mut self.package)?;
 
         self.add_binary_data("ClassicImage", include_bytes!("./assets/classic_bg.jpg"))?;
-        let g = colorgrad::GradientBuilder::new()
-            .html_colors(&["#FFF", "#00F"])
-            .mode(colorgrad::BlendMode::Rgb)
-            .build::<colorgrad::LinearGradient>()?;
 
-        let imgbuf = image::ImageBuffer::from_fn(
-            DialogSize::minimal().width as u32,
-            DialogSize::minimal().height as u32,
-            |x, _| {
-                image::Rgba(
-                    g.at(x as f32 / DialogSize::minimal().width as f32)
-                        .to_rgba8(),
-                )
-            },
-        );
-        self.add_binary_data("MinimalBackground", &imgbuf.into_vec())?;
+        self.add_binary_data(
+            "MinimalBackground",
+            &minimalist::common::create_background_image(),
+        )?;
         // Set up installer database tables:
         self.create_directory_table(&directories)?;
         self.create_feature_table()?;

@@ -36,12 +36,8 @@ pub fn create() -> ui::dialog::DialogBuilder {
         .add(ui::control::line("BottomLine").pos((0, 234)).width(374))
         .add(
             ui::control::button("Cancel", "Cancel")
-                .pos((304, 243))
+                .pos((104, 80))
                 .trigger(ui::event::end_dialog(EndDialogAction::Exit)),
         )
-        .add(
-            ui::control::button("Next", "Next")
-                .pos((236, 243))
-                .disable(),
-        )
+        .add(ui::control::button("Next", "Next").pos((36, 80)).disable())
 }

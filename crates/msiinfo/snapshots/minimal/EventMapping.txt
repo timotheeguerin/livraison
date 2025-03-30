@@ -1,5 +1,4 @@
 ────────────────  ─────────────  ─────────────  ──────────  
 Dialog_           Control_       Event          Attribute   
 ────────────────  ─────────────  ─────────────  ──────────  
-"ProgressDialog"  "ActionText"   "ActionText"   "Text"      
 "ProgressDialog"  "ProgressBar"  "SetProgress"  "Progress"  

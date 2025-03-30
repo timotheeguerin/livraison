@@ -10,7 +10,13 @@ pub fn create() -> ui::dialog::DialogBuilder {
         )
         .add(
             ui::control::button("Finish", "Finish")
-                .pos((134, 75))
+                .pos((66, 75))
                 .trigger(ui::event::end_dialog(EndDialogAction::Return)),
+        )
+        .add(
+            ui::control::button("Cancel", "Cancel")
+                .pos((134, 75))
+                .trigger(ui::event::end_dialog(EndDialogAction::Exit))
+                .disable(),
         )
 }

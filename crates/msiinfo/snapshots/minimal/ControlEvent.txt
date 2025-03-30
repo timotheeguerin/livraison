@@ -1,6 +1,7 @@
 ──────────────────  ────────  ───────────  ────────  ─────────  ────────  
 Dialog_             Control_  Event        Argument  Condition  Ordering  
 ──────────────────  ────────  ───────────  ────────  ─────────  ────────  
+"ExitDialog"        "Cancel"  "EndDialog"  "Exit"    "1"        0         
 "ExitDialog"        "Finish"  "EndDialog"  "Return"  "1"        0         
 "FatalErrorDialog"  "Finish"  "EndDialog"  "Exit"    "1"        0         
 "ProgressDialog"    "Cancel"  "EndDialog"  "Exit"    "1"        0         

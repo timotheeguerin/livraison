@@ -1,7 +1,5 @@
 use msi_installer::ui::{self, dialog::DialogSize, event::EndDialogAction};
 
-use super::common;
-
 pub fn create() -> ui::dialog::DialogBuilder {
     ui::dialog::new("RemoveDialog", "[ProductName] Setup")
         .size(DialogSize::minimal())
@@ -10,8 +8,8 @@ pub fn create() -> ui::dialog::DialogBuilder {
                 "Title",
                 "{\\TitleFont}Uninstall [ProductName]",
             )
-            .pos((20, 20))
-            .size((220, 60)),
+            .pos((20, 10))
+            .size((220, 20)),
         )
         .add(
             ui::control::text(

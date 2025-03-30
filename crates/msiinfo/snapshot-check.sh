@@ -16,3 +16,4 @@ cargo run -- export $MSI Control > snapshots/minimal/Control.txt
 cargo run -- export $MSI ControlEvent > snapshots/minimal/ControlEvent.txt        
 cargo run -- export $MSI EventMapping > snapshots/minimal/EventMapping.txt        
 cargo run -- export $MSI InstallUISequence > snapshots/minimal/InstallUISequence.txt        
+cargo run -- export $MSI TextStyle > snapshots/minimal/TextStyle.txt        

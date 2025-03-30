@@ -18,9 +18,10 @@ use msi_installer::{
     PropertiesBuilder, RequiredProperties,
     tables::{
         Binary, Component, ComponentAttributes, Control, ControlEvent, Dialog, Directory, Entity,
-        EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence,
+        EventMapping, FeatureComponents, File, FileAttributes, InstallUISequence, StyleAttributes,
+        TextStyle,
     },
-    ui::dialog::DialogSize,
+    ui::{control::Text, dialog::DialogSize},
 };
 use uuid::Uuid;
 
@@ -722,41 +723,34 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
     }
 
     fn create_text_style_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        self.package.create_table(
-            "TextStyle",
-            vec![
-                msi::Column::build("TextStyle").primary_key().id_string(72),
-                msi::Column::build("FaceName")
-                    .category(msi::Category::Text)
-                    .string(32),
-                msi::Column::build("Size").range(0, 0x7fff).int16(),
-                msi::Column::build("Color")
-                    .nullable()
-                    .range(0, 0xffffff)
-                    .int32(),
-                msi::Column::build("StyleBits")
-                    .nullable()
-                    .range(0, 15)
-                    .int16(),
+        TextStyle::create_table(&mut self.package)?;
+        TextStyle::insert(
+            &mut self.package,
+            &[
+                TextStyle {
+                    text_style: "DefaultFont".to_string(),
+                    face_name: "Segoe UI".to_string(),
+                    size: 8,
+                    color: 0,
+                    attributes: None,
+                },
+                TextStyle {
+                    text_style: "BoldFont".to_string(),
+                    face_name: "Segoe UI".to_string(),
+                    size: 12,
+                    color: 0,
+                    attributes: Some(StyleAttributes::Bold),
+                },
+                TextStyle {
+                    text_style: "TitleFont".to_string(),
+                    face_name: "Segoe UI".to_string(),
+                    size: 9,
+                    color: 0,
+                    attributes: Some(StyleAttributes::Bold),
+                },
             ],
         )?;
-        let mut rows = Vec::new();
-        let actions: [(&str, &str, i32, i32, i32); 3] = [
-            ("DefaultFont", "Segoe UI", 8, 0, 0),
-            ("BoldFont", "Segoe UI", 12, 0, 1),
-            ("TitleFont", "Segoe UI", 9, 0, 1),
-        ];
-        for action in actions {
-            rows.push(vec![
-                msi::Value::Str(action.0.to_string()),
-                msi::Value::Str(action.1.to_string()),
-                msi::Value::Int(action.2),
-                msi::Value::Int(action.3),
-                msi::Value::Int(action.4),
-            ]);
-        }
-        self.package
-            .insert_rows(msi::Insert::into("TextStyle").rows(rows))?;
+
         Ok(())
     }
 }

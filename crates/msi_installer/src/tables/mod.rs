@@ -14,6 +14,7 @@ mod property;
 mod registry;
 mod standard_actions;
 mod table;
+mod text_style;
 
 pub use binary::*;
 pub use component::*;
@@ -31,3 +32,4 @@ pub use property::*;
 pub use registry::*;
 pub use standard_actions::is_standard_action;
 pub use table::*;
+pub use text_style::*;

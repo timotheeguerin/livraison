@@ -2,8 +2,8 @@ use msi_installer::ui::{self, dialog::DialogSize, event::EndDialogAction};
 
 use super::common;
 
-pub fn create() -> ui::dialog::DialogBuilder {
-    ui::dialog::new("RemoveDialog", "[ProductName] Setup")
+pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
+    builder
         .size(DialogSize::classic())
         .add(
             ui::control::text(

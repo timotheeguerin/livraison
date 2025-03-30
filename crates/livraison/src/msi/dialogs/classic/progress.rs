@@ -1,7 +1,7 @@
 use msi_installer::ui::{self, dialog::DialogSize};
 
-pub fn create() -> ui::dialog::DialogBuilder {
-    ui::dialog::new("ProgressDialog", "[ProductName] Setup")
+pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
+    builder
         .size(DialogSize::classic())
         .modeless()
         .add(

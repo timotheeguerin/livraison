@@ -1,7 +1,7 @@
 use msi_installer::ui::{self, dialog::DialogSize, event::EndDialogAction};
 
-pub fn create() -> ui::dialog::DialogBuilder {
-    ui::dialog::new("WelcomeDialog", "[ProductName] Setup")
+pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
+    builder
         .size(DialogSize::minimal())
         .add(
             ui::control::text(

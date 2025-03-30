@@ -1,8 +1,7 @@
 use msi_installer::ui::{self, dialog::DialogSize};
 
-pub fn create() -> ui::dialog::DialogBuilder {
-    ui::dialog::new("FatalErrorDialog", "[ProductName] Setup")
-    .size(DialogSize::classic())
+pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
+    builder.size(DialogSize::classic())
         .add(
             ui::control::text("Title", "{\\TitleFont}[ProductName] [Text_agent] ended prematurely")
                 .pos((20, 20))

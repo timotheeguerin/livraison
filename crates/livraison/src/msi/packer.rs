@@ -128,8 +128,7 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         self.create_file_table(&cabinets)?;
         self.create_install_execute_sequence_table(&cabinets)?;
         self.create_install_ui_sequence_table(&cabinets)?;
-        self.create_dialogs(&cabinets)?;
-        self.create_text_style_table(&cabinets)?;
+        minimalist::create().insert(&mut self.package)?;
 
         register_environment_vars(
             &mut self.package,
@@ -679,78 +678,6 @@ impl<W: Read + Write + Seek> MsiInstallerPacker<W> {
         }
         self.package
             .insert_rows(msi::Insert::into("InstallUISequence").rows(rows))?;
-        Ok(())
-    }
-
-    fn create_dialogs(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        Dialog::create_table(&mut self.package)?;
-        Control::create_table(&mut self.package)?;
-        ControlEvent::create_table(&mut self.package)?;
-        EventMapping::create_table(&mut self.package)?;
-        // let dialogs = classic::create_dialogs();
-        let dialogs = minimalist::create_dialogs();
-
-        Dialog::insert(
-            &mut self.package,
-            &dialogs
-                .iter()
-                .map(|dialog| dialog.dialog())
-                .collect::<Vec<Dialog>>(),
-        )?;
-
-        Control::insert(
-            &mut self.package,
-            &dialogs
-                .iter()
-                .flat_map(|dialog| dialog.controls())
-                .collect::<Vec<Control>>(),
-        )?;
-        ControlEvent::insert(
-            &mut self.package,
-            &dialogs
-                .iter()
-                .flat_map(|dialog| dialog.events())
-                .collect::<Vec<ControlEvent>>(),
-        )?;
-        EventMapping::insert(
-            &mut self.package,
-            &dialogs
-                .iter()
-                .flat_map(|dialog| dialog.event_mappings())
-                .collect::<Vec<EventMapping>>(),
-        )?;
-        Ok(())
-    }
-
-    fn create_text_style_table(&mut self, _cabinets: &[CabinetInfo]) -> LivraisonResult<()> {
-        TextStyle::create_table(&mut self.package)?;
-        TextStyle::insert(
-            &mut self.package,
-            &[
-                TextStyle {
-                    text_style: "DefaultFont".to_string(),
-                    face_name: "Segoe UI".to_string(),
-                    size: 8,
-                    color: 0,
-                    attributes: None,
-                },
-                TextStyle {
-                    text_style: "BoldFont".to_string(),
-                    face_name: "Segoe UI".to_string(),
-                    size: 12,
-                    color: 0,
-                    attributes: Some(StyleAttributes::Bold),
-                },
-                TextStyle {
-                    text_style: "TitleFont".to_string(),
-                    face_name: "Segoe UI".to_string(),
-                    size: 9,
-                    color: 0,
-                    attributes: Some(StyleAttributes::Bold),
-                },
-            ],
-        )?;
-
         Ok(())
     }
 }

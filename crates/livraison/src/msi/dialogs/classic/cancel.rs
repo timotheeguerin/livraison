@@ -1,7 +1,7 @@
 use msi_installer::ui::{self, event::EndDialogAction};
 
-pub fn create() -> ui::dialog::DialogBuilder {
-    ui::dialog::new("CancelDialog", "[ProductName] Setup")
+pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
+    builder
         .size((260, 85))
         .add(
             ui::control::text("Text", "Do you want to abort?")

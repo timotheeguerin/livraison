@@ -829,7 +829,7 @@ impl<'a> Iterator for Tables<'a> {
     }
 }
 
-impl<'a> ExactSizeIterator for Tables<'a> {}
+impl ExactSizeIterator for Tables<'_> {}
 
 // ========================================================================= //
 

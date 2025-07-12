@@ -264,7 +264,7 @@ impl<'a> Rows<'a> {
     }
 }
 
-impl<'a> Iterator for Rows<'a> {
+impl Iterator for Rows<'_> {
     type Item = Row;
 
     fn next(&mut self) -> Option<Row> {
@@ -287,7 +287,7 @@ impl<'a> Iterator for Rows<'a> {
     }
 }
 
-impl<'a> ExactSizeIterator for Rows<'a> {}
+impl ExactSizeIterator for Rows<'_> {}
 
 // ========================================================================= //
 

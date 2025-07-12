@@ -16,7 +16,7 @@ const COL_NULLABLE_BIT: i32 = 0x1000;
 const COL_PRIMARY_KEY_BIT: i32 = 0x2000;
 // I haven't yet been able to find any clear documentation on what these two
 // bits in the column type bitfield do, so both the constant names and the way
-// this library handles them are laregly speculative right now:
+// this library handles them are largely speculative right now:
 const COL_VALID_BIT: i32 = 0x100;
 const COL_NONBINARY_BIT: i32 = 0x400;
 
@@ -53,7 +53,7 @@ impl ColumnType {
         } else {
             Err(io::Error::new(
                 io::ErrorKind::InvalidData,
-                format!("Invalid column type: {:#x}", type_bits),
+                format!("Invalid column type: {type_bits:#x}"),
             ))
         }
     }

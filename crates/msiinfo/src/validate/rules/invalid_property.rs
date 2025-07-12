@@ -21,7 +21,6 @@ impl Rule for InvalidPropertyRule {
             .collect::<std::collections::HashMap<_, _>>();
 
         check_property_defined(ctx, &map, "ProductVersion");
-        check_property_defined(ctx, &map, "ProductCode");
         check_property_defined(ctx, &map, "Manufacturer");
         check_property_defined(ctx, &map, "ProductName");
         if check_property_defined(ctx, &map, "ProductCode") {
@@ -90,13 +89,22 @@ mod tests {
                     property: "ProductLanguage".to_string(),
                     value: "1033".to_string(),
                 },
+                Property {
+                    property: "ProductCode".to_string(),
+                    value: "bad".to_string(),
+                },
             ],
         )
         .unwrap();
         let diagnostics = test_rule(InvalidPropertyRule {}, &mut package);
-
+        dbg!(&diagnostics);
         assert_eq!(diagnostics.len(), 1);
         assert_eq!(diagnostics[0].code, "invalid-property");
+        assert!(
+            diagnostics[0]
+                .message
+                .contains("property must be a uuid surrounded by braces {}")
+        );
     }
 
     #[test]
@@ -106,12 +114,12 @@ mod tests {
         Property::insert(&mut package, &[]).unwrap();
         let diagnostics = test_rule(InvalidPropertyRule {}, &mut package);
 
-        assert_eq!(diagnostics.len(), 5);
+        assert_eq!(diagnostics.len(), 4);
+        dbg!(&diagnostics);
         assert_eq!(diagnostics[0].code, "invalid-property");
         assert_eq!(diagnostics[1].code, "invalid-property");
         assert_eq!(diagnostics[2].code, "invalid-property");
         assert_eq!(diagnostics[3].code, "invalid-property");
-        assert_eq!(diagnostics[4].code, "invalid-property");
     }
 
     fn mock_package() -> msi::Package<Cursor<Vec<u8>>> {

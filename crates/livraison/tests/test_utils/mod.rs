@@ -25,6 +25,7 @@ impl TestTempDir {
     }
 }
 
+#[allow(dead_code)]
 pub fn exec(command: &str, args: &[&str]) -> std::process::Output {
     Command::new(command)
         .args(args)

@@ -2,8 +2,8 @@ pub mod control;
 pub mod dialog;
 pub mod event;
 
+mod builder;
 mod position;
 mod size;
-mod ui;
 
-pub use ui::*;
+pub use builder::*;

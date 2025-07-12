@@ -8,6 +8,7 @@ mod progress;
 mod remove;
 mod welcome;
 
+#[allow(dead_code)]
 pub fn create() -> ui::UiBuilder {
     ui::new()
         .new_dialog("WelcomeDlg", welcome::create)

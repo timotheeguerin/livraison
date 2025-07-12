@@ -2,6 +2,7 @@ use msi_installer::ui::{self, dialog::DialogSize, event::EndDialogAction};
 
 use super::common;
 
+#[allow(dead_code)]
 pub fn create(builder: ui::dialog::DialogBuilder) -> ui::dialog::DialogBuilder {
     builder
         .size(DialogSize::classic())

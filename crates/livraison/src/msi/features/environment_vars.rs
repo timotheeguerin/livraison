@@ -2,7 +2,7 @@ use std::io::{Read, Seek, Write};
 
 use msi::Package;
 use msi_installer::tables::{
-    Component, ComponentAttributes, Entity, Environment, FeatureComponents, Registry, RegistryRoot,
+    Component, ComponentAttributes, Entity, Environment, FeatureComponents, Registry,
 };
 use uuid::Uuid;
 
@@ -20,6 +20,7 @@ pub struct EnvironmentAction {
     pub kind: EnvironmentActionKind,
 }
 
+#[allow(dead_code)]
 pub enum EnvironmentActionKind {
     /// Set the environment variable
     Set,
@@ -38,7 +39,7 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
     let mut environments: Vec<Environment> = Vec::new();
     let mut components: Vec<Component> = Vec::new();
     let mut feature_components: Vec<FeatureComponents> = Vec::new();
-    let mut registry_items: Vec<Registry> = Vec::new();
+    // let mut registry_items: Vec<Registry> = Vec::new();
     for action in actions {
         let component_id = format!("env_{}", action.id.to_lowercase());
         // let component_id = "reg384648C2D0DE5577014AD3CB66D5A086".to_string();
@@ -77,7 +78,7 @@ pub fn register_environment_vars<F: Read + Seek + Write>(
 
     Component::insert(package, &components)?;
     Environment::insert(package, &environments)?;
-    Registry::insert(package, &registry_items)?;
+    // Registry::insert(package, &registry_items)?;
     FeatureComponents::insert(package, &feature_components)?;
     Ok(())
 }

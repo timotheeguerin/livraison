@@ -22,7 +22,7 @@ pub struct PropertiesBuilder {
 }
 
 fn guid_string(value: &Uuid) -> String {
-    format!("{{{}}}", value)
+    format!("{{{value}}}")
 }
 
 impl PropertiesBuilder {

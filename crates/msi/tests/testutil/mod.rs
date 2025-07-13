@@ -1,7 +1,7 @@
 // ========================================================================= //
 
 macro_rules! assert_error {
-    ($e:expr, $k:expr, $d:expr) => {
+    ($e:expr_2021, $k:expr_2021, $d:expr_2021) => {
         let kind = $k;
         let description = $d;
         match $e {

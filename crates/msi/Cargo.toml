@@ -6,7 +6,7 @@ repository = "https://github.com/mdsteele/rust-msi"
 keywords = ["msi", "windows", "installer", "package"]
 license = "MIT"
 readme = "README.md"
-edition = "2021"
+edition = "2024"
 description = "Read/write Windows Installer (MSI) files"
 
 [dependencies]

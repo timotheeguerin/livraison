@@ -1,0 +1,12 @@
+──────────────────  ────────  ─────────────  ──────────────  ─────────  ────────  
+Dialog_             Control_  Event          Argument        Condition  Ordering  
+──────────────────  ────────  ─────────────  ──────────────  ─────────  ────────  
+"CancelDlg"      "Cancel"  "EndDlg"    "Return"        "1"        0         
+"CancelDlg"      "Yes"     "EndDlg"    "Exit"          "1"        0         
+"ExitDlg"        "Finish"  "EndDlg"    "Return"        "1"        0         
+"FatalErrorDlg"  "Finish"  "EndDlg"    "Exit"          "1"        0         
+"ProgressDlg"    "Cancel"  "SpawnDlg"  "CancelDlg"  "1"        0         
+"RemoveDlg"      "Cancel"  "SpawnDlg"  "CancelDlg"  "1"        0         
+"RemoveDlg"      "Remove"  "EndDlg"    "Return"        "1"        0         
+"WelcomeDlg"     "Cancel"  "SpawnDlg"  "CancelDlg"  "1"        0         
+"WelcomeDlg"     "Next"    "EndDlg"    "Return"        "1"        0         

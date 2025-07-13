@@ -1,0 +1,22 @@
+[package]
+name = "msi"
+version = "0.8.0"
+authors = ["Matthew D. Steele <mdsteele@alum.mit.edu>"]
+repository = "https://github.com/mdsteele/rust-msi"
+keywords = ["msi", "windows", "installer", "package"]
+license = "MIT"
+readme = "README.md"
+edition = "2024"
+description = "Read/write Windows Installer (MSI) files"
+
+[dependencies]
+byteorder = "1"
+cfb = "0.10"
+encoding_rs = "0.8"
+uuid = "1"
+
+[dev-dependencies]
+clap = "2.27"
+pest = "2.1"
+pest_derive = "2.1"
+time = "0.3"

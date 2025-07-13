@@ -1,0 +1,11 @@
+───────────────  ────────  ───────────  ────────  ─────────  ────────  
+Dialog_          Control_  Event        Argument  Condition  Ordering  
+───────────────  ────────  ───────────  ────────  ─────────  ────────  
+"ExitDlg"        "Cancel"  "EndDialog"  "Exit"    "1"        0         
+"ExitDlg"        "Finish"  "EndDialog"  "Return"  "1"        0         
+"FatalErrorDlg"  "Finish"  "EndDialog"  "Exit"    "1"        0         
+"ProgressDlg"    "Cancel"  "EndDialog"  "Exit"    "1"        0         
+"RemoveDlg"      "Cancel"  "EndDialog"  "Exit"    "1"        0         
+"RemoveDlg"      "Remove"  "EndDialog"  "Return"  "1"        0         
+"WelcomeDlg"     "Cancel"  "EndDialog"  "Exit"    "1"        0         
+"WelcomeDlg"     "Next"    "EndDialog"  "Return"  "1"        0         

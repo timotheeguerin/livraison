@@ -99,7 +99,7 @@ impl<W: Write> EnhancedTarBuilder<W> {
                     Component::Normal(c) => directory.push(c),
                     _ => continue,
                 }
-                println!("Adding directory: {:?}", directory);
+                println!("Adding directory: {directory:?}");
 
                 if !self.dirs_added.contains(&directory) {
                     self.dirs_added.insert(directory.clone());

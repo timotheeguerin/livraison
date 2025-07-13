@@ -69,7 +69,7 @@ impl Control {
         }
 
         if let Some(section) = &self.section {
-            out.push(format!("Section: {}", section));
+            out.push(format!("Section: {section}"));
         }
         if let Some(depends) = &self.depends {
             out.push(format!("Depends: {}", self.format_depends(depends)));
@@ -81,7 +81,7 @@ impl Control {
     fn write_version(&self) -> String {
         let mut out: String = "Version: ".to_string();
         if let Some(epoch) = &self.epoch {
-            out.push_str(&format!("{}:", epoch));
+            out.push_str(&format!("{epoch}:"));
         }
         out.push_str(&self.version);
         if let Some(revision) = &self.revision {
@@ -98,7 +98,7 @@ impl Control {
                 out.push('\n');
             }
             first = false;
-            out.push_str(&format!(" {}", line));
+            out.push_str(&format!(" {line}"));
         }
         out
     }

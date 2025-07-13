@@ -644,7 +644,7 @@ fn compute_upgrade_code(bundle_name: &str) -> uuid::Uuid {
 }
 
 fn compute_product_code(bundle_name: &str, version: &str) -> uuid::Uuid {
-    let str = format!("{}@{}", bundle_name, version);
+    let str = format!("{bundle_name}@{version}");
     Uuid::new_v5(&UUID_NAMESPACE, str.as_bytes())
 }
 

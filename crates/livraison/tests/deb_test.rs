@@ -52,28 +52,28 @@ fn check_dpkg_retrieve_information() {
     let target = target_path_buf.to_str().unwrap();
 
     let output = exec("dpkg-deb", &["-f", target]);
-    println!("Created deb package at {}", target);
+    println!("Created deb package at {target}");
     println!("{}", String::from_utf8(output.stdout).unwrap().trim());
 
     assert_eq!(ask_dpkg_deb_for_field(&target, "Package"), control.package);
     assert_eq!(
-        ask_dpkg_deb_for_field(&target, "Version"),
+        ask_dpkg_deb_for_field(target, "Version"),
         format!("{}-{}", control.version, control.revision.unwrap())
     );
     assert_eq!(
-        ask_dpkg_deb_for_field(&target, "Maintainer"),
+        ask_dpkg_deb_for_field(target, "Maintainer"),
         format!("{} <{}>", control.maintainer.name, control.maintainer.email)
     );
     assert_eq!(
-        ask_dpkg_deb_for_field(&target, "Architecture"),
+        ask_dpkg_deb_for_field(target, "Architecture"),
         control.architecture
     );
     assert_eq!(
-        ask_dpkg_deb_for_field(&target, "Priority"),
+        ask_dpkg_deb_for_field(target, "Priority"),
         control.priority.unwrap().as_str(),
     );
     assert_eq!(
-        ask_dpkg_deb_for_field(&target, "Section"),
+        ask_dpkg_deb_for_field(target, "Section"),
         control.section.unwrap(),
     );
 }

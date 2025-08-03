@@ -29,16 +29,7 @@
     "format": "prettier . --write && syncpack format && cargo fmt",
     "format:check": "prettier . --check"
   },
-  "dependencies": {
-    "cross-spawn": "^7.0.6",
-    "is-unicode-supported": "^2.1.0",
-    "pathe": "^2.0.3",
-    "picocolors": "^1.1.1",
-    "postject": "1.0.0-alpha.6",
-    "std-env": "^3.8.1",
-    "which": "^5.0.0",
-    "yargs": "^17.7.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@types/cross-spawn": "^6.0.6",

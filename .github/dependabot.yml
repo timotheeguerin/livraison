@@ -10,27 +10,12 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      ESLint:
-        patterns:
-          - "eslint"
-          - "typescript-eslint"
-          - "@typescript-eslint/*"
-          - "@eslint/*"
-        update-types:
-          - major
-          - minor
-
       # Group remaining dev dependencies for minor and patch release. Major can be upgraded individually.
       dev-dependencies:
         dependency-type: "development"
         update-types:
           - "minor"
           - "patch"
-        exclude-patterns: # Deditected group
-          - "eslint"
-          - "typescript-eslint"
-          - "@typescript-eslint/*"
-          - "@eslint/*"
 
   - package-ecosystem: "devcontainers"
     directory: "/"

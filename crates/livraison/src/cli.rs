@@ -2,10 +2,7 @@ use std::{ffi::OsString, fmt::Debug, fs, path::PathBuf};
 
 use clap::{Args, Parser, Subcommand, arg, command};
 
-use crate::{
-    deb::package,
-    msi::packer::{BinaryFile, MsiInstallerOptions, pack},
-};
+use crate::msi::packer::{MsiInstallerOptions, pack};
 // use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 #[derive(Parser, Debug)]

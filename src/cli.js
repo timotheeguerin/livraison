@@ -20,7 +20,7 @@ const wasi = new WASI({
   },
 
   version: "preview1",
-  args: process.argv.slice(2),
+  args: ["livraison.js", ...process.argv.slice(2)],
   preopens: {
     "/": "/",
   },

@@ -40,7 +40,6 @@ where
     I: std::fmt::Debug,
 {
     let args = AppArgs::parse_from(args);
-
     match args.command {
         Command::Pack(pack_args) => {
             println!("Packing target: {}", pack_args.target);

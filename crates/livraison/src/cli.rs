@@ -1,6 +1,11 @@
-use std::{ffi::OsString, fmt::Debug};
+use std::{ffi::OsString, fmt::Debug, fs, path::PathBuf};
 
 use clap::{Args, Parser, Subcommand, arg, command};
+
+use crate::{
+    deb::package,
+    msi::packer::{BinaryFile, MsiInstallerOptions, pack},
+};
 // use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 #[derive(Parser, Debug)]
@@ -43,6 +48,26 @@ where
     match args.command {
         Command::Pack(pack_args) => {
             println!("Packing target: {}", pack_args.target);
+            run_pack(&pack_args.target);
         }
+    }
+}
+
+fn run_pack(target: &str) {
+    if target == "msi" {
+        let options = MsiInstallerOptions {
+            name: "test".to_string(),
+            version: "1.0.0".to_string(),
+            description: "Great test package\nWith nice description".to_string(),
+            author: "John Smith".to_string(),
+            ..Default::default()
+        };
+
+        fs::create_dir_all(PathBuf::from(
+            "/Users/timotheeguerin/dev/github/livraison/temp/",
+        ))
+        .unwrap();
+        let msi_path = PathBuf::from("/Users/timotheeguerin/dev/github/livraison/temp/out.msi");
+        pack(options.clone(), &msi_path).unwrap();
     }
 }

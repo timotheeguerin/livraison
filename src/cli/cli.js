@@ -2,6 +2,13 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import { WASI } from "wasi";
 
+// Suppress the WASI Warning
+process.removeAllListeners("warning").on("warning", (err) => {
+  if (err.name !== "ExperimentalWarning" && !err.message.includes("wasi")) {
+    console.warn(err);
+  }
+});
+
 const packageRoot = resolve(import.meta.dirname, "../..");
 const importObject = {
   wasi_snapshot_preview1: WASI.defaultBindings,

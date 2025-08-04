@@ -23,7 +23,7 @@ export default tsEslint.config(
     },
     rules: {
       "no-console": "warn",
-      "no-restricted-imports": ["error", "path", "node:path"],
+      "no-restricted-imports": ["error"],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",

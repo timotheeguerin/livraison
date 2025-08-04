@@ -1,7 +1,7 @@
 use std::{ffi::OsString, fmt::Debug};
 
 use clap::{Args, Parser, Subcommand, arg, command};
-use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
+// use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -33,25 +33,12 @@ struct PackArgs {
     target: String,
 }
 
-#[unsafe(no_mangle)]
-#[wasm_bindgen]
-pub fn run_from_args(args: &str) {
-    dbg!(&args);
-    // run_cli(args.iter().cloned().map(OsString::from));
-}
-
-#[unsafe(no_mangle)]
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
-
 pub fn run_cli<I, T>(args: I)
 where
     I: IntoIterator<Item = T>,
     T: Into<OsString> + Clone,
     I: std::fmt::Debug,
 {
-    dbg!(&args);
     let args = AppArgs::parse_from(args);
 
     match args.command {

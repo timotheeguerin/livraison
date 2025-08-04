@@ -14,12 +14,14 @@ const bytes = readFileSync(resolve(packageRoot, "target/wasm32-wasip1/debug/livr
 const wasi = new WASI({
   env: {
     RUST_BACKTRACE: "1",
+    COLOR: "1",
+    CLICOLOR_FORCE: "1",
   },
 
   // This option is mandatory.
 
   version: "preview1",
-
+  args: process.argv.slice(2),
   preopens: {
     "/": "/",
   },
@@ -63,8 +65,4 @@ const wasi = new WASI({
   const instance = await WebAssembly.instantiate(wasm, imports);
 
   wasi.start(instance);
-
-  console.log(instance.exports);
-  console.log("Result", instance.exports.add(1, 2));
-  instance.exports.run_from_args("--help");
 })();

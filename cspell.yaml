@@ -12,7 +12,9 @@ words:
   - CDROM
   - cksum
   - clippy
+  - clsid
   - esac
+  - fmtid
   - Guerin
   - indoc
   - libc
@@ -22,6 +24,7 @@ words:
   - postject
   - postrm
   - prerm
+  - ptype
   - Repr
   - RTLRO
   - Tahoma

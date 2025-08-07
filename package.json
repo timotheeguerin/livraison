@@ -13,6 +13,11 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "files": [
+    "cmd/cli.js",
+    "dist/",
+    "target/wasm32-wasip1/release/livraison.wasm"
+  ],
   "scripts": {
     "watch": "tsc -p ./tsconfig.build.json --watch",
     "build": "pnpm run build:rust && pnpm run build:ts",

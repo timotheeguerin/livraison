@@ -73,6 +73,9 @@ jobs:
           #   code-target: darwin-arm64
     name: Package ${{ matrix.code-target }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 

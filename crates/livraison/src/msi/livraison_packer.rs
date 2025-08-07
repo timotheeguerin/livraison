@@ -1,4 +1,4 @@
-use std::{fs, path::Path};
+use std::fs;
 
 use super::packer;
 use crate::{
@@ -11,8 +11,6 @@ use crate::{
 pub struct MsiLivraisonPacker {}
 
 impl LivraisonPacker for MsiLivraisonPacker {
-    type Options = ();
-
     fn pack(&self, options: CommonOptions) -> LivraisonResult<()> {
         let out_file = options.out.join(options.name.clone()).with_extension("msi");
         fs::create_dir_all(options.out)?;
@@ -24,12 +22,9 @@ impl LivraisonPacker for MsiLivraisonPacker {
                     Some(v) => v,
                     None => "0.0.0".to_string(),
                 },
-                description: match options.description {
-                    Some(desc) => desc,
-                    None => "No description.".to_string(),
-                },
+                description: options.description.unwrap_or("No description.".to_string()),
                 author: match options.author {
-                    Some(author) => author,
+                    Some(author) => author.name,
                     None => "Unknown".to_string(),
                 },
                 ..Default::default()

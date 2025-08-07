@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
-use crate::{LivraisonResult, msi::MsiLivraisonPacker};
+use crate::{LivraisonResult, deb::DebLivraisonPacker, msi::MsiLivraisonPacker};
 
+#[derive(Debug, Default, Clone)]
 pub struct CommonOptions {
     /// Name of the bundle
     pub name: String,
@@ -16,20 +17,23 @@ pub struct CommonOptions {
     pub description: Option<String>,
 
     /// Product author
-    pub author: Option<String>,
+    pub author: Option<User>,
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct User {
+    pub name: String,
+    pub email: String,
 }
 
 pub trait LivraisonPacker {
-    type Options;
-
     fn pack(&self, options: CommonOptions) -> LivraisonResult<()>;
 }
 
-pub fn pack(packer: impl LivraisonPacker) {}
-
-fn get_packer(target: String) -> impl LivraisonPacker {
+fn get_packer(target: String) -> Box<dyn LivraisonPacker> {
     match target.as_str() {
-        "msi" => MsiLivraisonPacker {},
+        "msi" => Box::new(MsiLivraisonPacker {}),
+        "deb" => Box::new(DebLivraisonPacker {}),
         _ => panic!("Unsupported packer for target: {}", target),
     }
 }

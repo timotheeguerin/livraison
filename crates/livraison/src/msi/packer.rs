@@ -55,7 +55,7 @@ pub struct MsiInstallerOptions {
     pub author: String,
 
     /// Icon path
-    pub icon: Option<String>,
+    // pub icon: Option<String>,
     pub binaries: Option<Vec<BinaryFile>>,
 }
 

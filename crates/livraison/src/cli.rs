@@ -73,12 +73,11 @@ where
             CommonOptions {
                 name: pack_args.name,
                 version: pack_args.version,
-                description: Some("A sample application".to_string()),
-                author: Some("Your Name".to_string()),
                 out: match pack_args.out {
                     Some(out) => PathBuf::from(out),
                     None => cwd.join("dist"),
                 },
+                ..Default::default()
             },
         )?,
     }

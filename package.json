@@ -16,7 +16,7 @@
   "scripts": {
     "watch": "tsc -p ./tsconfig.build.json --watch",
     "build": "pnpm run build:rust && pnpm run build:ts",
-    "build:ts": "tsc -p ./tsconfig.build.json",
+    "build:ts": "cargo build --package livraison --target wasm32-wasip1 --release && tsc -p ./tsconfig.build.json",
     "build:rust": "cargo build",
     "clean": "rimraf dist/ .temp/",
     "test": "pnpm test:rust && pnpm test:ts",

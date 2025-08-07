@@ -36,6 +36,7 @@ jobs:
           echo "Version change found! New version: ${NEW_VERSION}"
 
   build:
+    needs: check
     strategy:
       matrix:
         include:

@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - release
 
   workflow_dispatch: {}
 
@@ -38,4 +39,4 @@ jobs:
       - run: pnpm -r publish --access public --no-git-checks
         name: Publish
         env:
-          NPM_AUTH_TOKEN: $(azure-sdk-npm-token)
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -36,9 +36,7 @@ jobs:
           git diff --no-ext-diff --quiet --exit-code
         name: Check not out of date generated files
 
-      - run: |
-          echo "Publishing to npm... ${{ secrets.NPM_TOKEN }}"
-          pnpm -r publish --access public --no-git-checks
+      - run: pnpm -r publish --access public --no-git-checks
         name: Publish
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

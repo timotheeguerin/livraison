@@ -25,6 +25,3 @@ runs:
     - name: Install rust toolchain
       shell: bash
       run: rustup toolchain install
-
-    # - run: rustup target add wasm32-wasip1
-    #   name: Add wasm32-wasip1 target

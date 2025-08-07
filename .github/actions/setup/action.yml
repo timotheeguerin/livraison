@@ -23,8 +23,6 @@ runs:
 
     # Rust
     - name: Install rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      run: rustup toolchain install
+    # - run: rustup target add wasm32-wasip1
+    #   name: Add wasm32-wasip1 target

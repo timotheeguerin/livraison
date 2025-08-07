@@ -16,12 +16,12 @@ pub trait PackageReader {
     fn database_codepage(&self) -> msi::CodePage;
     fn has_table(&self, table_name: &str) -> bool;
     fn get_table(&self, table_name: &str) -> Option<&msi::Table>;
-    fn tables(&self) -> msi::Tables;
+    fn tables(&self) -> msi::Tables<'_>;
     fn has_stream(&self, stream_name: &str) -> bool;
     fn has_digital_signature(&self) -> bool;
     // fn read_stream(&mut self, stream_name: &str) -> io::Result<StreamReader<F>>;
 
-    fn select_rows(&mut self, query: Select) -> io::Result<Rows>;
+    fn select_rows(&mut self, query: Select) -> io::Result<Rows<'_>>;
 }
 
 impl<F: Read + Seek> PackageReader for Package<F> {
@@ -45,7 +45,7 @@ impl<F: Read + Seek> PackageReader for Package<F> {
         self.get_table(table_name)
     }
 
-    fn tables(&self) -> msi::Tables {
+    fn tables(&self) -> msi::Tables<'_> {
         self.tables()
     }
 
@@ -56,7 +56,8 @@ impl<F: Read + Seek> PackageReader for Package<F> {
     fn has_digital_signature(&self) -> bool {
         self.has_digital_signature()
     }
-    fn select_rows(&mut self, query: Select) -> io::Result<Rows> {
+
+    fn select_rows(&mut self, query: Select) -> io::Result<Rows<'_>> {
         self.select_rows(query)
     }
 }

@@ -44,23 +44,23 @@ impl Rule for DialogRule {
                     reference: format!("control_first of dialog {}", dialog.dialog),
                 });
             }
-            if let Some(control_default) = &dialog.control_default {
-                if !complete_dialog.has_control(control_default) {
-                    errors.push(ErrorMsg::MissingControl {
-                        dialog: dialog.dialog.clone(),
-                        control: control_default.clone(),
-                        reference: format!("control_default of dialog {}", dialog.dialog),
-                    });
-                }
+            if let Some(control_default) = &dialog.control_default
+                && !complete_dialog.has_control(control_default)
+            {
+                errors.push(ErrorMsg::MissingControl {
+                    dialog: dialog.dialog.clone(),
+                    control: control_default.clone(),
+                    reference: format!("control_default of dialog {}", dialog.dialog),
+                });
             }
-            if let Some(control_cancel) = &dialog.control_cancel {
-                if !complete_dialog.has_control(control_cancel) {
-                    errors.push(ErrorMsg::MissingControl {
-                        dialog: dialog.dialog.clone(),
-                        control: control_cancel.clone(),
-                        reference: format!("control_cancel of dialog {}", dialog.dialog),
-                    });
-                }
+            if let Some(control_cancel) = &dialog.control_cancel
+                && !complete_dialog.has_control(control_cancel)
+            {
+                errors.push(ErrorMsg::MissingControl {
+                    dialog: dialog.dialog.clone(),
+                    control: control_cancel.clone(),
+                    reference: format!("control_cancel of dialog {}", dialog.dialog),
+                });
             }
         }
 
@@ -76,14 +76,14 @@ impl Rule for DialogRule {
                 }
             };
 
-            if let Some(next_control) = &row.control_next {
-                if !dialog.has_control(next_control) {
-                    errors.push(ErrorMsg::MissingControl {
-                        dialog: row.dialog.clone(),
-                        control: next_control.clone(),
-                        reference: format!("next_control of {}", row.control),
-                    });
-                }
+            if let Some(next_control) = &row.control_next
+                && !dialog.has_control(next_control)
+            {
+                errors.push(ErrorMsg::MissingControl {
+                    dialog: row.dialog.clone(),
+                    control: next_control.clone(),
+                    reference: format!("next_control of {}", row.control),
+                });
             }
         }
         errors.extend(validate_dialogs_control_order(dialog_map));

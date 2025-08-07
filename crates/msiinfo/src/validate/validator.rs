@@ -21,10 +21,6 @@ pub fn validate_msi_installer<F: Read + Seek>(package: &mut Package<F>) {
     linter.register(InvalidPropertyRule {});
 
     let diagnostics = linter.lint(package);
-    // let mut errors: Vec<ValidationError> = Vec::new();
-    // errors.extend(safe_result(validate_pks(package)));
-    // errors.extend(safe_result(validate_dialogs(package)));
-
     if diagnostics.is_empty() {
         println!("{} No errors found", green("✓"));
     } else {

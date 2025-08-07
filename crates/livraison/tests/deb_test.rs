@@ -55,7 +55,7 @@ fn check_dpkg_retrieve_information() {
     println!("Created deb package at {target}");
     println!("{}", String::from_utf8(output.stdout).unwrap().trim());
 
-    assert_eq!(ask_dpkg_deb_for_field(&target, "Package"), control.package);
+    assert_eq!(ask_dpkg_deb_for_field(target, "Package"), control.package);
     assert_eq!(
         ask_dpkg_deb_for_field(target, "Version"),
         format!("{}-{}", control.version, control.revision.unwrap())
@@ -139,7 +139,7 @@ fn check_pass_lintian() {
 
     let target = target_path_buf.to_str().unwrap();
 
-    let exclude = vec![
+    let exclude = [
         "no-copyright-file",
         "no-changelog",
         "script-in-etc-init.d-not-registered-via-update-rc.d",
@@ -152,6 +152,6 @@ fn check_pass_lintian() {
     if output.status.code().unwrap() != 0 {
         println!("{}", String::from_utf8(output.stdout).unwrap());
         println!("{}", String::from_utf8(output.stderr).unwrap());
-        assert!(false, "Lintian failed");
+        panic!("Lintian failed");
     }
 }

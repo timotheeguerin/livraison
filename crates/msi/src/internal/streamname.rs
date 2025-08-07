@@ -47,13 +47,13 @@ pub fn encode(name: &str, is_table: bool) -> String {
     let mut chars = name.chars().peekable();
     while let Some(ch1) = chars.next() {
         if let Some(value1) = to_b64(ch1) {
-            if let Some(&ch2) = chars.peek() {
-                if let Some(value2) = to_b64(ch2) {
-                    let encoded = 0x3800 + (value2 << 6) + value1;
-                    output.push(char::from_u32(encoded).unwrap());
-                    chars.next();
-                    continue;
-                }
+            if let Some(&ch2) = chars.peek()
+                && let Some(value2) = to_b64(ch2)
+            {
+                let encoded = 0x3800 + (value2 << 6) + value1;
+                output.push(char::from_u32(encoded).unwrap());
+                chars.next();
+                continue;
             }
             let encoded = 0x4800 + value1;
             output.push(char::from_u32(encoded).unwrap());
@@ -155,6 +155,7 @@ mod tests {
     fn is_valid_stream_name() {
         assert!(is_valid("Icon.AppIcon.ico", false));
         assert!(is_valid("_Columns", true));
+        // cspell:ignore pasa
         assert!(is_valid("¿Qué pasa?", false));
 
         assert!(!is_valid("", false));

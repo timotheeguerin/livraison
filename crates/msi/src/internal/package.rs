@@ -14,7 +14,7 @@ use crate::internal::table::{Rows, Table};
 use crate::internal::value::{Value, ValueRef};
 use cfb;
 use std::borrow::Borrow;
-use std::collections::{btree_map, BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet, btree_map};
 use std::io::{self, Read, Seek, Write};
 use std::rc::Rc;
 use uuid::Uuid;
@@ -226,7 +226,7 @@ impl<F> Package<F> {
     }
 
     /// Returns an iterator over the database tables in this package.
-    pub fn tables(&self) -> Tables {
+    pub fn tables(&self) -> Tables<'_> {
         Tables { iter: self.tables.values() }
     }
 
@@ -237,7 +237,7 @@ impl<F> Package<F> {
     }
 
     /// Returns an iterator over the embedded binary streams in this package.
-    pub fn streams(&self) -> Streams<F> {
+    pub fn streams(&self) -> Streams<'_, F> {
         Streams::new(self.comp().read_root_storage())
     }
 
@@ -475,7 +475,7 @@ impl<F: Read + Seek> Package<F> {
     /// Attempts to execute a select query.  Returns an error if the query
     /// fails (e.g. due to the column names being incorrect or the table(s) not
     /// existing).
-    pub fn select_rows(&mut self, query: Select) -> io::Result<Rows> {
+    pub fn select_rows(&mut self, query: Select) -> io::Result<Rows<'_>> {
         query.exec(
             self.comp.as_mut().unwrap(),
             &self.string_pool,

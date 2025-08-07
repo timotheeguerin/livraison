@@ -371,12 +371,11 @@ impl PropertySet {
     }
 
     pub fn set(&mut self, property_name: u32, property_value: PropertyValue) {
-        if property_name == PROPERTY_CODEPAGE {
-            if let PropertyValue::I2(codepage_id) = property_value {
-                if let Some(codepage) = CodePage::from_id(codepage_id as i32) {
-                    self.codepage = codepage;
-                }
-            }
+        if property_name == PROPERTY_CODEPAGE
+            && let PropertyValue::I2(codepage_id) = property_value
+            && let Some(codepage) = CodePage::from_id(codepage_id as i32)
+        {
+            self.codepage = codepage;
         }
         self.properties.insert(property_name, property_value);
     }

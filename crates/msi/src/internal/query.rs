@@ -568,10 +568,11 @@ impl Select {
         &self,
         formatter: &mut fmt::Formatter,
     ) -> Result<(), fmt::Error> {
-        if self.column_names.is_empty() && self.condition.is_none() {
-            if let Join::Table(ref name) = self.from {
-                return formatter.write_str(name.as_str());
-            }
+        if self.column_names.is_empty()
+            && self.condition.is_none()
+            && let Join::Table(ref name) = self.from
+        {
+            return formatter.write_str(name.as_str());
         }
         formatter.write_str("(")?;
         fmt::Display::fmt(self, formatter)?;

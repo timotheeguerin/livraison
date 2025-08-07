@@ -333,10 +333,10 @@ impl Column {
         match *value {
             Value::Null => self.is_nullable,
             Value::Int(number) => {
-                if let Some((min, max)) = self.value_range {
-                    if number < min || number > max {
-                        return false;
-                    }
+                if let Some((min, max)) = self.value_range
+                    && (number < min || number > max)
+                {
+                    return false;
                 }
                 match self.coltype {
                     ColumnType::Binary => true,
@@ -352,10 +352,10 @@ impl Column {
                 ColumnType::Binary => false,
                 ColumnType::Int16 | ColumnType::Int32 => false,
                 ColumnType::Str(max_len) => {
-                    if let Some(category) = self.category {
-                        if !category.validate(string) {
-                            return false;
-                        }
+                    if let Some(category) = self.category
+                        && !category.validate(string)
+                    {
+                        return false;
                     }
                     if !self.enum_values.is_empty()
                         && !self.enum_values.contains(string)

@@ -25,8 +25,8 @@ fn remove_signature_from_signed_package() -> io::Result<()> {
     let package = Package::create(PackageType::Installer, cursor)?;
     let cursor = package.into_inner()?;
     let mut comp = CompoundFile::open(cursor)?;
-    comp.create_stream("\u{5}DigitalSignature")?.write(b"foo")?;
-    comp.create_stream("\u{5}MsiDigitalSignatureEx")?.write(b"bar")?;
+    comp.create_stream("\u{5}DigitalSignature")?.write_all(b"foo")?;
+    comp.create_stream("\u{5}MsiDigitalSignatureEx")?.write_all(b"bar")?;
 
     // Open the package again.  It should now have a signature.  However, the
     // signature data should not show up in the list of MSI streams.

@@ -1,8 +1,16 @@
-use std::{ffi::OsString, fmt::Debug, fs, path::PathBuf};
+use std::{
+    env::{self},
+    ffi::OsString,
+    fmt::Debug,
+    path::PathBuf,
+};
 
 use clap::{Args, Parser, Subcommand, arg, command};
 
-use crate::msi::packer::{MsiInstallerOptions, pack};
+use crate::{
+    LivraisonResult,
+    actions::pack::{CommonOptions, pack_for_target},
+};
 // use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 #[derive(Parser, Debug)]
@@ -33,38 +41,46 @@ struct PackArgs {
     /// Target
     #[arg(short, long)]
     target: String,
+
+    /// Name of the bundle
+    #[arg(short, long)]
+    name: String,
+
+    /// Product version
+    #[arg(long)]
+    version: Option<String>,
+
+    /// Product description
+    #[arg(long)]
+    description: Option<String>,
+
+    /// Output file path
+    #[arg(short, long)]
+    out: Option<String>,
 }
 
-pub fn run_cli<I, T>(args: I)
+pub fn run_cli<I, T>(args: I) -> LivraisonResult<()>
 where
     I: IntoIterator<Item = T>,
     T: Into<OsString> + Clone,
     I: std::fmt::Debug,
 {
+    let cwd = env::current_dir()?;
     let args = AppArgs::parse_from(args);
     match args.command {
-        Command::Pack(pack_args) => {
-            println!("Packing target: {}", pack_args.target);
-            run_pack(&pack_args.target);
-        }
+        Command::Pack(pack_args) => pack_for_target(
+            pack_args.target,
+            CommonOptions {
+                name: pack_args.name,
+                version: pack_args.version,
+                out: match pack_args.out {
+                    Some(out) => PathBuf::from(out),
+                    None => cwd.join("dist"),
+                },
+                ..Default::default()
+            },
+        )?,
     }
-}
 
-fn run_pack(target: &str) {
-    if target == "msi" {
-        let options = MsiInstallerOptions {
-            name: "test".to_string(),
-            version: "1.0.0".to_string(),
-            description: "Great test package\nWith nice description".to_string(),
-            author: "John Smith".to_string(),
-            ..Default::default()
-        };
-
-        fs::create_dir_all(PathBuf::from(
-            "/Users/timotheeguerin/dev/github/livraison/temp/",
-        ))
-        .unwrap();
-        let msi_path = PathBuf::from("/Users/timotheeguerin/dev/github/livraison/temp/out.msi");
-        pack(options.clone(), &msi_path).unwrap();
-    }
+    Ok(())
 }

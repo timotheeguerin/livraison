@@ -4,5 +4,8 @@ use std::env::{self};
 use livraison::cli::run_cli;
 
 fn main() {
-    run_cli(env::args_os());
+    match run_cli(env::args_os()) {
+        Ok(_) => println!("Command executed successfully."),
+        Err(e) => eprintln!("Error: {e}"),
+    }
 }

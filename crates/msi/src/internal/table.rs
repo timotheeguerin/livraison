@@ -72,11 +72,7 @@ impl Table {
             .iter()
             .enumerate()
             .filter_map(|(index, column)| {
-                if column.is_primary_key() {
-                    Some(index)
-                } else {
-                    None
-                }
+                if column.is_primary_key() { Some(index) } else { None }
             })
             .collect()
     }

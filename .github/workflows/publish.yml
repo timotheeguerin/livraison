@@ -34,3 +34,8 @@ jobs:
           git status --porcelain
           git diff --no-ext-diff --quiet --exit-code
         name: Check not out of date generated files
+
+      - run: pnpm -r publish --access public --no-git-checks
+        name: Publish
+        env:
+          NPM_AUTH_TOKEN: $(azure-sdk-npm-token)

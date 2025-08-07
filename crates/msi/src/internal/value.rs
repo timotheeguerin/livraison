@@ -53,29 +53,17 @@ impl Value {
 
     /// Converts an optional string to a `Value`
     pub fn from_opt_string(val: &Option<String>) -> Value {
-        if let Some(val) = val {
-            Value::Str(val.clone())
-        } else {
-            Value::Null
-        }
+        if let Some(val) = val { Value::Str(val.clone()) } else { Value::Null }
     }
 
     /// Converts an optional i32 to a `Value`
     pub fn from_opt_i32(val: &Option<i32>) -> Value {
-        if let Some(val) = val {
-            Value::Int(*val)
-        } else {
-            Value::Null
-        }
+        if let Some(val) = val { Value::Int(*val) } else { Value::Null }
     }
 
     /// Creates a boolean value.
     pub(crate) fn from_bool(boolean: bool) -> Value {
-        if boolean {
-            Value::Int(1)
-        } else {
-            Value::Int(0)
-        }
+        if boolean { Value::Int(1) } else { Value::Int(0) }
     }
 
     /// Coerces the `Value` to a boolean.  Returns false for null, zero, and

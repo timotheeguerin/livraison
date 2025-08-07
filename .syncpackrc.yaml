@@ -41,3 +41,5 @@ sortAz:
   - "resolutions"
 
 semverGroups: [{ "range": "^", "dependencyTypes": ["dev"], "dependencies": ["**"], "packages": ["**"] }]
+
+formatRepository: false

@@ -11,7 +11,7 @@ process.removeAllListeners("warning").on("warning", (err) => {
 });
 
 const packageRoot = resolve(import.meta.dirname, "..");
-const bytes = readFileSync(resolve(packageRoot, "target/wasm32-wasip1/debug/livraison.wasm"));
+const bytes = readFileSync(resolve(packageRoot, "target/wasm32-wasip1/release/livraison.wasm"));
 
 const wasi = new WASI({
   env: {

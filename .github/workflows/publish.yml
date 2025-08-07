@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - package
 
   workflow_dispatch: {}
 
@@ -14,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm
     permissions:
-      contents: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -24,13 +25,10 @@ jobs:
       - run: pnpm install
         name: Install dependencies
 
-      - run: pnpm check-version-mismatch
-        name: Check dependencies are consistent
-
-      - run: pnpm run build
+      - run: pnpm build
         name: Build
 
-      - run: pnpm run test
+      - run: pnpm test
         name: Test
 
       - run: |
@@ -38,27 +36,8 @@ jobs:
           git diff --no-ext-diff --quiet --exit-code
         name: Check not out of date generated files
 
-      - run: node ./packages/chronus/cmd/cli.mjs pack --pack-destination ./artifacts
-        name: Pack
-
-      # Have to use npm as pnpm doesn't respect access.
-      - run: node ./packages/chronus/cmd/cli.mjs publish "./artifacts/*.tgz" --access public --engine npm --report-summary ./publish-summary.json
+      - run: pnpm -r publish --access public --no-git-checks
         name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # To pack and publish as one step
-      # - run: node ./packages/chronus/cmd/cli.mjs publish --access public
-      #   name: Publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - run: |
-          echo "Publish summary:"
-          cat ./publish-summary.json
-        name: Log publish summary
-
-      - run: node ./packages/github/cmd/cli.mjs create-releases --repo timotheeguerin/chronus --publish-summary ./publish-summary.json
-        name: Create github releases
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NPM_CONFIG_PROVENANCE: true

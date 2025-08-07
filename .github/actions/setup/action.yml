@@ -19,11 +19,9 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: pnpm
+        registry-url: https://registry.npmjs.org/
 
     # Rust
     - name: Install rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      shell: bash
+      run: rustup toolchain install

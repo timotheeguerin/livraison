@@ -15,7 +15,10 @@
     "dist/",
     "target/wasm32-wasip1/release/livraison.wasm"
   ],
-  "repository": "timotheeguerin/livraison.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timotheeguerin/livraison.git"
+  },
   "engines": {
     "node": ">=20.0.0"
   },

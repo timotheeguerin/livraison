@@ -25,7 +25,7 @@ jobs:
       - run: pnpm install
         name: Install dependencies
 
-      - run: rustup update
+      - run: rustup toolchain install
         name: Update rust toolchain
 
       - run: pnpm run build

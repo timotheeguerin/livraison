@@ -13,6 +13,7 @@ process.removeAllListeners("warning").on("warning", (err) => {
 const packageRoot = resolve(import.meta.dirname, "..");
 const bytes = readFileSync(resolve(packageRoot, "target/wasm32-wasip1/release/livraison.wasm"));
 
+const cwd = process.cwd();
 const wasi = new WASI({
   env: {
     RUST_BACKTRACE: "1",
@@ -23,34 +24,12 @@ const wasi = new WASI({
   version: "preview1",
   args: ["livraison.js", ...process.argv.slice(2)],
   preopens: {
-    "/": "/",
+    "/": cwd,
   },
-});
-
-const imports = {
-  wasi_snapshot_preview1: wasi.wasiImport,
-  env: {},
-} as any;
-
-Object.assign(imports.env, {
-  memoryBase: 0,
-  tableBase: 0,
-  memory: new WebAssembly.Memory({
-    initial: 256,
-    maximum: 512,
-  }),
-
-  table: new WebAssembly.Table({
-    initial: 0,
-    maximum: 0,
-    element: "anyfunc",
-  }),
-
-  _log: Math.log,
 });
 
 const wasm = await WebAssembly.compile(bytes);
 
-const instance = await WebAssembly.instantiate(wasm, imports);
+const instance = await WebAssembly.instantiate(wasm, wasi.getImportObject() as any);
 
 wasi.start(instance);

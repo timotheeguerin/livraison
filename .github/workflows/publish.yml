@@ -25,8 +25,8 @@ jobs:
       - run: pnpm install
         name: Install dependencies
 
-      - run: rustup toolchain install
-        name: Update rust toolchain
+      - run: rustup target add wasm32-wasip1
+        name: Add wasm32-wasip1 target
 
       - run: pnpm run build
         name: Build

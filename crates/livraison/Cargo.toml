@@ -32,4 +32,5 @@ indoc = "2.0.6"
 [dev-dependencies]
 assertables = "9.5.1"
 pretty_assertions = "1.4.1"
+insta = "1.43.1"
 test_macros  = { version = "0.1.0", path = "../test_macros", default-features = false }

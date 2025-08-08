@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use indoc::{formatdoc, indoc};
 
@@ -180,7 +180,7 @@ fn find_target(config: &PlatformConfig) -> Doc {
     let mut cases: Vec<Doc> = Vec::new();
 
     // Group mappings by target to handle multiple platform_ids mapping to the same target
-    let mut target_groups: HashMap<String, Vec<String>> = HashMap::new();
+    let mut target_groups: BTreeMap<String, Vec<String>> = BTreeMap::new();
 
     for mapping in &config.mappings {
         target_groups
@@ -474,4 +474,20 @@ fn main_execution(options: &ShellScriptOptions) -> Doc {
     "#,
         bin_name = options.get_bin_name()
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::scripts::shell::{ShellScriptOptions, create_shell_script};
+
+    #[test]
+    fn test_create_basic() {
+        let script = create_shell_script(ShellScriptOptions {
+            name: "Test".to_string(),
+            download_url: "https://example.com/{version}/{filename}".to_string(),
+            ..Default::default()
+        });
+
+        insta::assert_binary_snapshot!("basic.sh", script.into());
+    }
 }

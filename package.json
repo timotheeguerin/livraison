@@ -1,6 +1,6 @@
 {
   "name": "livraison",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "type": "module",
   "description": "",
   "packageManager": "pnpm@10.5.2",
@@ -27,6 +27,7 @@
     "build": "pnpm run build:rust && pnpm run build:ts",
     "build:ts": "cargo build --package livraison --target wasm32-wasip1 --release && tsc -p ./tsconfig.build.json",
     "build:rust": "cargo build",
+    "build:binaries": "cargo build --package livraison --target",
     "clean": "rimraf dist/ .temp/",
     "test": "pnpm test:rust && pnpm test:ts",
     "test:ts": "vitest run",

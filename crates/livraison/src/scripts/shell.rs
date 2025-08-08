@@ -483,7 +483,8 @@ mod tests {
     #[test]
     fn test_create_basic() {
         let script = create_shell_script(ShellScriptOptions {
-            name: "test".to_string(),
+            name: "TestCo".to_string(),
+            bin_name: Some("test".to_string()),
             download_url: "https://example.com/{version}/{filename}".to_string(),
             ..Default::default()
         });

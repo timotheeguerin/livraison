@@ -114,7 +114,7 @@ get_download_url() {
 
 download_test() {
   URL=$(get_download_url)
-  info "Downloading test from $URL"
+  info "Downloading TestCo from $URL"
 
   download_dir=$(mktemp -d)
   filename=$(get_filename)
@@ -137,7 +137,7 @@ download_test() {
   # Move to install directory
   mkdir -p "$bin_dir" &> /dev/null
   mv "$extract_location/$bin_name" "$bin_dir/$bin_name"
-  success "test was installed successfully to $Bold_Green$("$install_dir")"
+  success "TestCo was installed successfully to $Bold_Green$("$install_dir")"
 }
 
 check_dependencies() {
@@ -176,9 +176,9 @@ setup_shell() {
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# test'
-      echo 'TEST_PATH="'"$bin_dir"'"'
-      echo 'if [ -d "$TEST_PATH" ]; then'
+      echo '# TestCo'
+      echo 'TESTCO_PATH="'"$bin_dir"'"'
+      echo 'if [ -d "$TESTCO_PATH" ]; then'
       echo '  export PATH="'$bin_dir':$PATH"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
@@ -189,10 +189,10 @@ setup_shell() {
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# test'
-      echo 'set TEST_PATH "'"$bin_dir"'"'
-      echo 'if [ -d "$TEST_PATH" ]'
-      echo '  set PATH "$TEST_PATH" $PATH'
+      echo '# TestCo'
+      echo 'set TESTCO_PATH "'"$bin_dir"'"'
+      echo 'if [ -d "$TESTCO_PATH" ]'
+      echo '  set PATH "$TESTCO_PATH" $PATH'
       echo 'end'
     } | tee -a "$CONF_FILE"
 
@@ -206,10 +206,10 @@ setup_shell() {
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# test'
-      echo 'TEST_PATH="'"$bin_dir"'"'
-      echo 'if [ -d "$TEST_PATH" ]; then'
-      echo '  export PATH="$TEST_PATH:$PATH"'
+      echo '# TestCo'
+      echo 'TESTCO_PATH="'"$bin_dir"'"'
+      echo 'if [ -d "$TESTCO_PATH" ]; then'
+      echo '  export PATH="$TESTCO_PATH:$PATH"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 

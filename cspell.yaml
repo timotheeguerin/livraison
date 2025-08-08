@@ -6,6 +6,7 @@ dictionaries:
   - typescript
 ignorePaths:
   - "**/node_modules/**"
+  - "**/snapshots/**"
   - "**/dist/**"
   - pnpm-lock.yaml
 words:

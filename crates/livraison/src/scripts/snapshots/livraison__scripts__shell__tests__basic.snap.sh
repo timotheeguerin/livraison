@@ -7,8 +7,8 @@ version="latest" # --version
 
 os=$(uname -s)
 platform=$(uname -ms)
-bin_name="Test"
-install_dir="$HOME/.Test"
+bin_name="test"
+install_dir="$HOME/.test"
 
 # Reset
 Color_Off=''
@@ -102,7 +102,7 @@ parse_args() {
     done
 }
 get_filename() {
-    echo "Test-$target.tar.gz"
+    echo "test-$target.tar.gz"
 }
 get_download_url() {
     if [ "$version" = "latest" ]; then
@@ -112,9 +112,9 @@ get_download_url() {
     echo "https://example.com/$version/$(get_filename)"
 }
 
-download_Test() {
+download_test() {
   URL=$(get_download_url)
-  info "Downloading Test from $URL"
+  info "Downloading test from $URL"
 
   download_dir=$(mktemp -d)
   filename=$(get_filename)
@@ -137,7 +137,7 @@ download_Test() {
   # Move to install directory
   mkdir -p "$bin_dir" &> /dev/null
   mv "$extract_location/$bin_name" "$bin_dir/$bin_name"
-  success "Test was installed successfully to $Bold_Green$("$install_dir")"
+  success "test was installed successfully to $Bold_Green$("$install_dir")"
 }
 
 check_dependencies() {
@@ -176,7 +176,7 @@ setup_shell() {
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# Test'
+      echo '# test'
       echo 'TEST_PATH="'"$bin_dir"'"'
       echo 'if [ -d "$TEST_PATH" ]; then'
       echo '  export PATH="'$bin_dir':$PATH"'
@@ -184,12 +184,12 @@ setup_shell() {
     } | tee -a "$CONF_FILE"
 
   elif [ "$CURRENT_SHELL" = "fish" ]; then
-    CONF_FILE=$HOME/.config/fish/conf.d/Test.fish
+    CONF_FILE=$HOME/.config/fish/conf.d/test.fish
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# Test'
+      echo '# test'
       echo 'set TEST_PATH "'"$bin_dir"'"'
       echo 'if [ -d "$TEST_PATH" ]'
       echo '  set PATH "$TEST_PATH" $PATH'
@@ -206,7 +206,7 @@ setup_shell() {
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# Test'
+      echo '# test'
       echo 'TEST_PATH="'"$bin_dir"'"'
       echo 'if [ -d "$TEST_PATH" ]; then'
       echo '  export PATH="$TEST_PATH:$PATH"'
@@ -226,7 +226,7 @@ setup_shell() {
 
 parse_args "$@"
 check_dependencies
-download_Test
+download_test
 if [ "$skip_shell" != "true" ]; then
   setup_shell
 fi

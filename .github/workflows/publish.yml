@@ -137,39 +137,39 @@ jobs:
           fail_on_unmatched_files: true
           target_commitish: ${{ github.sha }}
 
-  # build_npm:
-  #   name: Build npm
-  #   runs-on: ubuntu-latest
-  #   environment: npm
-  #   permissions:
-  #     id-token: write
+  build_npm:
+    name: Build npm
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write
 
-  #   steps:
-  #     - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup
 
-  #     - run: pnpm install
-  #       name: Install dependencies
+      - run: pnpm install
+        name: Install dependencies
 
-  #     - run: pnpm build
-  #       name: Build
+      - run: pnpm build
+        name: Build
 
-  #     - run: pnpm test
-  #       name: Test
+      - run: pnpm test
+        name: Test
 
-  #     - run: |
-  #         git status --porcelain
-  #         git diff --no-ext-diff --quiet --exit-code
-  #       name: Check not out of date generated files
+      - run: |
+          git status --porcelain
+          git diff --no-ext-diff --quiet --exit-code
+        name: Check not out of date generated files
 
-  #     - uses: actions/upload-artifact@v4
-  #       with:
-  #         name: comment
-  #         path: comment-out/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: comment
+          path: comment-out/
 
-  #     - run: pnpm -r publish --access public --no-git-checks
-  #       name: Publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-  #         NPM_CONFIG_PROVENANCE: true
+      - run: pnpm -r publish --access public --no-git-checks
+        name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

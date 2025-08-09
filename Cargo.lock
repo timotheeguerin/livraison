@@ -208,6 +208,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f46ad14479a25103f283c0f10005961cf086d8dc42205bb44c46ac563475dca6"
 
 [[package]]
+name = "color"
+version = "0.1.0"
+
+[[package]]
 name = "colorchoice"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -440,6 +444,7 @@ dependencies = [
  "assertables",
  "cab",
  "clap 4.5.32",
+ "color",
  "indoc",
  "insta",
  "msi",
@@ -521,6 +526,7 @@ version = "0.1.0"
 dependencies = [
  "cab",
  "clap 4.5.32",
+ "color",
  "msi",
  "msi_installer",
  "thiserror",

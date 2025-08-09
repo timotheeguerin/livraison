@@ -314,16 +314,31 @@ fn get_download_url_fn(options: &ShellScriptOptions) -> Doc {
         .replace("{filename}", "$(get_filename)")
         .replace("{target}", "$target");
 
-    text(formatdoc! {r#"
-        get_download_url() {{
+    let body = match &options.resolve_latest_version_url {
+        Some(_) => formatdoc! {r#"
             if [ "$version" = "latest" ]; then
                 version=$(find_latest_version)
             fi
 
             echo "{interpolated_url}"
-        }}
-    "#,
-    })
+        "#, interpolated_url = interpolated_url},
+        None => formatdoc! {r#"
+            echo "{interpolated_url}"
+        "#, interpolated_url = interpolated_url},
+    };
+    make_fn("get_download_url", "", body)
+}
+
+fn make_fn(name: &str, args: impl Into<Doc>, body: impl Into<Doc>) -> Doc {
+    group(vec![
+        text(name),
+        text("("),
+        args.into(),
+        text(") {"),
+        hardline,
+        indent(body),
+        text("}"),
+    ])
 }
 
 fn download_function(options: &ShellScriptOptions) -> Doc {

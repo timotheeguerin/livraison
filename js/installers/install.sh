@@ -7,8 +7,8 @@ version="latest" # --version
 
 os=$(uname -s)
 platform=$(uname -ms)
-bin_name="test"
-install_dir="$HOME/.test"
+bin_name="livraison"
+install_dir="$HOME/.livraison"
 
 # Reset
 Color_Off=''
@@ -102,13 +102,13 @@ parse_args() {
     done
 }
 get_filename() {
-    echo "test-$target.tar.gz"
+    echo "livraison-$target.tar.gz"
 }
 get_download_url() {
-  echo "https://example.com/$version/$(get_filename)"}
-download_test() {
+  echo "https://github.com/timotheeguerin/livraison/releases/download/$version/$(get_filename)"}
+download_livraison() {
   URL=$(get_download_url)
-  info "Downloading TestCo from $URL"
+  info "Downloading Livraison from $URL"
 
   download_dir=$(mktemp -d)
   filename=$(get_filename)
@@ -131,7 +131,7 @@ download_test() {
   # Move to install directory
   mkdir -p "$bin_dir" &> /dev/null
   mv "$extract_location/$bin_name" "$bin_dir/$bin_name"
-  success "TestCo was installed successfully to $Bold_Green$("$install_dir")"
+  success "Livraison was installed successfully to $Bold_Green$("$install_dir")"
 }
 
 check_dependencies() {
@@ -170,23 +170,23 @@ setup_shell() {
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# TestCo'
-      echo 'TESTCO_PATH="'"$bin_dir"'"'
-      echo 'if [ -d "$TESTCO_PATH" ]; then'
+      echo '# Livraison'
+      echo 'LIVRAISON_PATH="'"$bin_dir"'"'
+      echo 'if [ -d "$LIVRAISON_PATH" ]; then'
       echo '  export PATH="'$bin_dir':$PATH"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 
   elif [ "$CURRENT_SHELL" = "fish" ]; then
-    CONF_FILE=$HOME/.config/fish/conf.d/test.fish
+    CONF_FILE=$HOME/.config/fish/conf.d/livraison.fish
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# TestCo'
-      echo 'set TESTCO_PATH "'"$bin_dir"'"'
-      echo 'if [ -d "$TESTCO_PATH" ]'
-      echo '  set PATH "$TESTCO_PATH" $PATH'
+      echo '# Livraison'
+      echo 'set LIVRAISON_PATH "'"$bin_dir"'"'
+      echo 'if [ -d "$LIVRAISON_PATH" ]'
+      echo '  set PATH "$LIVRAISON_PATH" $PATH'
       echo 'end'
     } | tee -a "$CONF_FILE"
 
@@ -200,10 +200,10 @@ setup_shell() {
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     {
       echo ''
-      echo '# TestCo'
-      echo 'TESTCO_PATH="'"$bin_dir"'"'
-      echo 'if [ -d "$TESTCO_PATH" ]; then'
-      echo '  export PATH="$TESTCO_PATH:$PATH"'
+      echo '# Livraison'
+      echo 'LIVRAISON_PATH="'"$bin_dir"'"'
+      echo 'if [ -d "$LIVRAISON_PATH" ]; then'
+      echo '  export PATH="$LIVRAISON_PATH:$PATH"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 
@@ -220,7 +220,7 @@ setup_shell() {
 
 parse_args "$@"
 check_dependencies
-download_test
+download_livraison
 if [ "$skip_shell" != "true" ]; then
   setup_shell
 fi

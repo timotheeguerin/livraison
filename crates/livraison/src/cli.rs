@@ -9,7 +9,10 @@ use clap::{Args, Parser, Subcommand, arg, command};
 
 use crate::{
     LivraisonResult,
-    actions::pack::{CommonOptions, pack_for_target},
+    actions::{
+        pack::{CommonOptions, pack_for_target},
+        script::{ScriptArgs, create_script},
+    },
 };
 // use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
@@ -34,6 +37,8 @@ struct GlobalOpts {
 enum Command {
     /// Create a new package
     Pack(PackArgs),
+    /// Create an installer script
+    Script(ScriptArgs),
 }
 
 #[derive(Debug, Args)]
@@ -80,6 +85,7 @@ where
                 ..Default::default()
             },
         )?,
+        Command::Script(args) => create_script(args)?,
     }
 
     Ok(())

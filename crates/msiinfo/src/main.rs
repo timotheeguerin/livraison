@@ -1,4 +1,4 @@
-use msiinfo::color::{blue, cyan, yellow};
+use color::{blue, cyan, yellow};
 use msiinfo::info::describe::print_table_description;
 use msiinfo::info::export::print_table_contents;
 use std::fs::File;

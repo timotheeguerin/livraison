@@ -3,10 +3,8 @@ use std::{
     io::{Read, Seek},
 };
 
-use crate::{
-    color::{bold, cyan, green, magenta, yellow},
-    info::style::TableStyles,
-};
+use crate::info::style::TableStyles;
+use color::{bold, cyan, green, magenta, yellow};
 
 pub fn print_table_contents<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
     let mut col_widths: Vec<usize> = package

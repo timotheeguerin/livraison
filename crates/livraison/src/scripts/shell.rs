@@ -82,9 +82,15 @@ impl ShellScriptOptions {
     pub fn get_bin_name(&self) -> &str {
         self.bin_name.as_deref().unwrap_or(&self.name)
     }
+
+    pub fn get_filename(&self) -> String {
+        self.filename
+            .clone()
+            .unwrap_or_else(|| format!("{}-{}.tar.gz", self.get_bin_name(), "$target"))
+    }
 }
 
-pub fn create_shell_script(options: ShellScriptOptions) -> String {
+pub fn create_shell_script(options: &ShellScriptOptions) -> String {
     let basic = text(formatdoc! {r#"
         #!/usr/bin/env bash
         set -euo pipefail

@@ -1,5 +1,5 @@
 use clap::{Args, arg};
-use color::cyan;
+use color::{bold, cyan, green};
 
 use crate::{
     LivraisonResult,
@@ -52,21 +52,30 @@ pub struct ScriptArgs {
 pub fn create_script(args: ScriptArgs) -> LivraisonResult<()> {
     match args.target.as_str() {
         "sh" | "shell" => {
-            let script = create_shell_script(ShellScriptOptions {
+            let options = ShellScriptOptions {
                 name: args.name,
                 bin_name: args.bin_name,
                 download_url: args.download_url,
                 filename: args.filename,
                 resolve_latest_version_url: args.resolve_latest_version_url,
                 ..Default::default()
-            });
+            };
+            let script = create_shell_script(&options);
             std::fs::write(&args.out, script)?;
 
             println!("Shell script created at: {}", cyan(args.out));
+            print_kv("Name", &options.name);
+            print_kv("Bin Name", options.get_bin_name());
+            print_kv("Download URL", &options.download_url);
+            print_kv("Filename", &options.get_filename());
         }
         _ => {
             panic!("Unsupported target: {}", args.target);
         }
     }
     Ok(())
+}
+
+fn print_kv(key: &str, value: &str) {
+    println!("  {}: {}", bold(key), green(value));
 }

@@ -105,7 +105,11 @@ get_filename() {
     echo "livraison-$target.tar.gz"
 }
 get_download_url() {
-  echo "https://github.com/timotheeguerin/livraison/releases/download/$version/$(get_filename)"
+  if [ "$version" = "latest" ]; then
+      echo "https://github.com/timotheeguerin/livraison/releases/latest/download/$(get_filename)"
+  else
+      echo "https://github.com/timotheeguerin/livraison/releases/download/$version/$(get_filename)"
+  fi
 }
 download_livraison() {
   URL=$(get_download_url)

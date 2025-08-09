@@ -40,9 +40,17 @@ pub struct ScriptArgs {
     /// - `{target}`: The target platform for the binary
     /// - `{bin-name}`: The name of the binary
     ///
-    /// Example: "https://github.com/foo/bar/releases/{version}/{filename}"
+    /// Example: "https://github.com/foo/bar/releases/download/{version}/{filename}"
     #[arg(long)]
     pub download_url: String,
+    /// URL template for downloading the latest binary. Default to the download_url with 'latest' as the {version}
+    /// - `{filename}`: The filename. [filename]
+    /// - `{target}`: The target platform for the binary
+    /// - `{bin-name}`: The name of the binary
+    ///
+    /// Example: "https://github.com/foo/bar/releases/latest/download/{filename}"
+    #[arg(long)]
+    pub latest_download_url: Option<String>,
 
     /// If set url that should return what is the latest version which can then be used to download the product
     #[arg(long)]
@@ -58,6 +66,7 @@ pub fn create_script(args: ScriptArgs) -> LivraisonResult<()> {
                 download_url: args.download_url,
                 filename: args.filename,
                 resolve_latest_version_url: args.resolve_latest_version_url,
+                latest_download_url: args.latest_download_url,
                 ..Default::default()
             };
             let script = create_shell_script(&options);
@@ -67,6 +76,9 @@ pub fn create_script(args: ScriptArgs) -> LivraisonResult<()> {
             print_kv("Name", &options.name);
             print_kv("Bin Name", options.get_bin_name());
             print_kv("Download URL", &options.download_url);
+            if let Some(url) = &options.latest_download_url {
+                print_kv("Latest Download URL", url);
+            }
             print_kv("Filename", &options.get_filename());
         }
         _ => {

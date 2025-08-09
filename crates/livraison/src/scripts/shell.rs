@@ -74,6 +74,10 @@ pub struct ShellScriptOptions {
     /// Example: "https://github.com/foo/bar/releases/{version}/{filename}"
     pub download_url: String,
 
+    /// URL for downloading the latest version of the binary
+    /// Default to the download_url with {version} set to 'latest'
+    pub latest_download_url: Option<String>,
+
     pub resolve_latest_version_url: Option<String>,
     pub platform_config: PlatformConfig,
 }
@@ -313,26 +317,41 @@ fn get_filename_fn(options: &ShellScriptOptions) -> Doc {
 }
 
 fn get_download_url_fn(options: &ShellScriptOptions) -> Doc {
-    let interpolated_url = options
-        .download_url
-        .replace("{version}", "$version")
-        .replace("{bin_name}", options.get_bin_name())
-        .replace("{filename}", "$(get_filename)")
-        .replace("{target}", "$target");
+    let interpolated_url = interpolate_url(&options.download_url, options);
 
-    let body = match options.resolve_latest_version_url {
-        Some(_) => formatdoc! {r#"
+    let body = match &options.latest_download_url {
+        Some(url) => {
+            let latest_url = interpolate_url(url, options);
+            formatdoc! {r#"
+            if [ "$version" = "latest" ]; then
+                echo "{latest_url}"
+            else
+                echo "{interpolated_url}"
+            fi
+        "#}
+        }
+        None => match options.resolve_latest_version_url {
+            Some(_) => formatdoc! {r#"
             if [ "$version" = "latest" ]; then
                 version=$(find_latest_version)
             fi
 
             echo "{interpolated_url}"
         "#, interpolated_url = interpolated_url},
-        None => formatdoc! {r#"
+            None => formatdoc! {r#"
             echo "{interpolated_url}"
         "#, interpolated_url = interpolated_url},
+        },
     };
     make_fn("get_download_url", "", body)
+}
+
+fn interpolate_url(template: &str, options: &ShellScriptOptions) -> String {
+    template
+        .replace("{version}", "$version")
+        .replace("{bin_name}", options.get_bin_name())
+        .replace("{filename}", "$(get_filename)")
+        .replace("{target}", "$target")
 }
 
 fn make_fn(name: &str, args: impl Into<Doc>, body: impl Into<Doc>) -> Doc {

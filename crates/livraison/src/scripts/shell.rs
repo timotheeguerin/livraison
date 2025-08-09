@@ -2,9 +2,7 @@ use std::collections::BTreeMap;
 
 use indoc::{formatdoc, indoc};
 
-use crate::scripts::doc::text;
-
-use super::doc::Doc;
+use printer::{Doc, hardline, indent, text};
 
 #[derive(Debug, Clone)]
 pub struct PlatformMapping {
@@ -87,7 +85,7 @@ impl ShellScriptOptions {
 }
 
 pub fn create_shell_script(options: ShellScriptOptions) -> String {
-    let basic = text(&formatdoc! {r#"
+    let basic = text(formatdoc! {r#"
         #!/usr/bin/env bash
         set -euo pipefail
         
@@ -105,9 +103,9 @@ pub fn create_shell_script(options: ShellScriptOptions) -> String {
 
     let mut script = vec![
         basic,
-        Doc::Hardline,
+        hardline,
         create_helpers(),
-        Doc::Hardline,
+        hardline,
         find_target(&options.platform_config),
         parse_args_fn(),
         get_filename_fn(&options),
@@ -115,22 +113,22 @@ pub fn create_shell_script(options: ShellScriptOptions) -> String {
     ];
 
     if let Some(url) = &options.resolve_latest_version_url {
-        script.push(Doc::Hardline);
+        script.push(hardline);
         script.push(find_latest_version_fn(url));
     }
 
-    script.push(Doc::Hardline);
+    script.push(hardline);
     script.push(download_function(&options));
-    script.push(Doc::Hardline);
+    script.push(hardline);
     script.push(check_dependencies_fn());
-    script.push(Doc::Hardline);
+    script.push(hardline);
     script.push(ensure_containing_dir_exists_fn());
-    script.push(Doc::Hardline);
+    script.push(hardline);
     script.push(setup_shell_fn(&options));
-    script.push(Doc::Hardline);
+    script.push(hardline);
     script.push(main_execution(&options));
 
-    Doc::A(script).serialize()
+    Doc::Items(script).serialize()
 }
 
 fn create_helpers() -> Doc {
@@ -196,37 +194,37 @@ fn find_target(config: &PlatformConfig) -> Doc {
             .collect::<Vec<_>>()
             .join(" | ");
 
-        cases.push(Doc::A(vec![
-            text(&format!("{conditions})")),
-            Doc::Hardline,
-            Doc::Indent(Box::new(Doc::A(vec![
-                text(&format!("target={target}",)),
-                Doc::Hardline,
+        cases.push(Doc::Items(vec![
+            text(format!("{conditions})")),
+            hardline,
+            indent(vec![
+                text(format!("target={target}",)),
+                hardline,
                 text(";;"),
-            ]))),
+            ]),
         ]));
     }
 
     if let Some(default_target) = &config.default_target {
-        cases.push(Doc::A(vec![
+        cases.push(Doc::Items(vec![
             text("*)"),
-            Doc::Hardline,
-            Doc::Indent(Box::new(Doc::A(vec![
-                text(&format!("target={default_target}",)),
-                Doc::Hardline,
+            hardline,
+            indent(vec![
+                text(format!("target={default_target}",)),
+                hardline,
                 text(";;"),
-            ]))),
+            ]),
         ]));
     }
 
-    Doc::A(vec![
+    Doc::Items(vec![
         text("case $platform in"),
-        Doc::Hardline,
-        Doc::Indent(Box::new(Doc::Join(cases, Box::new(Doc::Hardline)))),
-        Doc::Hardline,
+        hardline,
+        Doc::Indent(Box::new(Doc::Join(cases, Box::new(hardline)))),
+        hardline,
         text("esac"),
-        Doc::Hardline,
-        Doc::Hardline,
+        hardline,
+        hardline,
         rosetta_target_guard(config),
     ])
 }
@@ -240,7 +238,7 @@ fn rosetta_target_guard(config: &PlatformConfig) -> Doc {
         .map(|x| x.target.clone());
     match target {
         None => text(""),
-        Some(t) => text(&formatdoc! {r#"
+        Some(t) => text(formatdoc! {r#"
             if [[ $platform = 'Darwin x86_64' ]]; then
                 # Is this process running in Rosetta?
                 # redirect stderr to devnull to avoid error message when not running in Rosetta
@@ -285,7 +283,7 @@ fn parse_args_fn() -> Doc {
 }
 
 fn find_latest_version_fn(latest_version_url: &str) -> Doc {
-    text(&formatdoc! {r#"
+    text(formatdoc! {r#"
         find_latest_version () {{
             curl "{latest_version_url}"
         }}
@@ -300,7 +298,7 @@ fn get_filename_fn(options: &ShellScriptOptions) -> Doc {
         .replace("{version}", "$version")
         .replace("{bin_name}", options.get_bin_name())
         .replace("{target}", "$target");
-    text(&formatdoc! {r#"
+    text(formatdoc! {r#"
         get_filename() {{
             echo "{filename}"
         }}
@@ -316,7 +314,7 @@ fn get_download_url_fn(options: &ShellScriptOptions) -> Doc {
         .replace("{filename}", "$(get_filename)")
         .replace("{target}", "$target");
 
-    text(&formatdoc! {r#"
+    text(formatdoc! {r#"
         get_download_url() {{
             if [ "$version" = "latest" ]; then
                 version=$(find_latest_version)
@@ -329,7 +327,7 @@ fn get_download_url_fn(options: &ShellScriptOptions) -> Doc {
 }
 
 fn download_function(options: &ShellScriptOptions) -> Doc {
-    text(&formatdoc! {r#"
+    text(formatdoc! {r#"
         download_{bin_name}() {{
           URL=$(get_download_url)
           info "Downloading {name} from $URL"
@@ -399,7 +397,7 @@ fn ensure_containing_dir_exists_fn() -> Doc {
 }
 
 fn setup_shell_fn(options: &ShellScriptOptions) -> Doc {
-    text(&formatdoc! {r#"
+    text(formatdoc! {r#"
         setup_shell() {{
           CURRENT_SHELL="$(basename "$SHELL")"
 
@@ -464,7 +462,7 @@ fn setup_shell_fn(options: &ShellScriptOptions) -> Doc {
 }
 
 fn main_execution(options: &ShellScriptOptions) -> Doc {
-    text(&formatdoc! {r#"
+    text(formatdoc! {r#"
         parse_args "$@"
         check_dependencies
         download_{bin_name}

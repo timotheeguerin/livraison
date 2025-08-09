@@ -445,6 +445,7 @@ dependencies = [
  "msi",
  "msi_installer",
  "pretty_assertions",
+ "printer",
  "quick-error",
  "rand",
  "tar",
@@ -608,6 +609,10 @@ dependencies = [
  "diff",
  "yansi",
 ]
+
+[[package]]
+name = "printer"
+version = "0.1.0"
 
 [[package]]
 name = "proc-macro2"

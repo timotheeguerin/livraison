@@ -1,14 +1,10 @@
-pub fn text(text: &str) -> Doc {
-    Doc::S(text.to_string())
-}
-
 pub enum Doc {
     /// Create a hard line
     Hardline,
     /// Basic string
-    S(String),
+    Text(String),
     /// Array of documents
-    A(Vec<Doc>),
+    Items(Vec<Doc>),
     /// Indented document
     Indent(Box<Doc>),
     /// Joined document
@@ -19,8 +15,8 @@ impl Doc {
     pub fn serialize(&self) -> String {
         match self {
             Doc::Hardline => "\n".to_string(),
-            Doc::S(s) => s.clone(),
-            Doc::A(docs) => docs
+            Doc::Text(s) => s.clone(),
+            Doc::Items(docs) => docs
                 .iter()
                 .map(|d| d.serialize())
                 .collect::<Vec<_>>()

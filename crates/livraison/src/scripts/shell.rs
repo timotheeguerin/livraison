@@ -114,8 +114,8 @@ pub fn create_shell_script(options: &ShellScriptOptions) -> String {
         hardline,
         find_target(&options.platform_config),
         parse_args_fn(),
-        get_filename_fn(&options),
-        get_download_url_fn(&options),
+        get_filename_fn(options),
+        get_download_url_fn(options),
     ];
 
     if let Some(url) = &options.resolve_latest_version_url {
@@ -124,15 +124,15 @@ pub fn create_shell_script(options: &ShellScriptOptions) -> String {
     }
 
     script.push(hardline);
-    script.push(download_function(&options));
+    script.push(download_function(options));
     script.push(hardline);
     script.push(check_dependencies_fn());
     script.push(hardline);
     script.push(ensure_containing_dir_exists_fn());
     script.push(hardline);
-    script.push(setup_shell_fn(&options));
+    script.push(setup_shell_fn(options));
     script.push(hardline);
-    script.push(main_execution(&options));
+    script.push(main_execution(options));
 
     group(script).serialize()
 }
@@ -320,7 +320,7 @@ fn get_download_url_fn(options: &ShellScriptOptions) -> Doc {
         .replace("{filename}", "$(get_filename)")
         .replace("{target}", "$target");
 
-    let body = match &options.resolve_latest_version_url {
+    let body = match options.resolve_latest_version_url {
         Some(_) => formatdoc! {r#"
             if [ "$version" = "latest" ]; then
                 version=$(find_latest_version)
@@ -343,6 +343,7 @@ fn make_fn(name: &str, args: impl Into<Doc>, body: impl Into<Doc>) -> Doc {
         text(") {"),
         hardline,
         indent(body),
+        hardline,
         text("}"),
     ])
 }
@@ -501,7 +502,7 @@ mod tests {
 
     #[test]
     fn test_create_basic() {
-        let script = create_shell_script(ShellScriptOptions {
+        let script = create_shell_script(&ShellScriptOptions {
             name: "TestCo".to_string(),
             bin_name: Some("test".to_string()),
             download_url: "https://example.com/{version}/{filename}".to_string(),

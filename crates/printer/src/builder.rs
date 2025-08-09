@@ -8,6 +8,14 @@ pub fn indent(text: impl Into<Doc>) -> Doc {
     Doc::Indent(Box::new(text.into()))
 }
 
+pub fn join(docs: Vec<Doc>, joiner: impl Into<Doc>) -> Doc {
+    Doc::Join(docs, Box::new(joiner.into()))
+}
+
+pub fn group(docs: Vec<Doc>) -> Doc {
+    Doc::Items(docs)
+}
+
 #[allow(non_upper_case_globals)]
 pub const hardline: Doc = Doc::Hardline;
 
@@ -31,7 +39,7 @@ impl From<&str> for Doc {
 
 #[cfg(test)]
 mod tests {
-    use super::{hardline, indent, text};
+    use super::{hardline, indent, join, text};
 
     #[test]
     fn text_with_str() {
@@ -56,6 +64,12 @@ mod tests {
     fn indent_multi_lines() {
         let doc = indent(vec![text("one"), hardline, text("two")]);
         assert_eq!(doc.serialize(), "  one\n  two");
+    }
+
+    #[test]
+    fn join_docs() {
+        let doc = join(vec![text("one"), text("two")], " | ");
+        assert_eq!(doc.serialize(), "one | two");
     }
 
     #[test]

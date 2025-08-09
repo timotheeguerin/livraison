@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use indoc::{formatdoc, indoc};
 
-use printer::{Doc, hardline, indent, text};
+use printer::{Doc, group, hardline, indent, join, text};
 
 #[derive(Debug, Clone)]
 pub struct PlatformMapping {
@@ -128,7 +128,7 @@ pub fn create_shell_script(options: ShellScriptOptions) -> String {
     script.push(hardline);
     script.push(main_execution(&options));
 
-    Doc::Items(script).serialize()
+    group(script).serialize()
 }
 
 fn create_helpers() -> Doc {
@@ -194,7 +194,7 @@ fn find_target(config: &PlatformConfig) -> Doc {
             .collect::<Vec<_>>()
             .join(" | ");
 
-        cases.push(Doc::Items(vec![
+        cases.push(group(vec![
             text(format!("{conditions})")),
             hardline,
             indent(vec![
@@ -206,7 +206,7 @@ fn find_target(config: &PlatformConfig) -> Doc {
     }
 
     if let Some(default_target) = &config.default_target {
-        cases.push(Doc::Items(vec![
+        cases.push(group(vec![
             text("*)"),
             hardline,
             indent(vec![
@@ -217,10 +217,10 @@ fn find_target(config: &PlatformConfig) -> Doc {
         ]));
     }
 
-    Doc::Items(vec![
+    group(vec![
         text("case $platform in"),
         hardline,
-        Doc::Indent(Box::new(Doc::Join(cases, Box::new(hardline)))),
+        indent(join(cases, hardline)),
         hardline,
         text("esac"),
         hardline,

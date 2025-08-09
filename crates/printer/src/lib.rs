@@ -1,5 +1,5 @@
 mod builder;
 mod doc;
 
-pub use builder::{hardline, indent, text};
+pub use builder::{group, hardline, indent, join, text};
 pub use doc::Doc;

@@ -1,5 +1,5 @@
 import { execa } from "execa";
-import { copyFile, mkdir, readdir, rm, writeFile } from "fs/promises";
+import { copyFile, mkdir, readdir, rm } from "fs/promises";
 import { basename, dirname, join } from "path";
 import pc from "picocolors";
 import { parseArgs } from "util";
@@ -158,40 +158,10 @@ const checkDependencies = async (): Promise<void> => {
 };
 
 // Docker image creation
-const createDockerfileContent = (ubuntuVersion: string, shellName: string): string => `FROM ubuntu:${ubuntuVersion}
-
-# Install required packages
-RUN apt-get update && apt-get install -y \\
-    curl \\
-    ca-certificates \\
-    ${shellName} \\
-    && rm -rf /var/lib/apt/lists/*
-
-# Create test user
-RUN useradd -m -s /bin/${shellName} testuser
-
-# Set working directory
-WORKDIR /test
-
-# Copy installer and test scripts
-COPY . /test/
-
-# Make scripts executable
-RUN chmod +x /test/*.sh
-
-# Switch to test user
-USER testuser
-
-# Set HOME explicitly
-ENV HOME=/home/testuser
-`;
-
 const buildTestImage = async (config: TestConfig, ubuntuVersion: string, shellName: string): Promise<void> => {
   const imageName = `livraison-test:ubuntu-${ubuntuVersion}-${shellName}`;
 
   log.verbose(`Building Docker image: ${imageName}`, config.verbose);
-
-  const dockerfileContent = createDockerfileContent(ubuntuVersion, shellName);
 
   // Create temporary directory for Docker context
   const contextDir = join(testDir, "temp", `docker-context-${ubuntuVersion}-${shellName}`);
@@ -209,12 +179,18 @@ const buildTestImage = async (config: TestConfig, ubuntuVersion: string, shellNa
     // Copy install.sh from parent directory
     await copyFile(join(testDir, "..", "install.sh"), join(contextDir, "install.sh"));
 
-    // Write Dockerfile to context directory
-    const dockerfilePath = join(contextDir, "Dockerfile");
-    await writeFile(dockerfilePath, dockerfileContent);
+    // Copy the Dockerfile to context directory
+    await copyFile(join(testDir, "Dockerfile"), join(contextDir, "Dockerfile"));
 
-    // Build the image
-    const buildArgs = ["build", "--platform", "linux/amd64", "-f", dockerfilePath, "-t", imageName, contextDir];
+    // Build the image with build arguments
+    const buildArgs = [
+      "build",
+      "--platform", "linux/amd64",
+      "--build-arg", `UBUNTU_VERSION=${ubuntuVersion}`,
+      "--build-arg", `SHELL_NAME=${shellName}`,
+      "-t", imageName,
+      contextDir
+    ];
 
     if (config.verbose) {
       await execa("docker", buildArgs, { stdio: "inherit" });

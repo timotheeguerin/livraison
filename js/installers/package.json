@@ -1,8 +1,8 @@
 {
   "name": "@livraison/installers",
   "version": "0.0.4",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "pnpm build:shell",
     "livraison": "cargo run --package livraison",

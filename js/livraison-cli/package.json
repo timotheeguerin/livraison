@@ -7,11 +7,11 @@
   "license": "MIT",
   "author": "Timothee Guerin",
   "keywords": [
-    "installer",
-    "packer",
-    "msi",
     "deb",
-    "livraison"
+    "installer",
+    "livraison",
+    "msi",
+    "packer"
   ],
   "bin": {
     "livraison": "cmd/cli.js"

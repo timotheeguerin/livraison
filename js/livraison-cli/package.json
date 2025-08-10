@@ -29,7 +29,7 @@
   },
   "scripts": {
     "watch": "tsc -p ./tsconfig.build.json --watch",
-    "build": "cargo build --package livraison --target wasm32-wasip1 --release && mkdir -p ./dist && cp ../../target/wasm32-wasip1/release/livraison.wasm dist/ && tsc -p ./tsconfig.build.json"
+    "build": "tsc -p ./tsconfig.build.json && cargo build --package livraison --target wasm32-wasip1 --release && cp ../../target/wasm32-wasip1/release/livraison.wasm dist/"
   },
   "dependencies": {},
   "devDependencies": {}

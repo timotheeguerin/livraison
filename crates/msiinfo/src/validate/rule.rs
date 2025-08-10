@@ -202,7 +202,7 @@ pub mod macros {
     macro_rules! hl {
         ($fmt:expr, $($arg:expr),*) => {{
             let mut fmt_str = $fmt.to_string();
-            let args = vec![$(crate::color::magenta($arg.to_string())),*];
+            let args = vec![$(color::magenta($arg.to_string())),*];
             let mut arg_index = 0;
             while let Some(start) = fmt_str.find("{}") {
                 if arg_index >= args.len() {

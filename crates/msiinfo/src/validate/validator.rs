@@ -5,7 +5,7 @@ use super::{
         PrimaryKeysRule,
     },
 };
-use crate::color::{cyan, green, red};
+use color::{cyan, green, red};
 use msi::Package;
 use std::io::{Read, Seek};
 

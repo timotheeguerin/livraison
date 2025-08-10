@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "declaration": true,
+    "stripInternal": true,
+    "target": "ES2024",
+    "types": ["node"],
+    "lib": ["ES2024", "DOM"],
+    "skipLibCheck": true, // Issue with Node16 module resolution for now.
+    "newLine": "LF"
+  }
+}

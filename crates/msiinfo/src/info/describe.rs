@@ -1,9 +1,7 @@
 use std::io::{Read, Seek};
 
-use crate::{
-    color::{blue, bold, cyan, magenta, yellow},
-    info::style::TableStyles,
-};
+use crate::info::style::TableStyles;
+use color::{blue, bold, cyan, magenta, yellow};
 
 pub fn print_table_description<F: Read + Seek>(package: &mut msi::Package<F>, table_name: &str) {
     if let Some(table) = package.get_table(table_name) {

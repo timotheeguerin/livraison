@@ -1,0 +1,6 @@
+---
+source: crates/livraison/src/scripts/shell.rs
+expression: script.into()
+extension: sh
+snapshot_kind: binary
+---

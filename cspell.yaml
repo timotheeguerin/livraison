@@ -6,6 +6,7 @@ dictionaries:
   - typescript
 ignorePaths:
   - "**/node_modules/**"
+  - "**/snapshots/**"
   - "**/dist/**"
   - pnpm-lock.yaml
 words:
@@ -17,9 +18,11 @@ words:
   - fmtid
   - Guerin
   - indoc
+  - insta
   - libc
   - libstdc
   - msiinfo
+  - nesac
   - nothrow
   - postject
   - postrm

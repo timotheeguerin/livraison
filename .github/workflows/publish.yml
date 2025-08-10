@@ -26,7 +26,7 @@ jobs:
         with:
           static-checking: localIsNew
           file-url: https://unpkg.com/livraison@latest/package.json
-          file-name: package.json
+          file-name: js/livraison-cli/package.json
 
       - name: Print version
         if: steps.version.outputs.changed == 'true'
@@ -50,11 +50,11 @@ jobs:
 
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            code-target: linux-x64-gnu
+            code-target: linux-x64
 
           # - os: ubuntu-latest
           #   target: aarch64-unknown-linux-gnu
-          #   code-target: linux-arm64-gnu
+          #   code-target: linux-arm64
 
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
@@ -71,6 +71,7 @@ jobs:
           - os: macos-latest
             target: aarch64-apple-darwin
             code-target: darwin-arm64
+
     name: Build ${{ matrix.code-target }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -95,7 +96,7 @@ jobs:
       - name: Archive Binaries
         if: runner.os == 'Windows'
         run: |
-          BIN_NAME=livraison-${{ matrix.code-target }}
+          BIN_NAME=livraison
           mv target/${{ matrix.target }}/release/livraison.exe $BIN_NAME.exe
           7z a $BIN_NAME.zip $BIN_NAME.exe
 
@@ -103,7 +104,7 @@ jobs:
       - name: Archive Binaries
         if: runner.os != 'Windows'
         run: |
-          BIN_NAME=livraison-${{ matrix.code-target }}
+          BIN_NAME=livraison
           mv target/${{ matrix.target }}/release/livraison $BIN_NAME
           tar czf $BIN_NAME.tar.gz $BIN_NAME
 
@@ -159,8 +160,15 @@ jobs:
         name: Test
 
       - run: |
-          git status --porcelain
-          git diff --no-ext-diff --quiet --exit-code
+          git_changes=$(git status --porcelain)
+          if [ -n "$git_changes" ]; then
+            echo "❌ Git changes detected after validation:"
+            echo "$git_changes"
+            git diff --color=always
+            exit 1
+          else
+            echo "✅ No git changes detected"
+          fi
         name: Check not out of date generated files
 
       - uses: actions/upload-artifact@v4

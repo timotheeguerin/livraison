@@ -11,7 +11,7 @@ process.removeAllListeners("warning").on("warning", (err) => {
 });
 
 const packageRoot = resolve(import.meta.dirname, "..");
-const bytes = readFileSync(resolve(packageRoot, "target/wasm32-wasip1/release/livraison.wasm"));
+const bytes = readFileSync(resolve(packageRoot, "dist/livraison.wasm"));
 
 const cwd = process.cwd();
 const wasi = new WASI({
@@ -28,7 +28,7 @@ const wasi = new WASI({
   },
 });
 
-const wasm = await WebAssembly.compile(bytes);
+const wasm = await WebAssembly.compile(bytes as any);
 
 const instance = await WebAssembly.instantiate(wasm, wasi.getImportObject() as any);
 

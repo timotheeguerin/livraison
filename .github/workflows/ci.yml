@@ -39,9 +39,17 @@ jobs:
         name: Test
 
       - run: |
-          git status --porcelain
-          git diff --no-ext-diff --quiet --exit-code
+          git_changes=$(git status --porcelain)
+          if [ -n "$git_changes" ]; then
+            echo "❌ Git changes detected after validation:"
+            echo "$git_changes"
+            git diff --color=always
+            exit 1
+          else
+            echo "✅ No git changes detected"
+          fi
         name: Check not out of date generated files
+        shell: bash
 
   format:
     # The type of runner that the job will run on

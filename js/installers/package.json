@@ -1,0 +1,21 @@
+{
+  "name": "@livraison/installers",
+  "version": "0.0.4",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "pnpm build:shell",
+    "livraison": "cargo run --package livraison",
+    "build:shell": "pnpm livraison script --target sh --name Livraison --download-url \"https://github.com/timotheeguerin/livraison/releases/download/{version}/{filename}\" --latest-download-url \"https://github.com/timotheeguerin/livraison/releases/latest/download/{filename}\" --out install.sh --bin-name livraison",
+    "test:bash": "tsx test/docker-test.ts --shell bash",
+    "test:zsh": "tsx test/docker-test.ts --shell zsh"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "execa": "^9.6.0",
+    "picocolors": "^1.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

@@ -105,7 +105,8 @@ get_filename() {
     echo "test-$target.tar.gz"
 }
 get_download_url() {
-  echo "https://example.com/$version/$(get_filename)"}
+  echo "https://example.com/$version/$(get_filename)"
+}
 download_test() {
   URL=$(get_download_url)
   info "Downloading TestCo from $URL"

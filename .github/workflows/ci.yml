@@ -49,6 +49,7 @@ jobs:
             echo "✅ No git changes detected"
           fi
         name: Check not out of date generated files
+        shell: bash
 
   format:
     # The type of runner that the job will run on

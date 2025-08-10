@@ -1,0 +1,6 @@
+---
+source: crates/livraison/src/scripts/powershell.rs
+expression: script.into()
+extension: ps1
+snapshot_kind: binary
+---

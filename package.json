@@ -1,6 +1,6 @@
 {
   "name": "@livraison/monorepo",
-  "version": "0.0.4",
+  "version": "0.0.0",
   "type": "module",
   "description": "",
   "packageManager": "pnpm@10.5.2",

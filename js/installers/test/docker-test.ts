@@ -185,11 +185,15 @@ const buildTestImage = async (config: TestConfig, ubuntuVersion: string, shellNa
     // Build the image with build arguments
     const buildArgs = [
       "build",
-      "--platform", "linux/amd64",
-      "--build-arg", `UBUNTU_VERSION=${ubuntuVersion}`,
-      "--build-arg", `SHELL_NAME=${shellName}`,
-      "-t", imageName,
-      contextDir
+      "--platform",
+      "linux/amd64",
+      "--build-arg",
+      `UBUNTU_VERSION=${ubuntuVersion}`,
+      "--build-arg",
+      `SHELL_NAME=${shellName}`,
+      "-t",
+      imageName,
+      contextDir,
     ];
 
     if (config.verbose) {

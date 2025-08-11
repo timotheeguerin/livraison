@@ -391,7 +391,7 @@ fn install_function(options: &PowerShellScriptOptions) -> Doc {
 
           if(!$hasExistingOther) {{
             # Only try adding to path if there isn't already a {bin_name}.exe in the path
-            $Path = (Get-Env -Key "Path") -split ';'
+            $Path = ([Environment]::GetEnvironmentVariable("PATH")).Split(";")
             if ($Path -notcontains ${bin_name}Bin) {{
               if (-not $NoPathUpdate) {{
                 $Path += ${bin_name}Bin

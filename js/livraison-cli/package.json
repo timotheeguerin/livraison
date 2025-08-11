@@ -1,6 +1,6 @@
 {
   "name": "livraison",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "description": "",
   "packageManager": "pnpm@10.5.2",

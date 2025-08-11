@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - github-release
 
   workflow_dispatch: {}
 
@@ -98,7 +97,7 @@ jobs:
         run: |
           BIN_NAME=livraison
           mv target/${{ matrix.target }}/release/livraison.exe $BIN_NAME.exe
-          7z a $BIN_NAME.zip $BIN_NAME.exe
+          7z a $BIN_NAME-${{ matrix.code-target }}.zip $BIN_NAME.exe
 
       # The binaries are zipped to fix permission loss https://github.com/actions/upload-artifact#permission-loss
       - name: Archive Binaries
@@ -106,7 +105,7 @@ jobs:
         run: |
           BIN_NAME=livraison
           mv target/${{ matrix.target }}/release/livraison $BIN_NAME
-          tar czf $BIN_NAME.tar.gz $BIN_NAME
+          tar czf $BIN_NAME-${{ matrix.code-target }}.tar.gz $BIN_NAME
 
       - name: Upload Binary
         uses: actions/upload-artifact@v4.6.2

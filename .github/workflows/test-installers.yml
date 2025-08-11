@@ -25,11 +25,15 @@ jobs:
             shell: pwsh
           - os: windows-latest
             shell: powershell
+
           # Linux shell tests
           - os: ubuntu-latest
             shell: bash
           - os: ubuntu-latest
             shell: zsh
+          - os: ubuntu-latest
+            shell: fish
+
           # macOS shell tests
           - os: macos-latest
             shell: bash
@@ -37,6 +41,33 @@ jobs:
             shell: zsh
     steps:
       - uses: actions/checkout@v4
+
+      # Install shell linux
+      - run: "sudo apt-get install -y ${{ matrix.shell }}"
+        name: Install ${{matrix.shell}} using apt-get
+        if: matrix.os == 'ubuntu-latest'
+
+      # Install shell osx
+      - run: "brew update && brew install ${{ matrix.shell }}"
+        name: Update formulae and install ${{matrix.shell}} using Homebrew
+        if: matrix.os == 'macos-latest'
+
+      # Reset profiles
+      - run: |
+          if [ -f ~/.bashrc ]; then
+            cp ~/.bashrc ~/.bashrc.bak
+            echo 'echo Running .bashrc' > ~/.bashrc
+            echo '. ~/.bashrc.bak' >> ~/.bashrc
+          fi
+
+          if [ -f ~/.zshrc ]; then
+            echo 'echo Running .zshrc' > ~/.zshrc
+            echo '. ~/.zshrc.bak' >> ~/.zshrc
+          fi
+        name: Reset shell profiles
+        if: matrix.os != 'windows-latest'
+
+      # Run installer and verify
       - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}
-        run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || './install-and-verify.sh' }}
+        run: ${{ startsWith(matrix.os, 'windows') && format('{0} ./install-and-verify.ps1', matrix.shell) || format('./install-and-verify.sh {0}', matrix.shell) }}
         working-directory: ./js/installers/test

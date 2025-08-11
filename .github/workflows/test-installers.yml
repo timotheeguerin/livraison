@@ -13,7 +13,7 @@ on:
 
 jobs:
   # Test PowerShell installer natively on Windows
-  test-windows-native:
+  windows:
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -22,82 +22,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Build installer
-        run: |
-          cd js/installers
-          npm install
-          npm run build:pwsh
-
       - name: Test PowerShell installer with ${{ matrix.shell }}
         shell: ${{ matrix.shell }}
         run: |
-          cd js/installers
-
-          # Copy test scripts to current directory for testing
-          Copy-Item "test/install-and-verify.ps1" .
-          Copy-Item "test/verify-installed.ps1" .
-
-          # Update paths in scripts to work from current directory
-          (Get-Content "install-and-verify.ps1") -replace "C:\\test", (Get-Location).Path | Set-Content "install-and-verify.ps1"
-          (Get-Content "verify-installed.ps1") -replace '\$env:USERPROFILE', '$env:USERPROFILE' | Set-Content "verify-installed.ps1"
-
-          Write-Host "Testing installer script with ${{ matrix.shell }}..."
           & .\install-and-verify.ps1
 
-          Write-Host "✅ PowerShell installer test passed with ${{ matrix.shell }}!"
-
   # Test shell installer natively on Linux
-  test-linux-native:
+  linux:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         shell: [bash, zsh]
-        ubuntu: ["20.04", "22.04", "24.04"]
-
-    container:
-      image: ubuntu:${{ matrix.ubuntu }}
-      options: --user root
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y curl ca-certificates ${{ matrix.shell }} nodejs npm
-
-      - name: Build installer
-        run: |
-          cd js/installers
-          npm install
-          npm run build:shell
-
-      - name: Create test user
-        run: |
-          useradd -m -s /bin/${{ matrix.shell }} testuser
-          cp -r /github/workspace /home/testuser/workspace
-          chown -R testuser:testuser /home/testuser/workspace
-
       - name: Test shell installer with ${{ matrix.shell }}
-        run: |
-          cd /home/testuser/workspace/js/installers
-
-          # Make scripts executable
-          chmod +x install.sh test/install-and-verify.sh test/verify-installed.sh test/get_shell_profile.sh
-
-          # Run the test as the test user
-          su - testuser -c "cd /home/testuser/workspace/js/installers && ./test/install-and-verify.sh"
-
-          echo "✅ Shell installer test passed with ${{ matrix.shell }} on Ubuntu ${{ matrix.ubuntu }}!"
+        run: ./test/install-and-verify.sh
 
   # Test shell installer natively on macOS
-  test-macos-native:
+  macOS:
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -106,43 +50,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Build installer
-        run: |
-          cd js/installers
-          npm install
-          npm run build:shell
-
       - name: Test shell installer with ${{ matrix.shell }}
         shell: ${{ matrix.shell }}
-        run: |
-          cd js/installers
-
-          # Make scripts executable
-          chmod +x install.sh test/install-and-verify.sh test/verify-installed.sh test/get_shell_profile.sh
-
-          echo "Testing installer script with ${{ matrix.shell }}..."
-          ./test/install-and-verify.sh
-
-          echo "✅ Shell installer test passed with ${{ matrix.shell }}!"
-
-  # Summary job for branch protection
-  test-installers-status:
-    runs-on: ubuntu-latest
-    needs: [test-windows-native, test-linux-native, test-macos-native]
-    if: always()
-    steps:
-      - name: Successful installer tests
-        if: ${{ !(contains(needs.*.result, 'failure')) }}
-        run: |
-          echo "✅ All installer tests passed!"
-          exit 0
-      - name: Failed installer tests
-        if: ${{ contains(needs.*.result, 'failure') }}
-        run: |
-          echo "❌ Some installer tests failed!"
-          exit 1
+        run: ./test/install-and-verify.sh

@@ -11,12 +11,11 @@ description = "Read/write Windows Installer (MSI) files"
 
 [dependencies]
 byteorder = "1"
-cfb = "0.10"
+cfb = "0.11"
 encoding_rs = "0.8"
 uuid = "1"
 
 [dev-dependencies]
-clap = "2.27"
 pest = "2.1"
 pest_derive = "2.1"
 time = "0.3"

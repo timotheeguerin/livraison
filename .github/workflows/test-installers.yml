@@ -64,10 +64,10 @@ jobs:
             echo 'echo Running .zshrc' > ~/.zshrc
             echo '. ~/.zshrc.bak' >> ~/.zshrc
           fi
-        name: reset shell profiles
+        name: Reset shell profiles
         if: matrix.os != 'windows-latest'
 
       # Run installer and verify
       - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}
-        run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || format('./install-and-verify.sh {0}', matrix.shell) }}
+        run: ${{ startsWith(matrix.os, 'windows') && format('{0} ./install-and-verify.ps1', matrix.shell) || format('./install-and-verify.sh {0}', matrix.shell) }}
         working-directory: ./js/installers/test

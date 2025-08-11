@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - github-release
+      - fix-publish
 
   workflow_dispatch: {}
 

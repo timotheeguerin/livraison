@@ -1,4 +1,4 @@
-name: Installers
+name: Packages
 
 on:
   push:

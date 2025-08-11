@@ -7,7 +7,7 @@ echo "  Current: $SHELL"
 echo "  Expected: $1"
 
 echo "Setting current default shell to /bin/$1"
-$SHELL=/bin/$1
+SHELL=/bin/$1
 
 ../install.sh
 

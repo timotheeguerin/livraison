@@ -3,7 +3,7 @@
 $ErrorActionPreference = "Stop"
 
 Write-Host "=== Step 1: Running install.ps1 ===" -ForegroundColor Green
-& .\install.ps1
+& ..\install.ps1
 
 Write-Host ""
 Write-Host "=== Step 2: Verifying installation ===" -ForegroundColor Green

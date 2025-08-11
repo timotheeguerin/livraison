@@ -2,6 +2,8 @@ name: Test Installers
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "js/installers/**"
       - ".github/workflows/test-installers.yml"
@@ -38,6 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test shell installer with ${{ matrix.shell }}
+        shell: ${{ matrix.shell }}
         run: ./test/install-and-verify.sh
 
   # Test shell installer natively on macOS

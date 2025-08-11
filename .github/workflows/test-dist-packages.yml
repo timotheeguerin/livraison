@@ -34,5 +34,9 @@ jobs:
         name: Build deb package
         working-directory: ./js/distribution
 
+      - run: dpkg -i ./dist/*.deb
+        name: Install deb package
+        working-directory: ./js/distribution
+
       - run: livraison --version
         name: Verify installed

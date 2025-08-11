@@ -31,6 +31,8 @@ jobs:
             shell: bash
           - os: ubuntu-latest
             shell: zsh
+          - os: ubuntu-latest
+            shell: fish
 
           # macOS shell tests
           - os: macos-latest
@@ -63,6 +65,7 @@ jobs:
             echo '. ~/.zshrc.bak' >> ~/.zshrc
           fi
         name: reset shell profiles
+        if: matrix.os != 'windows-latest'
 
       # Run installer and verify
       - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}

@@ -38,5 +38,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}
-        run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || './install-and-verify.sh ' + matrix.shell }}
+        run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || format('./install-and-verify.sh {0}', matrix.shell) }}
         working-directory: ./js/installers/test

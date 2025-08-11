@@ -21,4 +21,4 @@ Write-Host "---"
 Write-Host "Testing livraison command..."
 livraison --version
 
-Write-Host "✓ Livraison is available and working!"
+Write-Host "Livraison is available and working!"

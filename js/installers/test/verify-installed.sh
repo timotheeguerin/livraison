@@ -6,7 +6,11 @@ DIRECTORY="$(dirname "$0")"
 SHELL_TO_RUN="$1"
 PROFILE_FILE="$("$DIRECTORY/get_shell_profile.sh" "$SHELL_TO_RUN")"
 
+echo "~/"
 ls -lah ~
+echo "~/.livraison"
+ls -lah ~/.livraison
+
 echo "---"
 echo "Shell to run: $SHELL_TO_RUN"
 echo "Current Shell: $SHELL"

@@ -1,7 +1,11 @@
 #!/bin/sh
 
 set -e
-echo '=== Step 1: Running install.sh ==='
+
+echo "Shell:"
+echo "  Current: $SHELL"
+echo "  Expected: $1"
+
 ../install.sh
 
 echo

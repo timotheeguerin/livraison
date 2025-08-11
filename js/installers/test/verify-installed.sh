@@ -1,5 +1,3 @@
-#!/bin/sh
-
 set -e
 
 DIRECTORY="$(dirname "$0")"

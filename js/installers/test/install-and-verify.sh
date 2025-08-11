@@ -2,8 +2,7 @@
 
 set -e
 echo '=== Step 1: Running install.sh ==='
-cd /test
-./install.sh
+../install.sh
 
 echo
 echo '=== Step 2: Verifying installation ==='

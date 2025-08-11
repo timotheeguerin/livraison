@@ -1,0 +1,42 @@
+name: Installers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "js/installers/**"
+      - ".github/workflows/test-installers.yml"
+  pull_request:
+    paths:
+      - "js/installers/**"
+      - ".github/workflows/test-installers.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows PowerShell tests
+          - os: windows-latest
+            shell: pwsh
+          - os: windows-latest
+            shell: powershell
+          # Linux shell tests
+          - os: ubuntu-latest
+            shell: bash
+          - os: ubuntu-latest
+            shell: zsh
+          # macOS shell tests
+          - os: macos-latest
+            shell: bash
+          - os: macos-latest
+            shell: zsh
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}
+        run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || './install-and-verify.sh' }}
+        working-directory: ./js/installers/test

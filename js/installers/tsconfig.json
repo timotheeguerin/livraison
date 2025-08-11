@@ -6,6 +6,6 @@
     "esModuleInterop": true,
     "verbatimModuleSyntax": false
   },
-  "include": ["test/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

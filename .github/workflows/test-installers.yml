@@ -29,8 +29,8 @@ jobs:
           # Linux shell tests
           - os: ubuntu-latest
             shell: bash
-          # - os: ubuntu-latest
-          #   shell: zsh
+          - os: ubuntu-latest
+            shell: zsh
 
           # macOS shell tests
           - os: macos-latest
@@ -39,6 +39,32 @@ jobs:
             shell: zsh
     steps:
       - uses: actions/checkout@v4
+
+      # Install shell linux
+      - run: "sudo apt-get install -y ${{ matrix.shell }}"
+        name: Install ${{matrix.shell}} using apt-get
+        if: matrix.os == 'ubuntu-latest'
+
+      # Install shell osx
+      - run: "brew update && brew install ${{ matrix.shell }}"
+        name: Update formulae and install ${{matrix.shell}} using Homebrew
+        if: matrix.os == 'macos-latest'
+
+      # Reset profiles
+      - run: |
+          if [ -f ~/.bashrc ]; then
+            cp ~/.bashrc ~/.bashrc.bak
+            echo 'echo Running .bashrc' > ~/.bashrc
+            echo '. ~/.bashrc.bak' >> ~/.bashrc
+          fi
+
+          if [ -f ~/.zshrc ]; then
+            echo 'echo Running .zshrc' > ~/.zshrc
+            echo '. ~/.zshrc.bak' >> ~/.zshrc
+          fi
+        name: reset shell profiles
+
+      # Run installer and verify
       - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}
         run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || format('./install-and-verify.sh {0}', matrix.shell) }}
         working-directory: ./js/installers/test

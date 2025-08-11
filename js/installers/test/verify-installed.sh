@@ -22,6 +22,9 @@ echo "::endgroup::"
 echo "(before) PATH=$PATH"
 echo "---"
 
-. $PROFILE_FILE
-echo "(after) PATH=$PATH"
-livraison --version
+$SHELL_TO_RUN -c "
+  . $PROFILE_FILE
+  echo \"(after) PATH=\$PATH\"
+  echo "---"
+  livraison --version
+"

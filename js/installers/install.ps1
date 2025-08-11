@@ -174,7 +174,7 @@ function Install-livraison {
 
   if(!$hasExistingOther) {
     # Only try adding to path if there isn't already a livraison.exe in the path
-    $Path = (Get-Env -Key "Path") -split ';'
+    $Path = ([Environment]::GetEnvironmentVariable("PATH")).Split(";")
     if ($Path -notcontains $livraisonBin) {
       if (-not $NoPathUpdate) {
         $Path += $livraisonBin

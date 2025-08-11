@@ -6,7 +6,11 @@ PROFILE_FILE="$("$DIRECTORY/get_shell_profile.sh" "$SHELL_TO_RUN")"
 
 echo "~/"
 ls -lah ~
+echo 
 echo "~/.livraison"
+ls -lah ~/.livraison
+echo 
+echo "~/.livraison/bin"
 ls -lah ~/.livraison
 
 echo "---"

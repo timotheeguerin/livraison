@@ -1,45 +1,36 @@
 {
   "name": "@livraison/monorepo",
   "version": "0.0.0",
-  "type": "module",
-  "description": "",
-  "packageManager": "pnpm@10.5.2",
-  "license": "MIT",
   "private": true,
-  "author": "Timothee Guerin",
+  "description": "",
   "keywords": [],
-  "bin": {
-    "livraison": "cmd/cli.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/timotheeguerin/livraison.git"
   },
-  "engines": {
-    "node": ">=20.0.0"
+  "license": "MIT",
+  "author": "Timothee Guerin",
+  "type": "module",
+  "bin": {
+    "livraison": "cmd/cli.js"
   },
   "scripts": {
-    "watch": "tsc -p ./tsconfig.build.json --watch",
     "build": "pnpm run build:rust && pnpm run build:ts",
-    "build:ts": "pnpm -r build",
     "build:rust": "cargo build",
+    "build:ts": "pnpm -r build",
     "clean": "rimraf dist/ .temp/",
-    "test": "pnpm test:rust && pnpm test:ts",
-    "test:ts": "vitest run",
-    "test:rust": "cargo test",
-    "test:watch": "vitest -w",
+    "format": "prettier . --write && cargo fmt",
+    "format:check": "prettier . --check",
     "lint": "eslint . && cargo clippy -- -D warnings",
-    "lint:sp": "syncpack lint",
-    "format": "prettier . --write && syncpack format && cargo fmt",
-    "format:check": "prettier . --check"
+    "test": "pnpm test:rust && pnpm test:ts",
+    "test:rust": "cargo test",
+    "test:ts": "vitest run",
+    "test:watch": "vitest -w",
+    "watch": "tsc -p ./tsconfig.build.json --watch"
   },
-  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "catalog:",
-    "@types/cross-spawn": "catalog:",
     "@types/node": "catalog:",
-    "@types/which": "catalog:",
-    "@types/yargs": "catalog:",
     "@vitest/eslint-plugin": "catalog:",
     "@vitest/ui": "catalog:",
     "cspell": "catalog:",
@@ -48,13 +39,17 @@
     "eslint-plugin-unicorn": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",
+    "prettier-plugin-packagejson": "^2.5.19",
     "rimraf": "catalog:",
     "source-map-support": "catalog:",
-    "syncpack": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vitest": "catalog:"
+  },
+  "packageManager": "pnpm@10.5.2",
+  "engines": {
+    "node": ">=20.0.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

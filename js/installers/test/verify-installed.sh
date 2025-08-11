@@ -11,7 +11,7 @@ echo "~/.livraison"
 ls -lah ~/.livraison
 echo 
 echo "~/.livraison/bin"
-ls -lah ~/.livraison
+ls -lah ~/.livraison/bin
 
 echo "---"
 echo "Shell to run: $SHELL_TO_RUN"

@@ -6,9 +6,7 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
-use crate::LivraisonResult;
-
-use super::package::FileStats;
+use crate::{LivraisonResult, common::FileStats};
 
 pub struct EnhancedTarBuilder<W: Write> {
     builder: tar::Builder<W>,

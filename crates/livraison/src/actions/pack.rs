@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use crate::{LivraisonResult, deb::DebLivraisonPacker, msi::MsiLivraisonPacker};
+use crate::{LivraisonResult, common::DataFile, deb::DebLivraisonPacker, msi::MsiLivraisonPacker};
 
 #[derive(Debug, Default, Clone)]
 pub struct CommonOptions {
@@ -18,6 +18,9 @@ pub struct CommonOptions {
 
     /// Product author
     pub author: Option<User>,
+
+    /// Binary files
+    pub bin_files: Vec<DataFile>,
 }
 
 #[derive(Debug, Default, Clone)]

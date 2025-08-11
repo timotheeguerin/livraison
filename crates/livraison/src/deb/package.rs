@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use crate::LivraisonResult;
+use crate::{LivraisonResult, common::FileStats};
 
 use super::{builder::ArchiveBuilder, control::Control, tar::EnhancedTarBuilder};
 
@@ -12,10 +12,6 @@ pub struct InMemoryFile {
     pub dest: String,
     pub content: String,
     pub stats: FileStats,
-}
-
-pub struct FileStats {
-    pub mode: u32,
 }
 
 pub enum DataFile {

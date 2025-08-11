@@ -4,90 +4,159 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@eslint/js':
+      specifier: ^9.31.0
+      version: 9.31.0
+    '@types/cross-spawn':
+      specifier: ^6.0.6
+      version: 6.0.6
+    '@types/node':
+      specifier: ^22.13.14
+      version: 22.13.14
+    '@types/which':
+      specifier: ^3.0.4
+      version: 3.0.4
+    '@types/yargs':
+      specifier: ^17.0.33
+      version: 17.0.33
+    '@vitest/eslint-plugin':
+      specifier: ^1.3.4
+      version: 1.3.4
+    '@vitest/ui':
+      specifier: ^3.2.4
+      version: 3.2.4
+    cspell:
+      specifier: ^9.2.0
+      version: 9.2.0
+    eslint:
+      specifier: ^9.31.0
+      version: 9.31.0
+    eslint-plugin-import:
+      specifier: ^2.32.0
+      version: 2.32.0
+    eslint-plugin-unicorn:
+      specifier: ^60.0.0
+      version: 60.0.0
+    execa:
+      specifier: ^9.6.0
+      version: 9.6.0
+    picocolors:
+      specifier: ^1.0.0
+      version: 1.1.1
+    prettier:
+      specifier: ^3.6.2
+      version: 3.6.2
+    prettier-plugin-organize-imports:
+      specifier: ^4.1.0
+      version: 4.1.0
+    rimraf:
+      specifier: ^6.0.1
+      version: 6.0.1
+    source-map-support:
+      specifier: ^0.5.21
+      version: 0.5.21
+    syncpack:
+      specifier: ^13.0.4
+      version: 13.0.4
+    tsx:
+      specifier: ^4.20.3
+      version: 4.20.3
+    typescript:
+      specifier: ^5.8.3
+      version: 5.8.3
+    typescript-eslint:
+      specifier: ^8.37.0
+      version: 8.37.0
+    vitest:
+      specifier: ^3.2.4
+      version: 3.2.4
+
 importers:
 
   .:
     devDependencies:
       '@eslint/js':
-        specifier: ^9.31.0
+        specifier: 'catalog:'
         version: 9.31.0
       '@types/cross-spawn':
-        specifier: ^6.0.6
+        specifier: 'catalog:'
         version: 6.0.6
       '@types/node':
-        specifier: ^22.13.14
+        specifier: 'catalog:'
         version: 22.13.14
       '@types/which':
-        specifier: ^3.0.4
+        specifier: 'catalog:'
         version: 3.0.4
       '@types/yargs':
-        specifier: ^17.0.33
+        specifier: 'catalog:'
         version: 17.0.33
       '@vitest/eslint-plugin':
-        specifier: ^1.3.4
+        specifier: 'catalog:'
         version: 1.3.4(eslint@9.31.0)(typescript@5.8.3)(vitest@3.2.4)
       '@vitest/ui':
-        specifier: ^3.2.4
+        specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4)
       cspell:
-        specifier: ^9.2.0
+        specifier: 'catalog:'
         version: 9.2.0
       eslint:
-        specifier: ^9.31.0
+        specifier: 'catalog:'
         version: 9.31.0
       eslint-plugin-import:
-        specifier: ^2.32.0
+        specifier: 'catalog:'
         version: 2.32.0(@typescript-eslint/parser@8.37.0(eslint@9.31.0)(typescript@5.8.3))(eslint@9.31.0)
       eslint-plugin-unicorn:
-        specifier: ^60.0.0
+        specifier: 'catalog:'
         version: 60.0.0(eslint@9.31.0)
       prettier:
-        specifier: ^3.6.2
+        specifier: 'catalog:'
         version: 3.6.2
       prettier-plugin-organize-imports:
-        specifier: ^4.1.0
+        specifier: 'catalog:'
         version: 4.1.0(prettier@3.6.2)(typescript@5.8.3)
       rimraf:
-        specifier: ^6.0.1
+        specifier: 'catalog:'
         version: 6.0.1
       source-map-support:
-        specifier: ^0.5.21
+        specifier: 'catalog:'
         version: 0.5.21
       syncpack:
-        specifier: ^13.0.4
+        specifier: 'catalog:'
         version: 13.0.4(typescript@5.8.3)
       tsx:
-        specifier: ^4.20.3
+        specifier: 'catalog:'
         version: 4.20.3
       typescript:
-        specifier: ^5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       typescript-eslint:
-        specifier: ^8.37.0
+        specifier: 'catalog:'
         version: 8.37.0(eslint@9.31.0)(typescript@5.8.3)
       vitest:
-        specifier: ^3.2.4
+        specifier: 'catalog:'
         version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(tsx@4.20.3)(yaml@2.8.0)
 
   js/installers:
     devDependencies:
       '@types/node':
-        specifier: ^22.13.14
+        specifier: 'catalog:'
         version: 22.13.14
       execa:
-        specifier: ^9.6.0
+        specifier: 'catalog:'
         version: 9.6.0
       picocolors:
-        specifier: ^1.0.0
+        specifier: 'catalog:'
         version: 1.1.1
       tsx:
-        specifier: ^4.20.3
+        specifier: 'catalog:'
         version: 4.20.3
       typescript:
-        specifier: ^5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       vitest:
-        specifier: ^3.2.4
+        specifier: 'catalog:'
         version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(tsx@4.20.3)(yaml@2.8.0)
 
   js/livraison-cli: {}
@@ -509,10 +578,6 @@ packages:
 
   '@eslint/object-schema@2.1.6':
     resolution: {integrity: sha512-RBMg5FRL0I0gs51M/guSAj5/e14VQ4tpZnQNWwuDT66P14I43ItmPfIZRhO9fUVIPOAQXU47atlywZ/czoqFPA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@eslint/plugin-kit@0.3.3':
-    resolution: {integrity: sha512-1+WqvgNMhmlAambTvT3KPtCl/Ibr68VldY2XY40SL1CE0ZXiakFR/cbTspaF5HsnpDMvcYYoJHfl4980NBjGag==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/plugin-kit@0.3.4':
@@ -1906,10 +1971,6 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.2:
-    resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
-    engines: {node: '>=12'}
-
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
@@ -2778,11 +2839,6 @@ snapshots:
   '@eslint/js@9.31.0': {}
 
   '@eslint/object-schema@2.1.6': {}
-
-  '@eslint/plugin-kit@0.3.3':
-    dependencies:
-      '@eslint/core': 0.15.1
-      levn: 0.4.1
 
   '@eslint/plugin-kit@0.3.4':
     dependencies:
@@ -3679,7 +3735,7 @@ snapshots:
       '@eslint/core': 0.15.1
       '@eslint/eslintrc': 3.3.1
       '@eslint/js': 9.31.0
-      '@eslint/plugin-kit': 0.3.3
+      '@eslint/plugin-kit': 0.3.4
       '@humanfs/node': 0.16.6
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
@@ -3775,9 +3831,9 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.4.6(picomatch@4.0.2):
+  fdir@6.4.6(picomatch@4.0.3):
     optionalDependencies:
-      picomatch: 4.0.2
+      picomatch: 4.0.3
 
   fflate@0.8.2: {}
 
@@ -4323,8 +4379,6 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  picomatch@4.0.2: {}
-
   picomatch@4.0.3: {}
 
   pluralize@8.0.0: {}
@@ -4666,8 +4720,8 @@ snapshots:
 
   tinyglobby@0.2.14:
     dependencies:
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
 
   tinypool@1.1.1: {}
 
@@ -4798,8 +4852,8 @@ snapshots:
   vite@7.0.4(@types/node@22.13.14)(tsx@4.20.3)(yaml@2.8.0):
     dependencies:
       esbuild: 0.25.6
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
       postcss: 8.5.6
       rollup: 4.45.0
       tinyglobby: 0.2.14
@@ -4824,7 +4878,7 @@ snapshots:
       expect-type: 1.2.2
       magic-string: 0.30.17
       pathe: 2.0.3
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       std-env: 3.9.0
       tinybench: 2.9.0
       tinyexec: 0.3.2

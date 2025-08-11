@@ -3,7 +3,6 @@
 $ErrorActionPreference = "Stop"
 
 Write-Host "=== Step 1: Running install.ps1 ===" -ForegroundColor Green
-Set-Location C:\test
 & .\install.ps1
 
 Write-Host ""

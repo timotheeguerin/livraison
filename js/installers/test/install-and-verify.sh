@@ -2,7 +2,6 @@
 
 set -e
 echo '=== Step 1: Running install.sh ==='
-cd /test
 ./install.sh
 
 echo

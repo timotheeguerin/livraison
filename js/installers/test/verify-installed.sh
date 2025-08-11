@@ -8,7 +8,9 @@ PROFILE_FILE="$("$DIRECTORY/get_shell_profile.sh" "$SHELL_TO_RUN")"
 
 ls -lah ~
 echo "---"
-echo "Profile is $PROFILE_FILE"
+echo "Shell to run: $SHELL_TO_RUN"
+echo "Current Shell: $SHELL"
+echo "Profile file: $PROFILE_FILE"
 echo "---"
 cat "$PROFILE_FILE"
 echo "---"

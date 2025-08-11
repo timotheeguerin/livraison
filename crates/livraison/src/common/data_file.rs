@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 
 #[derive(Debug, Clone)]
 pub struct LocalFile {
@@ -28,7 +28,7 @@ pub enum DataFile {
 impl DataFile {
     pub fn from_local(s: impl Into<PathBuf>) -> DataFile {
         DataFile::LocalFile(LocalFile {
-            local_path: s.into(),
+            local_path: fs::canonicalize(s.into()).unwrap(),
             dest: None,
         })
     }

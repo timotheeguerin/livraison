@@ -1,7 +1,7 @@
 use std::{
     collections::HashSet,
-    fs::File,
-    io::{self, Write},
+    fs,
+    io::{self, Read, Write},
     path::{Component, Path, PathBuf},
     time::{SystemTime, UNIX_EPOCH},
 };
@@ -63,11 +63,16 @@ impl<W: Write> EnhancedTarBuilder<W> {
     }
 
     pub fn add_local_file(&mut self, dest_path: &str, local_path: &str) -> LivraisonResult<()> {
-        let dest_path = Path::new(dest_path.trim_start_matches('/'));
-        self.add_parent_dirs(dest_path)?;
+        let dest_path_p = Path::new(dest_path.trim_start_matches('/'));
+        self.add_parent_dirs(dest_path_p)?;
 
-        let mut file = File::create("foo.tar")?;
-        self.builder.append_file(local_path, &mut file)?;
+        dbg!("HERE1");
+        // let mut file = fs::File::open(local_path)?;
+        // self.builder.append_file(dest_path, &mut file)?;
+        let file = fs::read(local_path)?;
+        dbg!("BYtes", file.len());
+        self.add_file_from_bytes(dest_path, &file)?;
+        dbg!("HERE2");
         Ok(())
     }
 

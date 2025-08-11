@@ -1,12 +1,12 @@
+use std::io::Write;
+
+use libflate::gzip;
+
 use crate::LivraisonResult;
 
 pub fn gzip(content: &[u8]) -> LivraisonResult<Vec<u8>> {
-    let mut out = Vec::new();
-    zopfli::compress(
-        zopfli::Options::default(),
-        zopfli::Format::Gzip,
-        content,
-        &mut out,
-    )?;
-    Ok(out)
+    let mut result = Vec::new();
+    let mut encoder = gzip::Encoder::new(&mut result)?;
+    encoder.write_all(content)?;
+    Ok(result)
 }

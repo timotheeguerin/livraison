@@ -21,7 +21,10 @@ impl<W: Write> ArchiveBuilder<W> {
     }
 
     pub fn add_data(&mut self, tar: &[u8]) -> LivraisonResult<()> {
-        self.add_file("data.tar.gz", &gzip(tar)?)
+        dbg!("Before Compressed data size: {}", tar.len());
+        let comp = gzip(tar)?;
+        dbg!("Compressed data size: {}", comp.len());
+        self.add_file("data.tar.gz", &comp)
     }
 
     fn add_file(&mut self, dest_path: &str, data: &[u8]) -> LivraisonResult<()> {

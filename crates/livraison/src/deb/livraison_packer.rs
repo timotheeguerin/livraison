@@ -65,6 +65,17 @@ impl LivraisonPacker for DebLivraisonPacker {
 
         let file = fs::File::create(&out_file)?;
         pkg.write(file)?;
+
+        println!("Created DEB package at: {}", out_file.to_string_lossy());
+        println!("Control: {:#?}", control.write());
+        println!("Included files:");
+        if let Some(files) = &pkg.files {
+            for file in files {
+                println!(" {:#?}", &file.get_dest());
+            }
+        } else {
+            println!(" No files included.");
+        }
         Ok(())
     }
 }

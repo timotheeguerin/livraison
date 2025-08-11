@@ -4,9 +4,10 @@ use test_macros::require_command;
 mod test_utils;
 use test_utils::{TestTempDir, exec};
 
+use livraison::common::FileStats;
 use livraison::deb::{
     control::{Control, Priority, User},
-    package::{DataFile, DebPackage, FileStats, InMemoryFile},
+    package::{DataFile, DebPackage, InMemoryFile},
 };
 
 pub static TESTDIR: LazyLock<TestTempDir> = LazyLock::new(|| {

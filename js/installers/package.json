@@ -9,7 +9,12 @@
     "build:shell": "pnpm livraison script --target sh --name Livraison --download-url \"https://github.com/timotheeguerin/livraison/releases/download/{version}/{filename}\" --latest-download-url \"https://github.com/timotheeguerin/livraison/releases/latest/download/{filename}\" --out install.sh --bin-name livraison",
     "build:pwsh": "pnpm livraison script --target pwsh --name Livraison --download-url \"https://github.com/timotheeguerin/livraison/releases/download/{version}/{filename}\" --latest-download-url \"https://github.com/timotheeguerin/livraison/releases/latest/download/{filename}\" --out install.ps1 --bin-name livraison",
     "test:bash": "tsx test/docker-test.ts --shell bash",
-    "test:zsh": "tsx test/docker-test.ts --shell zsh"
+    "test:zsh": "tsx test/docker-test.ts --shell zsh",
+    "test:pwsh": "tsx test/docker-test.ts --platform windows --shell pwsh",
+    "test:powershell": "tsx test/docker-test.ts --platform windows --shell powershell",
+    "test:cmd": "tsx test/docker-test.ts --platform windows --shell cmd",
+    "test:windows": "tsx test/docker-test.ts --platform windows",
+    "test:linux": "tsx test/docker-test.ts --platform linux"
   },
   "devDependencies": {
     "@types/node": "^22.13.14",

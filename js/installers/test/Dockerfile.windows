@@ -1,0 +1,34 @@
+ARG WINDOWS_VERSION=ltsc2022
+ARG SHELL_NAME=pwsh
+
+FROM mcr.microsoft.com/windows/servercore:${WINDOWS_VERSION}
+
+# Install PowerShell if not already present (for ltsc2019 and ltsc2022)
+RUN if not exist "C:\Program Files\PowerShell\7" ( \
+    powershell -Command " \
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+        Invoke-WebRequest -Uri 'https://github.com/PowerShell/PowerShell/releases/download/v7.4.0/PowerShell-7.4.0-win-x64.msi' -OutFile 'C:\PowerShell.msi'; \
+        Start-Process msiexec.exe -ArgumentList '/i', 'C:\PowerShell.msi', '/quiet', '/norestart' -Wait; \
+        Remove-Item 'C:\PowerShell.msi' -Force \
+    " \
+)
+
+# Create test user
+RUN net user testuser /add
+RUN net localgroup users testuser /add
+
+# Set working directory
+WORKDIR C:/test
+
+# Copy installer and test scripts
+COPY . C:/test/
+
+# Make PowerShell scripts executable (not needed on Windows but good practice)
+# Note: .bat files are executable by default
+
+# Switch to test user
+USER testuser
+
+# Set HOME environment variable
+ENV USERPROFILE=C:\Users\testuser
+ENV HOME=C:\Users\testuser

@@ -10,23 +10,30 @@ const testDir = join(packageRoot, "test");
 // Configuration
 interface TestConfig {
   shellToTest: string;
-  ubuntuVersion: string;
+  osVersion: string;
+  platform: "linux" | "windows";
   verbose: boolean;
   cleanup: boolean;
 }
 
 const defaultConfig: TestConfig = {
   shellToTest: "bash",
-  ubuntuVersion: "22.04",
+  osVersion: "22.04",
+  platform: "linux",
   verbose: false,
   cleanup: true,
 };
 
-const validShells = ["bash", "zsh"] as const;
+const validLinuxShells = ["bash", "zsh"] as const;
+const validWindowsShells = ["pwsh", "powershell", "cmd"] as const;
 const validUbuntuVersions = ["20.04", "22.04", "24.04"] as const;
+const validWindowsVersions = ["ltsc2019", "ltsc2022"] as const;
 
-type Shell = (typeof validShells)[number];
+type LinuxShell = (typeof validLinuxShells)[number];
+type WindowsShell = (typeof validWindowsShells)[number];
+type Shell = LinuxShell | WindowsShell;
 type UbuntuVersion = (typeof validUbuntuVersions)[number];
+type WindowsVersion = (typeof validWindowsVersions)[number];
 
 // Logger functions
 const log = {
@@ -51,20 +58,29 @@ const showUsage = (): void => {
   const scriptName = basename(process.argv[1]);
   process.stdout.write(`Usage: ${scriptName} [OPTIONS]\n`);
   process.stdout.write("\n");
-  process.stdout.write("Test the Livraison installer with a specific shell and Ubuntu version using Docker\n");
+  process.stdout.write("Test the Livraison installer with Docker containers\n");
   process.stdout.write("\n");
   process.stdout.write("OPTIONS:\n");
-  process.stdout.write("  --shell, -s SHELL        Shell to test (bash, zsh) [default: bash]\n");
-  process.stdout.write("  --ubuntu, -u VERSION     Ubuntu version to test (20.04, 22.04, 24.04) [default: 22.04]\n");
+  process.stdout.write("  --platform, -p PLATFORM  Platform to test (linux, windows) [default: linux]\n");
+  process.stdout.write("  --shell, -s SHELL        Shell to test:\n");
+  process.stdout.write("                           Linux: bash, zsh [default: bash]\n");
+  process.stdout.write("                           Windows: pwsh, powershell, cmd (for display only) [default: pwsh]\n");
+  process.stdout.write("                           Note: Windows tests use PowerShell internally for all shells\n");
+  process.stdout.write("  --ubuntu, -u VERSION     Ubuntu version (20.04, 22.04, 24.04) [default: 22.04]\n");
+  process.stdout.write("  --windows, -w VERSION    Windows version (ltsc2019, ltsc2022) [default: ltsc2022]\n");
   process.stdout.write("  --verbose, -v            Enable verbose output\n");
   process.stdout.write("  --no-cleanup             Don't cleanup Docker containers after test\n");
   process.stdout.write("  --help, -h               Show this help message\n");
   process.stdout.write("\n");
   process.stdout.write("EXAMPLES:\n");
-  process.stdout.write(`  ${scriptName}                          # Test bash on Ubuntu 22.04\n`);
-  process.stdout.write(`  ${scriptName} --shell zsh              # Test zsh on Ubuntu 22.04\n`);
-  process.stdout.write(`  ${scriptName} -s zsh -u 24.04          # Test zsh on Ubuntu 24.04 (short options)\n`);
-  process.stdout.write(`  ${scriptName} --ubuntu 24.04 --verbose # Test bash on Ubuntu 24.04 with verbose output\n`);
+  process.stdout.write(`  ${scriptName}                              # Test bash on Ubuntu 22.04\n`);
+  process.stdout.write(`  ${scriptName} --shell zsh                  # Test zsh on Ubuntu 22.04\n`);
+  process.stdout.write(`  ${scriptName} --platform windows           # Test pwsh on Windows Server 2022\n`);
+  process.stdout.write(`  ${scriptName} -p windows -s powershell     # Test Windows PowerShell 5.x\n`);
+  process.stdout.write(`  ${scriptName} -p windows -w ltsc2019       # Test pwsh on Windows Server 2019\n`);
+  process.stdout.write(
+    `  ${scriptName} --ubuntu 24.04 --verbose     # Test bash on Ubuntu 24.04 with verbose output\n`,
+  );
 };
 
 // Argument parsing
@@ -72,6 +88,11 @@ const parseCliArgs = (config: TestConfig): TestConfig => {
   const { values } = parseArgs({
     args: process.argv.slice(2),
     options: {
+      "platform": {
+        type: "string",
+        short: "p",
+        default: config.platform,
+      },
       "shell": {
         type: "string",
         short: "s",
@@ -80,7 +101,12 @@ const parseCliArgs = (config: TestConfig): TestConfig => {
       "ubuntu": {
         type: "string",
         short: "u",
-        default: config.ubuntuVersion,
+        default: config.platform === "linux" ? config.osVersion : "22.04",
+      },
+      "windows": {
+        type: "string",
+        short: "w",
+        default: config.platform === "windows" ? config.osVersion : "ltsc2022",
       },
       "verbose": {
         type: "boolean",
@@ -107,22 +133,61 @@ const parseCliArgs = (config: TestConfig): TestConfig => {
 
   const newConfig = { ...config };
 
+  // Handle platform
+  if (values.platform) {
+    const platform = values.platform as "linux" | "windows";
+    if (platform !== "linux" && platform !== "windows") {
+      log.error(`Invalid platform: ${platform}. Valid options: linux, windows`);
+      process.exit(1);
+    }
+    newConfig.platform = platform;
+
+    // Set default shell for platform if not specified
+    if (!values.shell) {
+      newConfig.shellToTest = platform === "windows" ? "pwsh" : "bash";
+    }
+
+    // Set default OS version for platform if not specified
+    if (!values.ubuntu && !values.windows) {
+      newConfig.osVersion = platform === "windows" ? "ltsc2022" : "22.04";
+    }
+  }
+
+  // Handle shell validation based on platform
   if (values.shell) {
     const shell = values.shell as Shell;
-    if (!validShells.includes(shell)) {
-      log.error(`Invalid shell: ${shell}. Valid options: ${validShells.join(", ")}`);
-      process.exit(1);
+
+    if (newConfig.platform === "windows") {
+      if (!validWindowsShells.includes(shell as WindowsShell)) {
+        log.error(`Invalid shell for Windows: ${shell}. Valid options: ${validWindowsShells.join(", ")}`);
+        process.exit(1);
+      }
+    } else {
+      if (!validLinuxShells.includes(shell as LinuxShell)) {
+        log.error(`Invalid shell for Linux: ${shell}. Valid options: ${validLinuxShells.join(", ")}`);
+        process.exit(1);
+      }
     }
     newConfig.shellToTest = shell;
   }
 
-  if (values.ubuntu) {
+  // Handle OS version based on platform
+  if (newConfig.platform === "linux" && values.ubuntu) {
     const ubuntu = values.ubuntu as UbuntuVersion;
     if (!validUbuntuVersions.includes(ubuntu)) {
       log.error(`Invalid Ubuntu version: ${ubuntu}. Valid options: ${validUbuntuVersions.join(", ")}`);
       process.exit(1);
     }
-    newConfig.ubuntuVersion = ubuntu;
+    newConfig.osVersion = ubuntu;
+  }
+
+  if (newConfig.platform === "windows" && values.windows) {
+    const windows = values.windows as WindowsVersion;
+    if (!validWindowsVersions.includes(windows)) {
+      log.error(`Invalid Windows version: ${windows}. Valid options: ${validWindowsVersions.join(", ")}`);
+      process.exit(1);
+    }
+    newConfig.osVersion = windows;
   }
 
   if (values.verbose) {
@@ -137,7 +202,7 @@ const parseCliArgs = (config: TestConfig): TestConfig => {
 };
 
 // Dependency checking
-const checkDependencies = async (): Promise<void> => {
+const checkDependencies = async (config: TestConfig): Promise<void> => {
   log.info("Checking dependencies...");
 
   try {
@@ -154,41 +219,65 @@ const checkDependencies = async (): Promise<void> => {
     process.exit(1);
   }
 
+  // Check Docker OS compatibility
+  if (config.platform === "windows") {
+    try {
+      const { stdout } = await execa("docker", ["info", "--format", "{{.OSType}}"]);
+      if (!stdout.includes("windows")) {
+        log.warn("Docker is not configured for Windows containers. Please switch to Windows containers mode.");
+        log.warn("You can switch using: Docker Desktop → right-click → Switch to Windows containers");
+      }
+    } catch {
+      log.warn("Could not determine Docker OS type. Ensure Docker is configured for Windows containers.");
+    }
+  }
+
   log.info("All dependencies satisfied");
 };
 
 // Docker image creation
-const buildTestImage = async (config: TestConfig, ubuntuVersion: string, shellName: string): Promise<void> => {
-  const imageName = `livraison-test:ubuntu-${ubuntuVersion}-${shellName}`;
+const buildTestImage = async (config: TestConfig, osVersion: string, shellName: string): Promise<void> => {
+  const platform = config.platform;
+  const imageName =
+    platform === "windows"
+      ? `livraison-test-windows:${osVersion}-${shellName}`
+      : `livraison-test:ubuntu-${osVersion}-${shellName}`;
 
   log.verbose(`Building Docker image: ${imageName}`, config.verbose);
 
   // Create temporary directory for Docker context
-  const contextDir = join(testDir, "temp", `docker-context-${ubuntuVersion}-${shellName}`);
+  const contextDir = join(testDir, "temp", `docker-context-${platform}-${osVersion}-${shellName}`);
   await mkdir(contextDir, { recursive: true });
 
   try {
-    // Copy test scripts
+    // Copy test scripts based on platform
     const testFiles = await readdir(testDir);
-    const shellFiles = testFiles.filter((file: string) => file.endsWith(".sh"));
+    let scriptFiles: string[];
 
-    for (const file of shellFiles) {
+    if (platform === "windows") {
+      scriptFiles = testFiles.filter((file: string) => file.endsWith(".ps1"));
+    } else {
+      scriptFiles = testFiles.filter((file: string) => file.endsWith(".sh"));
+    }
+
+    for (const file of scriptFiles) {
       await copyFile(join(testDir, file), join(contextDir, file));
     }
 
-    // Copy install.sh from parent directory
-    await copyFile(join(testDir, "..", "install.sh"), join(contextDir, "install.sh"));
+    // Copy installer script from parent directory
+    const installerScript = platform === "windows" ? "install.ps1" : "install.sh";
+    await copyFile(join(testDir, "..", installerScript), join(contextDir, installerScript));
 
-    // Copy the Dockerfile to context directory
-    await copyFile(join(testDir, "Dockerfile"), join(contextDir, "Dockerfile"));
+    // Copy the appropriate Dockerfile to context directory
+    const dockerfileName = platform === "windows" ? "Dockerfile.windows" : "Dockerfile";
+    await copyFile(join(testDir, dockerfileName), join(contextDir, "Dockerfile"));
 
     // Build the image with build arguments
     const buildArgs = [
       "build",
-      "--platform",
-      "linux/amd64",
+      ...(platform === "linux" ? ["--platform", "linux/amd64"] : []),
       "--build-arg",
-      `UBUNTU_VERSION=${ubuntuVersion}`,
+      platform === "windows" ? `WINDOWS_VERSION=${osVersion}` : `UBUNTU_VERSION=${osVersion}`,
       "--build-arg",
       `SHELL_NAME=${shellName}`,
       "-t",
@@ -208,30 +297,57 @@ const buildTestImage = async (config: TestConfig, ubuntuVersion: string, shellNa
 };
 
 // Test execution
-const runDockerTest = async (config: TestConfig, ubuntuVersion: string, shellName: string): Promise<void> => {
-  const testName = `Ubuntu ${ubuntuVersion} with ${shellName}`;
-  const imageName = `livraison-test:ubuntu-${ubuntuVersion}-${shellName}`;
-  const containerName = `livraison-test-${ubuntuVersion.replace(/\./g, "")}-${shellName}-${Date.now()}`;
+const runDockerTest = async (config: TestConfig, osVersion: string, shellName: string): Promise<void> => {
+  const platform = config.platform;
+  const testName =
+    platform === "windows" ? `Windows Server ${osVersion} with ${shellName}` : `Ubuntu ${osVersion} with ${shellName}`;
+
+  const imageName =
+    platform === "windows"
+      ? `livraison-test-windows:${osVersion}-${shellName}`
+      : `livraison-test:ubuntu-${osVersion}-${shellName}`;
+
+  const containerName =
+    platform === "windows"
+      ? `livraison-test-windows-${osVersion}-${shellName}-${Date.now()}`
+      : `livraison-test-${osVersion.replace(/\./g, "")}-${shellName}-${Date.now()}`;
 
   log.info(`Running test: ${testName}`);
 
   // Build test image
-  await buildTestImage(config, ubuntuVersion, shellName);
+  await buildTestImage(config, osVersion, shellName);
 
   log.verbose(`Starting container: ${containerName}`, config.verbose);
 
-  const runArgs = [
-    "run",
-    "--platform",
-    "linux/amd64",
-    "--rm",
-    "--name",
-    containerName,
-    imageName,
-    "bash",
-    "-c",
-    `./install-and-verify.sh`,
-  ];
+  let runArgs: string[];
+
+  if (platform === "windows") {
+    // For all Windows shells, use the PowerShell script
+    runArgs = [
+      "run",
+      "--rm",
+      "--name",
+      containerName,
+      imageName,
+      "pwsh",
+      "-Command",
+      `& C:\\test\\install-and-verify.ps1`,
+    ];
+  } else {
+    // Linux containers
+    runArgs = [
+      "run",
+      "--platform",
+      "linux/amd64",
+      "--rm",
+      "--name",
+      containerName,
+      imageName,
+      "bash",
+      "-c",
+      `./install-and-verify.sh`,
+    ];
+  }
 
   try {
     if (config.verbose) {
@@ -262,7 +378,10 @@ const cleanupDockerImages = async (config: TestConfig): Promise<void> => {
   if (config.cleanup) {
     log.verbose("Cleaning up any remaining Docker images...", config.verbose);
     try {
-      const { stdout } = await execa("docker", ["images", "--filter", "reference=livraison-test:*", "-q"]);
+      const filter =
+        config.platform === "windows" ? "reference=livraison-test-windows:*" : "reference=livraison-test:*";
+
+      const { stdout } = await execa("docker", ["images", "--filter", filter, "-q"]);
       const imageIds = stdout
         .trim()
         .split("\n")
@@ -282,13 +401,13 @@ const runTests = async (): Promise<void> => {
   const config = parseCliArgs({ ...defaultConfig });
 
   try {
-    log.info("Testing Livraison installer with Docker");
+    log.info(`Testing Livraison installer with Docker on ${config.platform} containers`);
     log.info(`Test directory: ${testDir}`);
 
-    await checkDependencies();
+    await checkDependencies(config);
 
     // Run the single test
-    await runDockerTest(config, config.ubuntuVersion, config.shellToTest);
+    await runDockerTest(config, config.osVersion, config.shellToTest);
 
     log.info("Test completed successfully! 🎉");
   } catch (error) {

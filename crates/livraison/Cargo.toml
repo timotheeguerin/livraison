@@ -22,9 +22,7 @@ msi_installer  = { version = "0.1.0", path = "../msi_installer" }
 printer  = { path = "../printer" }
 color  = { path = "../color" }
 quick-error = "2.0.1"
-rand = "0.9.0"
 tar = "0.4.44"
-time = "0.3.39"
 uuid = { version= "1.16.0", features = [
     "v4", "v5"
 ]}

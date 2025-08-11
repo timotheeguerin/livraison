@@ -16,6 +16,3 @@ encoding_rs = "0.8"
 uuid = "1"
 
 [dev-dependencies]
-pest = "2.1"
-pest_derive = "2.1"
-time = "0.3"

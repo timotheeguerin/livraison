@@ -25,6 +25,7 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json && cargo build --package livraison --target wasm32-wasip1 --release && cp ../../target/wasm32-wasip1/release/livraison.wasm dist/",
+    "verify": "node ./cmd/cli.js --version",
     "watch": "tsc -p ./tsconfig.build.json --watch"
   },
   "dependencies": {},

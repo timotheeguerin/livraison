@@ -20,11 +20,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shell: ["pwsh", "powershell"]
+        shellName: ["pwsh", "powershell"]
     steps:
       - uses: actions/checkout@v4
-      - name: Test PowerShell installer with ${{ matrix.shell }}
-        shell: ${{ matrix.shell }}
+      - name: Test PowerShell installer with ${{ matrix.shellName }}
+        shell: ${{ matrix.shellName }}
         run: |
           & .\install-and-verify.ps1
 
@@ -34,11 +34,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shell: ["bash", "zsh"]
+        shellName: ["bash", "zsh"]
     steps:
       - uses: actions/checkout@v4
-      - name: Test shell installer with ${{ matrix.shell }}
-        shell: ${{ matrix.shell }}
+      - name: Test shell installer with ${{ matrix.shellName }}
+        shell: ${{ matrix.shellName }}
         run: ./test/install-and-verify.sh
 
   # Test shell installer natively on macOS
@@ -47,9 +47,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shell: ["bash", "zsh"]
+        shellName: ["bash", "zsh"]
     steps:
       - uses: actions/checkout@v4
-      - name: Test shell installer with ${{ matrix.shell }}
-        shell: ${{ matrix.shell }}
+      - name: Test shell installer with ${{ matrix.shellName }}
+        shell: ${{ matrix.shellName }}
         run: ./test/install-and-verify.sh

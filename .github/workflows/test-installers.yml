@@ -24,7 +24,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test PowerShell installer with ${{ matrix.shell }}
-        run: ${{ matrix.shell }} .\install-and-verify.ps1
+        run: ${{ matrix.shell }} ./install-and-verify.ps1
+        working-directory: ./js/installers/test
 
   # Test shell installer natively on Linux
   linux:
@@ -36,7 +37,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test shell installer with ${{ matrix.shell }}
-        run: ${{ matrix.shell }} ./test/install-and-verify.sh
+        run: ${{ matrix.shell }} ./install-and-verify.sh
+        working-directory: ./js/installers/test
 
   # Test shell installer natively on macOS
   macOS:
@@ -48,4 +50,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test shell installer with ${{ matrix.shell }}
-        run: ${{ matrix.shell }} ./test/install-and-verify.sh
+        run: ${{ matrix.shell }} ./install-and-verify.sh
+        working-directory: ./js/installers/test

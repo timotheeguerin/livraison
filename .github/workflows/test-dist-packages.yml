@@ -34,7 +34,7 @@ jobs:
         name: Build deb package
         working-directory: ./js/distribution
 
-      - run: dpkg -i ./dist/*.deb
+      - run: sudo dpkg -i ./dist/*.deb
         name: Install deb package
         working-directory: ./js/distribution
 

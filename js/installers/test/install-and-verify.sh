@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 echo '=== Step 1: Running install.sh ==='

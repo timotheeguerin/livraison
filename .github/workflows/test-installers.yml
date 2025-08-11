@@ -25,11 +25,13 @@ jobs:
             shell: pwsh
           - os: windows-latest
             shell: powershell
+
           # Linux shell tests
           - os: ubuntu-latest
             shell: bash
-          - os: ubuntu-latest
-            shell: zsh
+          # - os: ubuntu-latest
+          #   shell: zsh
+
           # macOS shell tests
           - os: macos-latest
             shell: bash

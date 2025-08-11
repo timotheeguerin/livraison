@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
@@ -14,10 +14,12 @@ echo "Profile file: $PROFILE_FILE"
 echo "---"
 cat "$PROFILE_FILE"
 echo "---"
-echo "PATH=$PATH"
+echo "(before) PATH=$PATH"
 echo "---"
 
 $SHELL_TO_RUN -c "
   . $PROFILE_FILE
+  echo \"(after) PATH=\$PATH\"
+  echo "---"
   livraison --version
 "

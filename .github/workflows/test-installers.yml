@@ -1,4 +1,4 @@
-name: Test Installers
+name: Installers
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-installers:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

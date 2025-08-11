@@ -14,41 +14,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Test PowerShell installer natively on Windows
-  windows:
-    runs-on: windows-latest
+  test-installers:
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        shell: ["pwsh", "powershell"]
+        include:
+          # Windows PowerShell tests
+          - os: windows-latest
+            shell: pwsh
+          - os: windows-latest
+            shell: powershell
+          # Linux shell tests
+          - os: ubuntu-latest
+            shell: bash
+          - os: ubuntu-latest
+            shell: zsh
+          # macOS shell tests
+          - os: macos-latest
+            shell: bash
+          - os: macos-latest
+            shell: zsh
     steps:
       - uses: actions/checkout@v4
-      - name: Test PowerShell installer with ${{ matrix.shell }}
-        run: ${{ matrix.shell }} ./install-and-verify.ps1
-        working-directory: ./js/installers/test
-
-  # Test shell installer natively on Linux
-  linux:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shell: ["bash", "zsh"]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Test shell installer with ${{ matrix.shell }}
-        run: ${{ matrix.shell }} ./install-and-verify.sh
-        working-directory: ./js/installers/test
-
-  # Test shell installer natively on macOS
-  macOS:
-    runs-on: macos-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shell: ["bash", "zsh"]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Test shell installer with ${{ matrix.shell }}
-        run: ${{ matrix.shell }} ./install-and-verify.sh
+      - name: Test installer with ${{ matrix.shell }} on ${{ matrix.os }}
+        run: ${{ matrix.shell }} ${{ startsWith(matrix.os, 'windows') && './install-and-verify.ps1' || './install-and-verify.sh' }}
         working-directory: ./js/installers/test

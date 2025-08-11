@@ -16,14 +16,14 @@ ls -lah ~/.livraison/bin
 echo "---"
 echo "Shell to run: $SHELL_TO_RUN"
 echo "Current Shell: $SHELL"
-echo "Profile file: $PROFILE_FILE"
-echo "---"
+echo "::group Profile file: $PROFILE_FILE"
 cat "$PROFILE_FILE"
-echo "---"
+echo "::endgroup::"
 echo "(before) PATH=$PATH"
 echo "---"
 
 $SHELL_TO_RUN -c "
+  set -e
   . $PROFILE_FILE
   echo \"(after) PATH=\$PATH\"
   echo "---"

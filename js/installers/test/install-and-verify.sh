@@ -6,7 +6,7 @@ echo '=== Step 1: Running install.sh ==='
 
 echo
 echo '=== Step 2: Verifying installation ==='
-./verify-installed.sh ${shellName}
+./verify-installed.sh ${shell}
 
 echo
 echo '=== Test completed successfully ==='

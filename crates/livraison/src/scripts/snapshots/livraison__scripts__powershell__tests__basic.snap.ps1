@@ -174,7 +174,7 @@ function Install-test {
     if ($Path -notcontains $testBin) {
       if (-not $NoPathUpdate) {
         $Path += $testBin
-        [Environment]::SetEnvironmentVariable('Path', ($Path -join ';'), , [System.EnvironmentVariableTarget]::User)
+        [Environment]::SetEnvironmentVariable('Path', ($Path -join ';'), [System.EnvironmentVariableTarget]::User)
         $env:PATH = $Path;
       } else {
         Write-Output "Skipping adding '$testBin' to the user's %PATH%`n"

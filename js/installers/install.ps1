@@ -178,7 +178,7 @@ function Install-livraison {
     if ($Path -notcontains $livraisonBin) {
       if (-not $NoPathUpdate) {
         $Path += $livraisonBin
-        [Environment]::SetEnvironmentVariable('Path', ($Path -join ';'), , [System.EnvironmentVariableTarget]::User)
+        [Environment]::SetEnvironmentVariable('Path', ($Path -join ';'), [System.EnvironmentVariableTarget]::User)
         $env:PATH = $Path;
       } else {
         Write-Output "Skipping adding '$livraisonBin' to the user's %PATH%`n"

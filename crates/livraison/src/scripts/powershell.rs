@@ -395,7 +395,7 @@ fn install_function(options: &PowerShellScriptOptions) -> Doc {
             if ($Path -notcontains ${bin_name}Bin) {{
               if (-not $NoPathUpdate) {{
                 $Path += ${bin_name}Bin
-                [Environment]::SetEnvironmentVariable('Path', ($Path -join ';'), , [System.EnvironmentVariableTarget]::User)
+                [Environment]::SetEnvironmentVariable('Path', ($Path -join ';'), [System.EnvironmentVariableTarget]::User)
                 $env:PATH = $Path;
               }} else {{
                 Write-Output "Skipping adding '${bin_name}Bin' to the user's %PATH%`n"

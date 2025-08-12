@@ -3,10 +3,9 @@ use std::fs;
 use crate::{
     LivraisonResult,
     actions::pack::{CommonOptions, LivraisonPacker},
-    common::{self, FileStats},
     deb::{
         control::{Control, User},
-        package::{DataFile, DebPackage, InMemoryFile, LocalFile},
+        package::{DataFile, DebPackage},
     },
 };
 
@@ -42,20 +41,7 @@ impl LivraisonPacker for DebLivraisonPacker {
                     .iter()
                     .map(|file| {
                         let dest = format!("/usr/local/bin/{}", file.file_name());
-                        match file {
-                            common::DataFile::LocalFile(file) => DataFile::LocalFile(LocalFile {
-                                local_path: file.local_path.clone().to_string_lossy().into(),
-                                dest,
-                                stats: Some(FileStats { mode: 0o755 }),
-                            }),
-                            common::DataFile::InMemoryFile(file) => {
-                                DataFile::InMemoryFile(InMemoryFile {
-                                    dest,
-                                    content: file.content.clone(),
-                                    stats: file.stats.clone(),
-                                })
-                            }
-                        }
+                        DataFile::new(dest, file.clone())
                     })
                     .collect::<Vec<DataFile>>(),
             ),

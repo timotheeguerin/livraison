@@ -13,7 +13,7 @@ use crate::{
         pack::{CommonOptions, pack_for_target},
         script::{ScriptArgs, create_script},
     },
-    common::DataFile,
+    common::FileRef,
 };
 // use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
@@ -86,8 +86,8 @@ where
                 bin_files: pack_args
                     .bin_file
                     .iter()
-                    .map(DataFile::from_local)
-                    .collect(),
+                    .map(FileRef::from_local)
+                    .collect::<Vec<FileRef>>(),
                 out: match pack_args.out {
                     Some(out) => PathBuf::from(out),
                     None => cwd.join("dist"),

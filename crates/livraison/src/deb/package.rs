@@ -1,34 +1,29 @@
 use std::io::Write;
 
-use crate::{LivraisonResult, common::FileStats};
+use crate::{LivraisonResult, common::FileRef};
 
 use super::{builder::ArchiveBuilder, control::Control, tar::EnhancedTarBuilder};
 
-#[derive(Debug, Clone)]
-pub struct LocalFile {
-    pub dest: String,
-    pub local_path: String,
-    pub stats: Option<FileStats>,
-}
-#[derive(Debug, Clone)]
-pub struct InMemoryFile {
-    pub dest: String,
-    pub content: String,
-    pub stats: FileStats,
-}
-
-#[derive(Debug, Clone)]
-pub enum DataFile {
-    LocalFile(LocalFile),
-    InMemoryFile(InMemoryFile),
+#[derive(Debug)]
+pub struct DataFile {
+    dest: String,
+    source: FileRef,
 }
 
 impl DataFile {
-    pub fn get_dest(&self) -> &str {
-        match self {
-            DataFile::LocalFile(local_file) => &local_file.dest,
-            DataFile::InMemoryFile(in_memory_file) => &in_memory_file.dest,
+    pub fn new(dest: impl Into<String>, source: FileRef) -> Self {
+        DataFile {
+            dest: dest.into(),
+            source,
         }
+    }
+
+    pub fn get_dest(&self) -> &str {
+        &self.dest
+    }
+
+    pub fn get_source(&self) -> &FileRef {
+        &self.source
     }
 }
 
@@ -51,10 +46,10 @@ impl DebPackage {
     fn create_control_tar(&self) -> LivraisonResult<Vec<u8>> {
         let mut tar_ar = EnhancedTarBuilder::new(Vec::new());
 
-        tar_ar.add_file_from_bytes("control", self.control.write().as_bytes())?;
+        tar_ar.add_file_from_text("control", self.control.write())?;
         if let Some(conf_files) = &self.conf_files {
             let content = self.create_conf_files_content(conf_files);
-            tar_ar.add_file_from_bytes("conffiles", content.as_bytes())?;
+            tar_ar.add_file_from_text("conffiles", content)?;
         }
         tar_ar.finish()?;
         Ok(tar_ar.into_inner().unwrap())
@@ -84,29 +79,9 @@ impl DebPackage {
         tar_ar: &mut EnhancedTarBuilder<Vec<u8>>,
         files: &Option<Vec<DataFile>>,
     ) -> LivraisonResult<()> {
-        if let Some(file) = &files {
-            for file in file {
-                match file {
-                    DataFile::LocalFile(local_file) => match local_file.stats {
-                        Some(ref stats) => {
-                            tar_ar.add_local_file_with_stats(
-                                &local_file.dest,
-                                &local_file.local_path,
-                                stats,
-                            )?;
-                        }
-                        None => {
-                            tar_ar.add_local_file(&local_file.dest, &local_file.local_path)?;
-                        }
-                    },
-                    DataFile::InMemoryFile(in_memory_file) => {
-                        tar_ar.add_file_from_bytes_with_stats(
-                            &in_memory_file.dest,
-                            in_memory_file.content.as_bytes(),
-                            &in_memory_file.stats,
-                        )?;
-                    }
-                }
+        if let Some(some_files) = files {
+            for file in some_files {
+                let _ = tar_ar.add_file(file.get_dest(), file.get_source());
             }
         }
 

@@ -3,7 +3,7 @@ use std::fs;
 use crate::{
     LivraisonResult,
     actions::pack::{CommonOptions, LivraisonPacker},
-    common,
+    common::{self, FileStats},
     deb::{
         control::{Control, User},
         package::{DataFile, DebPackage, InMemoryFile, LocalFile},
@@ -46,6 +46,7 @@ impl LivraisonPacker for DebLivraisonPacker {
                             common::DataFile::LocalFile(file) => DataFile::LocalFile(LocalFile {
                                 local_path: file.local_path.clone().to_string_lossy().into(),
                                 dest,
+                                stats: Some(FileStats { mode: 0o755 }),
                             }),
                             common::DataFile::InMemoryFile(file) => {
                                 DataFile::InMemoryFile(InMemoryFile {

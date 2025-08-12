@@ -1,7 +1,7 @@
 use std::{
     collections::HashSet,
     fs,
-    io::{self, Read, Write},
+    io::{self, Write},
     path::{Component, Path, PathBuf},
     time::{SystemTime, UNIX_EPOCH},
 };

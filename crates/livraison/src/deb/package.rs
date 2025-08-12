@@ -8,6 +8,7 @@ use super::{builder::ArchiveBuilder, control::Control, tar::EnhancedTarBuilder};
 pub struct LocalFile {
     pub dest: String,
     pub local_path: String,
+    pub stats: Option<FileStats>,
 }
 #[derive(Debug, Clone)]
 pub struct InMemoryFile {

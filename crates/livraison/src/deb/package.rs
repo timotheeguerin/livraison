@@ -87,9 +87,18 @@ impl DebPackage {
         if let Some(file) = &files {
             for file in file {
                 match file {
-                    DataFile::LocalFile(local_file) => {
-                        tar_ar.add_local_file(&local_file.dest, &local_file.local_path)?;
-                    }
+                    DataFile::LocalFile(local_file) => match local_file.stats {
+                        Some(ref stats) => {
+                            tar_ar.add_local_file_with_stats(
+                                &local_file.dest,
+                                &local_file.local_path,
+                                stats,
+                            )?;
+                        }
+                        None => {
+                            tar_ar.add_local_file(&local_file.dest, &local_file.local_path)?;
+                        }
+                    },
                     DataFile::InMemoryFile(in_memory_file) => {
                         tar_ar.add_file_from_bytes_with_stats(
                             &in_memory_file.dest,

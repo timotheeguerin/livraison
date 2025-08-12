@@ -43,11 +43,8 @@ impl DebPackage {
         let mut archive = ArchiveBuilder::new(out)?;
         archive.add_control(&self.create_control_tar()?)?;
         let a = self.create_data_tar()?;
-        dbg!("DFAF");
         archive.add_data(&a)?;
-        dbg!("Waiting finish.ar");
         archive.finish()?;
-        dbg!("Done finish.ar");
         Ok(archive)
     }
 
@@ -78,9 +75,7 @@ impl DebPackage {
         self.add_files_to_tar(&mut tar_ar, &self.files)?;
         self.add_files_to_tar(&mut tar_ar, &self.conf_files)?;
 
-        dbg!("Waiting finish");
         tar_ar.finish()?;
-        dbg!("Done finish");
         Ok(tar_ar.into_inner().unwrap())
     }
 
@@ -90,7 +85,6 @@ impl DebPackage {
         files: &Option<Vec<DataFile>>,
     ) -> LivraisonResult<()> {
         if let Some(file) = &files {
-            dbg!(file);
             for file in file {
                 match file {
                     DataFile::LocalFile(local_file) => {

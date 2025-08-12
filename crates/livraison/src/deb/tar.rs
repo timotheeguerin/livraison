@@ -66,13 +66,8 @@ impl<W: Write> EnhancedTarBuilder<W> {
         let dest_path_p = Path::new(dest_path.trim_start_matches('/'));
         self.add_parent_dirs(dest_path_p)?;
 
-        dbg!("HERE1");
-        // let mut file = fs::File::open(local_path)?;
-        // self.builder.append_file(dest_path, &mut file)?;
-        let file = fs::read(local_path)?;
-        dbg!("BYtes", file.len());
-        self.add_file_from_bytes(dest_path, &file)?;
-        dbg!("HERE2");
+        let mut file = fs::File::open(local_path)?;
+        self.builder.append_file(dest_path_p, &mut file)?;
         Ok(())
     }
 

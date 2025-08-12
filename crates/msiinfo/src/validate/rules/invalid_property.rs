@@ -97,7 +97,6 @@ mod tests {
         )
         .unwrap();
         let diagnostics = test_rule(InvalidPropertyRule {}, &mut package);
-        dbg!(&diagnostics);
         assert_eq!(diagnostics.len(), 1);
         assert_eq!(diagnostics[0].code, "invalid-property");
         assert!(
@@ -115,7 +114,6 @@ mod tests {
         let diagnostics = test_rule(InvalidPropertyRule {}, &mut package);
 
         assert_eq!(diagnostics.len(), 4);
-        dbg!(&diagnostics);
         assert_eq!(diagnostics[0].code, "invalid-property");
         assert_eq!(diagnostics[1].code, "invalid-property");
         assert_eq!(diagnostics[2].code, "invalid-property");

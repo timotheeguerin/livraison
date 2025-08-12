@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm build:shell && pnpm build:pwsh",
     "build:deb:x64": "pnpm livraison pack --target deb --name livraison --out ./dist --bin-file ../../target/release/livraison",
     "build:exe": "cargo build --package livraison --release",
     "livraison": "cargo run --package livraison"

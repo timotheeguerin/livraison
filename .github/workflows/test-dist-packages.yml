@@ -1,0 +1,42 @@
+name: Packages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "js/distribution/**"
+      - ".github/workflows/test-dist-packages.yml"
+  pull_request:
+    paths:
+      - "js/distribution/**"
+      - ".github/workflows/test-dist-packages.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      - run: pnpm build:exe
+        name: Build executable
+        working-directory: ./js/distribution
+
+      - run: pnpm build:deb:x64
+        name: Build deb package
+        working-directory: ./js/distribution
+
+      - run: sudo dpkg -i ./dist/*.deb
+        name: Install deb package
+        working-directory: ./js/distribution
+
+      - run: livraison --version
+        name: Verify installed

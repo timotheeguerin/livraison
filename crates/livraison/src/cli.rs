@@ -13,6 +13,7 @@ use crate::{
         pack::{CommonOptions, pack_for_target},
         script::{ScriptArgs, create_script},
     },
+    common::FileRef,
 };
 // use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
@@ -62,6 +63,10 @@ struct PackArgs {
     /// Output file path
     #[arg(short, long)]
     out: Option<String>,
+
+    /// Binary files
+    #[arg(long)]
+    bin_file: Vec<String>,
 }
 
 pub fn run_cli<I, T>(args: I) -> LivraisonResult<()>
@@ -78,6 +83,11 @@ where
             CommonOptions {
                 name: pack_args.name,
                 version: pack_args.version,
+                bin_files: pack_args
+                    .bin_file
+                    .iter()
+                    .map(FileRef::from_local)
+                    .collect::<Vec<FileRef>>(),
                 out: match pack_args.out {
                     Some(out) => PathBuf::from(out),
                     None => cwd.join("dist"),

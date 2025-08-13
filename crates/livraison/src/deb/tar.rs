@@ -1,14 +1,12 @@
 use std::{
     collections::HashSet,
-    fs::File,
+    fs,
     io::{self, Write},
     path::{Component, Path, PathBuf},
     time::{SystemTime, UNIX_EPOCH},
 };
 
-use crate::LivraisonResult;
-
-use super::package::FileStats;
+use crate::{LivraisonResult, common::FileRef};
 
 pub struct EnhancedTarBuilder<W: Write> {
     builder: tar::Builder<W>,
@@ -41,35 +39,31 @@ impl<W: Write> EnhancedTarBuilder<W> {
     pub fn into_inner(self) -> LivraisonResult<W> {
         Ok(self.builder.into_inner()?)
     }
-
-    pub fn add_file_from_bytes(&mut self, dest_path: &str, data: &[u8]) -> LivraisonResult<()> {
-        self.add_file_from_bytes_with_stats(dest_path, data, &FileStats { mode: 0o644 })?;
+    pub fn add_file_from_text(&mut self, dest_path: &str, data: String) -> LivraisonResult<()> {
+        self.add_file(dest_path, &FileRef::from_text(data))?;
         Ok(())
     }
-    pub fn add_file_from_bytes_with_stats(
-        &mut self,
-        dest_path: &str,
-        data: &[u8],
-        stats: &FileStats,
-    ) -> LivraisonResult<()> {
+
+    pub fn add_file(&mut self, dest_path: &str, file_ref: &FileRef) -> LivraisonResult<()> {
         let dest_path = Path::new(dest_path.trim_start_matches('/'));
         self.add_parent_dirs(dest_path)?;
 
         let mut header = tar::Header::new_gnu();
         header.set_mtime(self.mtime);
-        header.set_mode(stats.mode);
-        header.set_size(data.len() as u64);
+        header.set_mode(file_ref.get_mode().unwrap_or(0o644));
+        header.set_size(file_ref.len());
         header.set_cksum();
-        self.builder.append_data(&mut header, dest_path, data)?;
+        self.builder
+            .append_data(&mut header, dest_path, &mut file_ref.open()?)?;
         Ok(())
     }
 
     pub fn add_local_file(&mut self, dest_path: &str, local_path: &str) -> LivraisonResult<()> {
-        let dest_path = Path::new(dest_path.trim_start_matches('/'));
-        self.add_parent_dirs(dest_path)?;
+        let dest_path_p = Path::new(dest_path.trim_start_matches('/'));
+        self.add_parent_dirs(dest_path_p)?;
 
-        let mut file = File::create("foo.tar")?;
-        self.builder.append_file(local_path, &mut file)?;
+        let mut file = fs::File::open(local_path)?;
+        self.builder.append_file(dest_path_p, &mut file)?;
         Ok(())
     }
 

@@ -27,9 +27,6 @@ pub fn require_command(args: TokenStream, input: TokenStream) -> TokenStream {
     let fn_body = &input_fn.block;
 
     let command_exists = which::which(&command_str).is_ok();
-    eprintln!(
-        "Skipping test '{fn_name}', required command '{command_str}' found: {command_exists}"
-    );
 
     if command_exists {
         input

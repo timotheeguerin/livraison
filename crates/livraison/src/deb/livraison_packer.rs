@@ -5,7 +5,7 @@ use crate::{
     actions::pack::{CommonOptions, LivraisonPacker},
     deb::{
         control::{Control, User},
-        package::DebPackage,
+        package::{DataFile, DebPackage},
     },
 };
 
@@ -35,7 +35,16 @@ impl LivraisonPacker for DebLivraisonPacker {
 
         let pkg = DebPackage {
             control: control.clone(),
-            files: None,
+            files: Some(
+                options
+                    .bin_files
+                    .iter()
+                    .map(|file| {
+                        let dest = format!("/usr/local/bin/{}", file.file_name());
+                        DataFile::new(dest, file.clone())
+                    })
+                    .collect::<Vec<DataFile>>(),
+            ),
             conf_files: None,
         };
         let out_file = options.out.join(options.name.clone()).with_extension("deb");
@@ -43,6 +52,17 @@ impl LivraisonPacker for DebLivraisonPacker {
 
         let file = fs::File::create(&out_file)?;
         pkg.write(file)?;
+
+        println!("Created DEB package at: {}", out_file.to_string_lossy());
+        println!("Control: {:#?}", control.write());
+        println!("Included files:");
+        if let Some(files) = &pkg.files {
+            for file in files {
+                println!(" {:#?}", &file.get_dest());
+            }
+        } else {
+            println!(" No files included.");
+        }
         Ok(())
     }
 }

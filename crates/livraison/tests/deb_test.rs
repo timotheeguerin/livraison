@@ -4,9 +4,12 @@ use test_macros::require_command;
 mod test_utils;
 use test_utils::{TestTempDir, exec};
 
-use livraison::deb::{
-    control::{Control, Priority, User},
-    package::{DataFile, DebPackage, FileStats, InMemoryFile},
+use livraison::{
+    common::FileRef,
+    deb::{
+        control::{Control, Priority, User},
+        package::{DataFile, DebPackage},
+    },
 };
 
 pub static TESTDIR: LazyLock<TestTempDir> = LazyLock::new(|| {
@@ -100,10 +103,9 @@ fn check_pass_lintian() {
     let dir = TESTDIR.mkdir("lintian").expect("Worked");
     let target_path_buf = dir.join("test.deb");
 
-    let file = InMemoryFile {
-        dest: "/etc/init.d/test".to_string(),
-        stats: FileStats { mode: 0o755 },
-        content: indoc! {"
+    let file = DataFile::new(
+        "/etc/init.d/test",
+        FileRef::from_text(indoc! {"
                 #! /bin/sh
                 do_start() {
                 :
@@ -126,13 +128,13 @@ fn check_pass_lintian() {
                 stop) do_stop ;;
                 force-reload) do_reload ;;
                 esac    
-                "}
-        .to_string(),
-    };
+                "})
+        .with_mode(0o755),
+    );
     let pkg = DebPackage {
         control: control.clone(),
         files: None,
-        conf_files: Some(vec![DataFile::InMemoryFile(file)]),
+        conf_files: Some(vec![file]),
     };
     let file = fs::File::create(&target_path_buf).unwrap();
     pkg.write(file).expect("Works");

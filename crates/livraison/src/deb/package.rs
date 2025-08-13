@@ -1,26 +1,30 @@
 use std::io::Write;
 
-use crate::LivraisonResult;
+use crate::{LivraisonResult, common::FileRef};
 
 use super::{builder::ArchiveBuilder, control::Control, tar::EnhancedTarBuilder};
 
-pub struct LocalFile {
-    pub dest: String,
-    pub local_path: String,
-}
-pub struct InMemoryFile {
-    pub dest: String,
-    pub content: String,
-    pub stats: FileStats,
+#[derive(Debug)]
+pub struct DataFile {
+    dest: String,
+    source: FileRef,
 }
 
-pub struct FileStats {
-    pub mode: u32,
-}
+impl DataFile {
+    pub fn new(dest: impl Into<String>, source: FileRef) -> Self {
+        DataFile {
+            dest: dest.into(),
+            source,
+        }
+    }
 
-pub enum DataFile {
-    LocalFile(LocalFile),
-    InMemoryFile(InMemoryFile),
+    pub fn get_dest(&self) -> &str {
+        &self.dest
+    }
+
+    pub fn get_source(&self) -> &FileRef {
+        &self.source
+    }
 }
 
 pub struct DebPackage {
@@ -33,7 +37,8 @@ impl DebPackage {
     pub fn write<W: Write>(&self, out: W) -> LivraisonResult<ArchiveBuilder<W>> {
         let mut archive = ArchiveBuilder::new(out)?;
         archive.add_control(&self.create_control_tar()?)?;
-        archive.add_data(&self.create_data_tar()?)?;
+        let a = self.create_data_tar()?;
+        archive.add_data(&a)?;
         archive.finish()?;
         Ok(archive)
     }
@@ -41,10 +46,10 @@ impl DebPackage {
     fn create_control_tar(&self) -> LivraisonResult<Vec<u8>> {
         let mut tar_ar = EnhancedTarBuilder::new(Vec::new());
 
-        tar_ar.add_file_from_bytes("control", self.control.write().as_bytes())?;
+        tar_ar.add_file_from_text("control", self.control.write())?;
         if let Some(conf_files) = &self.conf_files {
             let content = self.create_conf_files_content(conf_files);
-            tar_ar.add_file_from_bytes("conffiles", content.as_bytes())?;
+            tar_ar.add_file_from_text("conffiles", content)?;
         }
         tar_ar.finish()?;
         Ok(tar_ar.into_inner().unwrap())
@@ -53,10 +58,7 @@ impl DebPackage {
     fn create_conf_files_content(&self, conf_files: &[DataFile]) -> String {
         conf_files
             .iter()
-            .map(|file| match file {
-                DataFile::LocalFile(local_file) => local_file.dest.clone(),
-                DataFile::InMemoryFile(in_memory_file) => in_memory_file.dest.clone(),
-            })
+            .map(|file| file.get_dest().to_string())
             .collect::<Vec<String>>()
             .join("\n")
             + "\n"
@@ -65,24 +67,24 @@ impl DebPackage {
     fn create_data_tar(&self) -> LivraisonResult<Vec<u8>> {
         let mut tar_ar = EnhancedTarBuilder::new(Vec::new());
 
-        if let Some(conf_files) = &self.conf_files {
-            for file in conf_files {
-                match file {
-                    DataFile::LocalFile(local_file) => {
-                        tar_ar.add_local_file(&local_file.dest, &local_file.local_path)?;
-                    }
-                    DataFile::InMemoryFile(in_memory_file) => {
-                        tar_ar.add_file_from_bytes_with_stats(
-                            &in_memory_file.dest,
-                            in_memory_file.content.as_bytes(),
-                            &in_memory_file.stats,
-                        )?;
-                    }
-                }
-            }
-        }
+        self.add_files_to_tar(&mut tar_ar, &self.files)?;
+        self.add_files_to_tar(&mut tar_ar, &self.conf_files)?;
 
         tar_ar.finish()?;
         Ok(tar_ar.into_inner().unwrap())
+    }
+
+    fn add_files_to_tar(
+        &self,
+        tar_ar: &mut EnhancedTarBuilder<Vec<u8>>,
+        files: &Option<Vec<DataFile>>,
+    ) -> LivraisonResult<()> {
+        if let Some(some_files) = files {
+            for file in some_files {
+                let _ = tar_ar.add_file(file.get_dest(), file.get_source());
+            }
+        }
+
+        Ok(())
     }
 }

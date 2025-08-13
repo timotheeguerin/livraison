@@ -54,7 +54,7 @@ impl<W: Write> EnhancedTarBuilder<W> {
         header.set_size(file_ref.len());
         header.set_cksum();
         self.builder
-            .append_data(&mut header, dest_path, &mut file_ref.open())?;
+            .append_data(&mut header, dest_path, &mut file_ref.open()?)?;
         Ok(())
     }
 

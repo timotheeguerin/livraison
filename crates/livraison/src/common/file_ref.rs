@@ -2,7 +2,7 @@
 use std::os::unix::prelude::MetadataExt;
 use std::{
     fs::{self, File},
-    io::Read,
+    io::{Cursor, Read},
     path::PathBuf,
 };
 
@@ -24,18 +24,20 @@ pub struct FileRef {
     mode: Option<u32>,
 }
 
-pub struct OpenedFileRef<'a> {
-    source: &'a FileRef,
+pub struct OpenedFileRef {
+    reader: OpenedFileReader,
 }
 
-impl<'a> Read for OpenedFileRef<'a> {
+enum OpenedFileReader {
+    File(File),
+    Memory(Cursor<Vec<u8>>),
+}
+
+impl Read for OpenedFileRef {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        match &self.source.inner {
-            FileContentSource::Local(file) => File::open(file)?.read(buf),
-            FileContentSource::InMemory { content, .. } => {
-                let mut cursor = std::io::Cursor::new(content.as_bytes());
-                cursor.read(buf)
-            }
+        match &mut self.reader {
+            OpenedFileReader::File(file) => file.read(buf),
+            OpenedFileReader::Memory(cursor) => cursor.read(buf),
         }
     }
 }
@@ -78,8 +80,15 @@ impl FileRef {
         self.inner.file_name()
     }
 
-    pub fn open(&'_ self) -> OpenedFileRef<'_> {
-        OpenedFileRef { source: self }
+    pub fn open(&'_ self) -> std::io::Result<OpenedFileRef> {
+        let reader = match &self.inner {
+            FileContentSource::Local(file) => OpenedFileReader::File(File::open(file)?),
+            FileContentSource::InMemory { content, .. } => {
+                OpenedFileReader::Memory(Cursor::new(content.as_bytes().to_vec()))
+            }
+        };
+
+        Ok(OpenedFileRef { reader })
     }
 
     /// Set the file mode

@@ -1,7 +1,7 @@
 packages:
   - js/*
 catalog:
-  "@eslint/js": ^9.31.0
+  "@eslint/js": ^9.36.0
   "@types/cross-spawn": ^6.0.6
   "@types/node": ^22.13.14
   "@types/which": ^3.0.4

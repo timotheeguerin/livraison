@@ -5,7 +5,7 @@ use std::{
     path::PathBuf,
 };
 
-use clap::{Args, Parser, Subcommand, arg, command};
+use clap::{Args, Parser, Subcommand};
 
 use crate::{
     LivraisonResult,

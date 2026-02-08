@@ -8,7 +8,7 @@ use time::OffsetDateTime;
 
 use msiinfo::validate::validator::validate_msi_installer;
 
-use clap::{Parser, Subcommand, command};
+use clap::{Parser, Subcommand};
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]

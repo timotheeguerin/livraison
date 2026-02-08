@@ -1,4 +1,4 @@
-use clap::{Args, arg};
+use clap::Args;
 use color::{bold, cyan, green};
 
 use crate::{

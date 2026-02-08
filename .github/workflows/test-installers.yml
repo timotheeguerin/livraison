@@ -40,7 +40,7 @@ jobs:
           - os: macos-latest
             shell: zsh
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Install shell linux
       - run: "sudo apt-get install -y ${{ matrix.shell }}"

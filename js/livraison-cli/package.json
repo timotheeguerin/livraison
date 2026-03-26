@@ -30,7 +30,7 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.29.1",
   "engines": {
     "node": ">=20.0.0"
   }

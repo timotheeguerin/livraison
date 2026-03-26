@@ -10,6 +10,6 @@ path = "src/lib.rs"
 doc = true
 
 [dependencies]
-syn = {version = "2.0.100", features = ["full"]}
-quote = "1.0.40"
+syn = {version = "2.0.114", features = ["full"]}
+quote = "1.0.44"
 which = "8.0.0"

@@ -5,12 +5,12 @@ edition = "2024"
 
 [dependencies]
 cab = "0.6.0"
-clap = { version = "4.5.57", features = ["derive"] }
+clap = { version = "4.6.2", features = ["derive"] }
 msi  = { version = "0.8.0", path = "../msi", default-features = false }
 msi_installer  = { version = "0.1.0", path = "../msi_installer" }
 color  = { path = "../color" }
 thiserror = "2.0.18"
-time = "0.3.47"
-uuid = { version= "1.20.0", features = [
+time = "0.3.53"
+uuid = { version= "1.24.0", features = [
     "v4", "v5"
 ]}

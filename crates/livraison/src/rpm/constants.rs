@@ -26,6 +26,7 @@ pub const RPMTAG_SUMMARY: u32 = 1004;
 pub const RPMTAG_DESCRIPTION: u32 = 1005;
 pub const RPMTAG_SIZE: u32 = 1009;
 pub const RPMTAG_LICENSE: u32 = 1014;
+pub const RPMTAG_PACKAGER: u32 = 1015;
 pub const RPMTAG_OS: u32 = 1021;
 pub const RPMTAG_ARCH: u32 = 1022;
 pub const RPMTAG_FILESIZES: u32 = 1028;

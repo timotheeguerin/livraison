@@ -66,6 +66,14 @@ fn check_rpm_retrieve_information() {
     assert_eq!(ask_rpm_for_field(target, "%{ARCH}"), metadata.arch);
     assert_eq!(ask_rpm_for_field(target, "%{LICENSE}"), metadata.license);
     assert_eq!(ask_rpm_for_field(target, "%{SUMMARY}"), metadata.summary);
+    assert_eq!(
+        ask_rpm_for_field(target, "%{DESCRIPTION}"),
+        metadata.description
+    );
+    assert_eq!(
+        ask_rpm_for_field(target, "%{PACKAGER}"),
+        format!("{} <{}>", metadata.packager.name, metadata.packager.email)
+    );
 }
 
 #[require_command("rpm")]

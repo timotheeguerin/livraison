@@ -153,6 +153,15 @@ impl RpmPackage {
             ),
         ];
 
+        // The packager (author) is optional in RPM; only emit it when set, so we
+        // don't record an empty string. This mirrors the deb `Maintainer` field.
+        if !self.metadata.packager.name.is_empty() {
+            records.push(Entry::new(
+                RPMTAG_PACKAGER,
+                TypedData::Str(self.metadata.packager.format()),
+            ));
+        }
+
         if !self.files.is_empty() {
             records.push(Entry::new(RPMTAG_BASENAMES, TypedData::StringArray(basenames)));
             records.push(Entry::new(RPMTAG_DIRNAMES, TypedData::StringArray(dirnames)));

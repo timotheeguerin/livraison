@@ -1,15 +1,12 @@
 [package]
 name = "test_macros"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
 
 [lib]
-name = "test_macros"
 proc-macro = true
-path = "src/lib.rs"
-doc = true
 
 [dependencies]
-syn = { version = "3.0.0", features = ["full"] }
-quote = "1.0.44"
-which = "8.0.0"
+quote.workspace = true
+syn.workspace = true
+which.workspace = true

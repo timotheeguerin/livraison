@@ -1,34 +1,28 @@
 [package]
 name = "livraison"
-version = "0.1.0"
-edition = "2024"
-
-[lib]
-name = "livraison"
-path = "src/lib.rs"
-doc = true
+version.workspace = true
+edition.workspace = true
 
 [[bin]]
 name = "livraison"
-path = "src/main.rs"
 doc = false
 
 [dependencies]
-ar = "0.9.0"
-cab = "0.6.0"
-clap = { version = "4.6.2", features = ["derive"] }
-msi = { version = "0.8.0", path = "../msi", default-features = false }
-msi_installer = { version = "0.1.0", path = "../msi_installer" }
-printer = { path = "../printer" }
-color = { path = "../color" }
-quick-error = "2.0.1"
-tar = "0.4.46"
-uuid = { version = "1.24.0", features = ["v4", "v5"] }
-indoc = "2.0.7"
-flate2 = "1.1.9"
+ar.workspace = true
+cab.workspace = true
+clap.workspace = true
+color.workspace = true
+flate2.workspace = true
+indoc.workspace = true
+msi.workspace = true
+msi_installer.workspace = true
+printer.workspace = true
+quick-error.workspace = true
+tar.workspace = true
+uuid = { workspace = true, features = ["v4", "v5"] }
 
 [dev-dependencies]
-assertables = "10.1.0"
-pretty_assertions = "1.4.1"
-insta = "1.48.0"
-test_macros = { version = "0.1.0", path = "../test_macros", default-features = false }
+assertables.workspace = true
+insta.workspace = true
+pretty_assertions.workspace = true
+test_macros.workspace = true

@@ -1,0 +1,9 @@
+{
+  "trailingComma": "all",
+  "printWidth": 120,
+  "quoteProps": "consistent",
+  "endOfLine": "lf",
+  "arrowParens": "always",
+  "sortPackageJson": {},
+  "ignorePatterns": ["pnpm-lock.yaml", "test/fixtures/**"]
+}

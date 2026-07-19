@@ -4,24 +4,24 @@
   "private": true,
   "description": "",
   "keywords": [],
+  "license": "MIT",
+  "author": "Timothee Guerin",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/timotheeguerin/livraison.git"
   },
-  "license": "MIT",
-  "author": "Timothee Guerin",
-  "type": "module",
   "bin": {
     "livraison": "cmd/cli.js"
   },
+  "type": "module",
   "scripts": {
     "build": "pnpm run build:rust && pnpm run build:ts",
     "build:rust": "cargo build",
     "build:ts": "pnpm -r build",
     "clean": "rimraf dist/ .temp/",
-    "format": "prettier . --write && cargo fmt",
-    "format:check": "prettier . --check",
-    "lint": "eslint . && cargo clippy -- -D warnings",
+    "format": "oxfmt --write . && cargo fmt",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint . && cargo clippy -- -D warnings",
     "test": "pnpm test:rust && pnpm test:ts",
     "test:rust": "cargo test",
     "test:ts": "vitest run",
@@ -29,28 +29,21 @@
     "watch": "tsc -p ./tsconfig.build.json --watch"
   },
   "devDependencies": {
-    "@eslint/js": "catalog:",
     "@types/node": "catalog:",
-    "@vitest/eslint-plugin": "catalog:",
     "@vitest/ui": "catalog:",
     "cspell": "catalog:",
-    "eslint": "catalog:",
-    "eslint-plugin-import": "catalog:",
-    "eslint-plugin-unicorn": "catalog:",
-    "prettier": "catalog:",
-    "prettier-plugin-organize-imports": "catalog:",
-    "prettier-plugin-packagejson": "^3.0.2",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
     "rimraf": "catalog:",
     "source-map-support": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
-    "typescript-eslint": "catalog:",
     "vitest": "catalog:"
   },
-  "packageManager": "pnpm@10.29.1",
   "engines": {
     "node": ">=20.0.0"
   },
+  "packageManager": "pnpm@10.29.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"

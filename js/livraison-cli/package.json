@@ -9,13 +9,12 @@
     "msi",
     "packer"
   ],
+  "license": "MIT",
+  "author": "Timothee Guerin",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/timotheeguerin/livraison.git"
   },
-  "license": "MIT",
-  "author": "Timothee Guerin",
-  "type": "module",
   "bin": {
     "livraison": "cmd/cli.js"
   },
@@ -23,6 +22,7 @@
     "cmd/cli.js",
     "dist/"
   ],
+  "type": "module",
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json && cargo build --package livraison --target wasm32-wasip1 --release && cp ../../target/wasm32-wasip1/release/livraison.wasm dist/",
     "verify": "node ./cmd/cli.js --version",
@@ -30,8 +30,8 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "packageManager": "pnpm@10.29.1",
   "engines": {
     "node": ">=20.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.29.1"
 }

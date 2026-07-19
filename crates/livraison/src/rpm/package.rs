@@ -4,7 +4,6 @@
 use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use md5::Md5;
 use sha2::{Digest, Sha256};
 
 use crate::{LivraisonResult, common::FileRef, utils::compression::gzip};
@@ -119,6 +118,12 @@ impl RpmPackage {
 
         let payload = gzip(&cpio.finish())?;
 
+        // SHA-256 of the compressed payload, recorded so `rpm -K` can verify
+        // payload integrity (the modern replacement for the legacy SIGMD5).
+        let mut payload_hasher = Sha256::new();
+        payload_hasher.update(&payload);
+        let payload_sha256 = hex(&payload_hasher.finalize());
+
         // --- Build the main (immutable) header. ---
         let mut records = vec![
             Entry::new(RPMTAG_NAME, TypedData::Str(self.metadata.name.clone())),
@@ -138,6 +143,14 @@ impl RpmPackage {
             Entry::new(RPMTAG_PAYLOADCOMPRESSOR, TypedData::Str("gzip".to_string())),
             Entry::new(RPMTAG_PAYLOADFLAGS, TypedData::Str("9".to_string())),
             Entry::new(RPMTAG_ENCODING, TypedData::Str("utf-8".to_string())),
+            Entry::new(
+                RPMTAG_PAYLOADDIGEST,
+                TypedData::StringArray(vec![payload_sha256]),
+            ),
+            Entry::new(
+                RPMTAG_PAYLOADDIGESTALGO,
+                TypedData::Int32(vec![RPM_DIGEST_ALGO_SHA256]),
+            ),
         ];
 
         if !self.files.is_empty() {
@@ -169,21 +182,15 @@ impl RpmPackage {
         let mut header_bytes = Vec::new();
         write_header(&mut header_bytes, records, RPMTAG_HEADERIMMUTABLE)?;
 
-        // --- Build the signature header over the main header + payload. ---
+        // --- Build the signature header over the main header. ---
         let mut sha = Sha256::new();
         sha.update(&header_bytes);
         let header_sha256 = hex(&sha.finalize());
-
-        let mut md5 = Md5::new();
-        md5.update(&header_bytes);
-        md5.update(&payload);
-        let md5_digest = md5.finalize().to_vec();
 
         let sig_size = (header_bytes.len() + payload.len()) as u32;
         let sig_records = vec![
             Entry::new(RPMSIGTAG_SIZE, TypedData::Int32(vec![sig_size])),
             Entry::new(RPMSIGTAG_SHA256, TypedData::Str(header_sha256)),
-            Entry::new(RPMSIGTAG_MD5, TypedData::Bin(md5_digest)),
         ];
         let mut sig_bytes = Vec::new();
         write_header(&mut sig_bytes, sig_records, RPMTAG_HEADERSIGNATURES)?;

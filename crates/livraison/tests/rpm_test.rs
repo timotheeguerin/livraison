@@ -112,12 +112,16 @@ fn check_rpm_header_digest_is_valid() {
     let target_path_buf = write_package("digest", &pkg);
     let target = target_path_buf.to_str().unwrap();
 
-    // `rpm -K` verifies the header SHA256 digest (among others). Without a GPG
+    // `rpm -K` verifies the header and payload SHA256 digests. Without a GPG
     // key it reports missing signatures but must not report a digest failure.
     let output = exec("rpm", &["-Kv", target]);
     let report = String::from_utf8(output.stdout).unwrap();
     assert!(
         report.contains("Header SHA256 digest: OK"),
+        "checksig report was: {report}"
+    );
+    assert!(
+        report.contains("Payload SHA256 digest: OK"),
         "checksig report was: {report}"
     );
 }

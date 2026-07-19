@@ -44,10 +44,13 @@ pub const RPMTAG_PAYLOADCOMPRESSOR: u32 = 1125;
 pub const RPMTAG_PAYLOADFLAGS: u32 = 1126;
 pub const RPMTAG_FILEDIGESTALGO: u32 = 5011;
 pub const RPMTAG_ENCODING: u32 = 5062;
+/// SHA-256 digest of the (compressed) payload archive, as a hex string array.
+pub const RPMTAG_PAYLOADDIGEST: u32 = 5092;
+/// Digest algorithm identifier for `RPMTAG_PAYLOADDIGEST`.
+pub const RPMTAG_PAYLOADDIGESTALGO: u32 = 5093;
 
 /// Signature header tags.
 pub const RPMSIGTAG_SIZE: u32 = 1000;
-pub const RPMSIGTAG_MD5: u32 = 1004;
 pub const RPMSIGTAG_SHA256: u32 = 273;
 
 /// File digest algorithm identifier for SHA-256 (`RPMTAG_FILEDIGESTALGO`).

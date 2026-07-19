@@ -9,11 +9,9 @@ path = "src/lib.rs"
 doc = true
 
 [dependencies]
-msi  = { version = "0.8.0", path = "../msi", default-features = false }
+msi = { version = "0.8.0", path = "../msi", default-features = false }
 thiserror = "2.0.18"
 bitflags = "2.13.1"
-uuid = { version= "1.24.0", features = [
-    "v4", "v5"
-]}
+uuid = { version = "1.24.0", features = ["v4", "v5"] }
 strum = "0.28"
 strum_macros = "0.28"

@@ -5,7 +5,7 @@ import { WASI } from "wasi";
 // Suppress the WASI Warning
 process.removeAllListeners("warning").on("warning", (err) => {
   if (err.name !== "ExperimentalWarning" && !err.message.includes("wasi")) {
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console
     console.warn(err);
   }
 });

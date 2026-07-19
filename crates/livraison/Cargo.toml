@@ -14,10 +14,12 @@ clap.workspace = true
 color.workspace = true
 flate2.workspace = true
 indoc.workspace = true
+md-5.workspace = true
 msi.workspace = true
 msi_installer.workspace = true
 printer.workspace = true
 quick-error.workspace = true
+sha2.workspace = true
 tar.workspace = true
 uuid = { workspace = true, features = ["v4", "v5"] }
 

@@ -26,8 +26,8 @@ jobs:
       - uses: ./.github/actions/setup
 
       - if: runner.os == 'Linux'
-        run: sudo apt-get install lintian
-        name: Install lintian
+        run: sudo apt-get install lintian rpm
+        name: Install lintian and rpm
 
       - run: pnpm install
         name: Install dependencies

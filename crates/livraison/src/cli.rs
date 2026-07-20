@@ -83,6 +83,7 @@ where
             CommonOptions {
                 name: pack_args.name,
                 version: pack_args.version,
+                description: pack_args.description,
                 bin_files: pack_args
                     .bin_file
                     .iter()

@@ -24,6 +24,7 @@ clap = { version = "4.6.2", features = ["derive"] }
 encoding_rs = "0.8"
 flate2 = "1.1.9"
 indoc = "2.0.7"
+sha2 = "0.10.9"
 quick-error = "2.0.1"
 quote = "1.0.47"
 strum = "0.28"

@@ -6,11 +6,14 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use sha2::{Digest, Sha256};
 
-use crate::{LivraisonResult, common::FileRef, utils::compression::gzip};
+use crate::{
+    LivraisonResult,
+    common::FileRef,
+    utils::{compression::gzip, cpio::CpioBuilder},
+};
 
 use super::{
     constants::*,
-    cpio::CpioBuilder,
     header::{Entry, TypedData, write_header},
     lead::write_lead,
     metadata::RpmMetadata,

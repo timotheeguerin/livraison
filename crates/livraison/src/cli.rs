@@ -44,7 +44,7 @@ enum Command {
 
 #[derive(Debug, Args)]
 struct PackArgs {
-    /// Target
+    /// Target format: `msi`, `deb`, `rpm`, or `pkg` (macOS installer)
     #[arg(short, long)]
     target: String,
 

@@ -6,6 +6,7 @@ pub mod common;
 pub mod deb;
 pub mod error;
 pub mod msi;
+pub mod pkg;
 pub mod rpm;
 pub mod scripts;
 pub mod utils;

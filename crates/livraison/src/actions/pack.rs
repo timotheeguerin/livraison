@@ -1,6 +1,9 @@
 use std::path::PathBuf;
 
-use crate::{LivraisonResult, common::FileRef, deb::DebLivraisonPacker, msi::MsiLivraisonPacker, rpm::RpmLivraisonPacker};
+use crate::{
+    LivraisonResult, common::FileRef, deb::DebLivraisonPacker, msi::MsiLivraisonPacker,
+    pkg::PkgLivraisonPacker, rpm::RpmLivraisonPacker,
+};
 
 #[derive(Debug, Default, Clone)]
 pub struct CommonOptions {
@@ -38,6 +41,7 @@ fn get_packer(target: String) -> Box<dyn LivraisonPacker> {
         "msi" => Box::new(MsiLivraisonPacker {}),
         "deb" => Box::new(DebLivraisonPacker {}),
         "rpm" => Box::new(RpmLivraisonPacker {}),
+        "pkg" => Box::new(PkgLivraisonPacker {}),
         _ => panic!("Unsupported packer for target: {}", target),
     }
 }
